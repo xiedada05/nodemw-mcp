@@ -1,0 +1,21 @@
+{
+  "defaultBot": "en.wikipedia.org",
+  "bots": {
+    "en.wikipedia.org": {
+      "server": "https://en.wikipedia.org",
+      "path": "/w",
+      "debug": false,
+      "username": null,
+      "password": null,
+      "dryRun": false
+    },
+    "localhost:8080": {
+      "server": "http://localhost:8080",
+      "path": "/w",
+      "debug": false,
+      "username": null,
+      "password": null,
+      "dryRun": false
+    }
+  }
+}
