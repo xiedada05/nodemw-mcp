@@ -16,6 +16,41 @@ npm install
 npm run build
 ```
 
+## Single File Build
+
+For closed-source distribution, you can build a minified single-file version:
+
+```bash
+# Build standard version (multiple files)
+npm run build
+
+# Build single-file bundle (includes dependencies)
+npm run build:bundle
+
+# Build standalone single-file version
+npm run build:standalone
+
+# Clean build artifacts
+npm run clean
+```
+
+The single-file build outputs to `dist-bundle/index.js` (approx. 1.3MB). This file contains all dependencies bundled together, excluding Node.js built-in modules.
+
+Usage with Claude Desktop (single-file version):
+```json
+{
+  "mcpServers": {
+    "nodemw": {
+      "command": "node",
+      "args": ["/path/to/nodemw-mcp/dist-bundle/index.js"],
+      "env": {
+        "CONFIG": "/path/to/your/config.json"
+      }
+    }
+  }
+}
+```
+
 ## Configuration
 
 Create a `config.json` file in the project root (or set `CONFIG` environment variable to point to your config file):
