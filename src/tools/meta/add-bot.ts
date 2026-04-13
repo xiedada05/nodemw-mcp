@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { botService } from '../common/botService.js';
-import { clearBotCache } from '../common/nodemwBot.js';
+import { botService } from '../../common/botService.js';
+import { clearBotCache } from '../../common/nodemwBot.js';
+import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function addBotTool( server: McpServer ): RegisteredTool {
 	return server.tool(
@@ -65,13 +66,12 @@ async function handleAddBotTool(
 			dryRun: params.dryRun || false
 		} );
 
-		return {
-			content: [ { type: 'text', text: `Bot "${ params.key }" added successfully` } ]
-		};
+		return jsonResult({
+			success: true,
+			key: params.key,
+			message: `Bot "${params.key}" added successfully`
+		});
 	} catch ( error ) {
-		return {
-			content: [ { type: 'text', text: `Error adding bot: ${ ( error as Error ).message }` } ],
-			isError: true
-		};
+		return errorResult('Failed to add bot', error as Error);
 	}
 }

@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { getBot, promisifyBotMethod } from '../common/nodemwBot.js';
+import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface PageInCategory extends Record<string, any> {
@@ -41,30 +42,12 @@ async function handleGetPagesInCategoryTool(
 			cleanCategory
 		);
 
-		const formattedResults = results.map( ( result, index ) => {
-			const lines = [ `${ index + 1 }. ${ result.title }` ];
-			if ( result.pageid ) {
-				lines.push( `   Page ID: ${ result.pageid }` );
-			}
-			if ( result.ns !== undefined ) {
-				lines.push( `   Namespace: ${ result.ns }` );
-			}
-			return lines.join( '\n' );
-		} );
-
-		const output = [
-			`Found ${ results.length } page(s) in category "${ cleanCategory }"`,
-			'',
-			...formattedResults
-		].join( '\n' );
-
-		return {
-			content: [ { type: 'text', text: output } ]
-		};
+		return jsonResult({
+			category: cleanCategory,
+			pages: results,
+			count: results.length
+		});
 	} catch ( error ) {
-		return {
-			content: [ { type: 'text', text: `Error: ${ ( error as Error ).message }` } ],
-			isError: true
-		};
+		return errorResult('Failed to get pages in category', error as Error);
 	}
 }

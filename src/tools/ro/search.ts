@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { getBot, promisifyBotMethod } from '../common/nodemwBot.js';
+import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface SearchResult extends Record<string, any> {
@@ -45,33 +46,13 @@ async function handleSearchTool(
 		// Limit results
 		const limitedResults = results.slice( 0, limit );
 
-		const formattedResults = limitedResults.map( ( result, index ) => {
-			const lines = [ `${ index + 1 }. ${ result.title }` ];
-			if ( result.snippet ) {
-				lines.push( `   Snippet: ${ result.snippet }` );
-			}
-			if ( result.url ) {
-				lines.push( `   URL: ${ result.url }` );
-			}
-			if ( result.pageId ) {
-				lines.push( `   Page ID: ${ result.pageId }` );
-			}
-			return lines.join( '\n' );
-		} );
-
-		const output = [
-			`Found ${ results.length } result(s) for "${ keyword }"` + ( results.length > limit ? ` (showing first ${ limit })` : '' ),
-			'',
-			...formattedResults
-		].join( '\n' );
-
-		return {
-			content: [ { type: 'text', text: output } ]
-		};
+		return jsonResult({
+			total: results.length,
+			limit,
+			keyword,
+			results: limitedResults
+		});
 	} catch ( error ) {
-		return {
-			content: [ { type: 'text', text: `Error: ${ ( error as Error ).message }` } ],
-			isError: true
-		};
+		return errorResult('Failed to search', error as Error);
 	}
 }

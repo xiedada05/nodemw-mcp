@@ -11,11 +11,30 @@ export async function getBot(): Promise<Bot> {
 
 	const { config } = botService.getCurrent();
 
+	// Parse server URL if it's a full URL
+	let server = config.server;
+	let protocol = config.protocol;
+	let port = config.port;
+
+	try {
+		// If server is a full URL (starts with http:// or https://), parse it
+		if (server.startsWith('http://') || server.startsWith('https://')) {
+			const url = new URL(server);
+			server = url.hostname;
+			protocol = url.protocol.replace(':', '');
+			if (url.port) {
+				port = parseInt(url.port, 10);
+			}
+		}
+	} catch {
+		// If parsing fails, use original values
+	}
+
 	// Create Bot instance
 	botInstance = new Bot( {
-		server: config.server,
-		protocol: config.protocol,
-		port: config.port,
+		server,
+		protocol,
+		port,
 		path: config.path,
 		proxy: config.proxy,
 		userAgent: config.userAgent || USER_AGENT,

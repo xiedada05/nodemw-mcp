@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { getBot, promisifyBotMethod } from '../common/nodemwBot.js';
+import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function appendTool( server: McpServer ): RegisteredTool {
 	return server.tool(
@@ -39,13 +40,8 @@ async function handleAppendTool(
 			params.summary
 		);
 
-		return {
-			content: [ { type: 'text', text: `Successfully appended content to "${ params.title }"` } ]
-		};
+		return jsonResult({ success: true, title: params.title });
 	} catch ( error ) {
-		return {
-			content: [ { type: 'text', text: `Error appending to page: ${ ( error as Error ).message }` } ],
-			isError: true
-		};
+		return errorResult('Failed to append to page', error as Error);
 	}
 }

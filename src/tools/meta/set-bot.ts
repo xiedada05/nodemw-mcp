@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { botService } from '../common/botService.js';
-import { clearBotCache } from '../common/nodemwBot.js';
+import { botService } from '../../common/botService.js';
+import { clearBotCache } from '../../common/nodemwBot.js';
+import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function setBotTool( server: McpServer ): RegisteredTool {
 	return server.tool(
@@ -25,13 +26,12 @@ async function handleSetBotTool( key: string ): Promise<CallToolResult> {
 		botService.setCurrent( key );
 		clearBotCache();
 
-		return {
-			content: [ { type: 'text', text: `Switched to bot "${ key }"` } ]
-		};
+		return jsonResult({
+			success: true,
+			key,
+			message: `Switched to bot "${key}"`
+		});
 	} catch ( error ) {
-		return {
-			content: [ { type: 'text', text: `Error switching bot: ${ ( error as Error ).message }` } ],
-			isError: true
-		};
+		return errorResult('Failed to switch bot', error as Error);
 	}
 }

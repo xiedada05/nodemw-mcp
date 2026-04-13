@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { botService } from '../common/botService.js';
-import { clearBotCache } from '../common/nodemwBot.js';
+import { botService } from '../../common/botService.js';
+import { clearBotCache } from '../../common/nodemwBot.js';
+import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function removeBotTool( server: McpServer ): RegisteredTool {
 	return server.tool(
@@ -24,20 +25,16 @@ async function handleRemoveBotTool( key: string ): Promise<CallToolResult> {
 	try {
 		const current = botService.getCurrent();
 		if ( current.key === key ) {
-			return {
-				content: [ { type: 'text', text: `Cannot remove the currently active bot. Switch to another bot first.` } ],
-				isError: true
-			};
+			return errorResult('Cannot remove the currently active bot. Switch to another bot first.');
 		}
 
 		botService.remove( key );
-		return {
-			content: [ { type: 'text', text: `Bot "${ key }" removed successfully` } ]
-		};
+		return jsonResult({
+			success: true,
+			key,
+			message: `Bot "${key}" removed successfully`
+		});
 	} catch ( error ) {
-		return {
-			content: [ { type: 'text', text: `Error removing bot: ${ ( error as Error ).message }` } ],
-			isError: true
-		};
+		return errorResult('Failed to remove bot', error as Error);
 	}
 }

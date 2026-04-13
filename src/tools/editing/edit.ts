@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { getBot, promisifyBotMethod } from '../common/nodemwBot.js';
+import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function editTool( server: McpServer ): RegisteredTool {
 	return server.tool(
@@ -47,28 +48,8 @@ async function handleEditTool(
 			params.minor || false
 		);
 
-		const output = [
-			`Page "${ result.title }" edited successfully`,
-			''
-		];
-
-		if ( result.pageid ) {
-			output.push( `Page ID: ${ result.pageid }` );
-		}
-		if ( result.oldrevid ) {
-			output.push( `Previous revision: ${ result.oldrevid }` );
-		}
-		if ( result.newrevid ) {
-			output.push( `New revision: ${ result.newrevid }` );
-		}
-
-		return {
-			content: [ { type: 'text', text: output.join( '\n' ) } ]
-		};
+		return jsonResult(result);
 	} catch ( error ) {
-		return {
-			content: [ { type: 'text', text: `Error editing page: ${ ( error as Error ).message }` } ],
-			isError: true
-		};
+		return errorResult('Failed to edit page', error as Error);
 	}
 }

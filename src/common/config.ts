@@ -80,7 +80,30 @@ export const defaultConfig: Config = {
 	}
 };
 
-const configPath = process.env.CONFIG || 'config.json';
+import { parseArgs } from 'util';
+
+// Parse command line arguments
+const { values } = parseArgs({
+  options: {
+    'config-path': {
+      type: 'string',
+      short: 'c',
+    },
+  },
+  strict: false, // Allow other args to pass through (for MCP stdio transport)
+  allowPositionals: true,
+});
+
+// Determine config path in order of priority:
+// 1. --config-path (or -c) command line option (ensure it's a string)
+// 2. NODEMW_MCP_CONF environment variable
+// 3. CONFIG environment variable (backward compatibility)
+// 4. Default: 'config.json'
+const configPath = 
+  (typeof values['config-path'] === 'string' ? values['config-path'] : undefined) || 
+  process.env.NODEMW_MCP_CONF || 
+  process.env.CONFIG || 
+  'config.json';
 
 function replaceEnvVars( value: string ): string {
 	return value.replace( /\$\{([^}]+)\}/g, ( match, envVar: string ) => {

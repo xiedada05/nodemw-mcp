@@ -12,7 +12,8 @@
     "dev": "tsc --watch",
     "lint": "eslint src/**/*.ts",
     "test": "vitest",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "debug": "ts-node --inspect-brk dist/index.js"
   },
   "keywords": [
     "mcp",
