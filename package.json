@@ -28,7 +28,7 @@
     "wiki"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "LGPL-3.0",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
     "nodemw": "^0.26.0",

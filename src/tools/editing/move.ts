@@ -4,28 +4,28 @@ import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
-export function appendTool( server: McpServer ): RegisteredTool {
+export function moveTool( server: McpServer ): RegisteredTool {
 	return server.tool(
-		'append',
-		'Append content to a wiki page (requires authentication)',
+		'move',
+		'Move (rename) a wiki page (requires authentication)',
 		{
-			title: z.string().describe( 'Page title' ),
-			content: z.string().describe( 'Content to append' ),
-			summary: z.string().describe( 'Edit summary' )
+			from: z.string().describe( 'Current page title' ),
+			to: z.string().describe( 'New page title' ),
+			summary: z.string().describe( 'Move summary' ),
 		},
 		{
-			title: 'Append to page',
+			title: 'Move page',
 			readOnlyHint: false,
 			destructiveHint: true
 		} as ToolAnnotations,
-		async ( params ) => handleAppendTool( params )
+		async ( params ) => handleMoveTool( params )
 	);
 }
 
-async function handleAppendTool(
+async function handleMoveTool(
 	params: {
-		title: string;
-		content: string;
+		from: string;
+		to: string;
 		summary: string;
 	}
 ): Promise<CallToolResult> {
@@ -33,16 +33,20 @@ async function handleAppendTool(
 		const bot = await getBot();
 		const prefixedSummary = `[nodemw-mcp] ${params.summary}`;
 
-		await promisifyBotMethod<void>(
+		const result = await promisifyBotMethod<{
+			from: string;
+			to: string;
+			reason: string;
+		}>(
 			bot,
-			'append',
-			params.title,
-			params.content,
+			'move',
+			params.from,
+			params.to,
 			prefixedSummary
 		);
 
-		return jsonResult({ success: true, title: params.title });
+		return jsonResult(result);
 	} catch ( error ) {
-		return errorResult('Failed to append to page', error as Error);
+		return errorResult('Failed to move page', error as Error);
 	}
 }

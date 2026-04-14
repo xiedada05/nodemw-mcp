@@ -23,6 +23,7 @@ import { getArticleInfoTool } from './ro/get-article-info.js';
 import { getUserContribsTool } from './ro/get-user-contribs.js';
 import { whoamiTool } from './ro/whoami.js';
 import { whoisTool } from './ro/whois.js';
+import { whoareTool } from './ro/whoare.js';
 import { getImagesTool } from './ro/get-images.js';
 import { getImagesFromArticleTool } from './ro/get-images-from-article.js';
 import { getImageUsageTool } from './ro/get-image-usage.js';
@@ -41,6 +42,16 @@ import { getBacklinksTool } from './ro/get-backlinks.js';
 // Write tools
 import { editTool } from './editing/edit.js';
 import { appendTool } from './editing/append.js';
+import { prependTool } from './editing/prepend.js';
+import { moveTool } from './editing/move.js';
+import { deleteTool } from './editing/delete.js';
+import { protectTool } from './editing/protect.js';
+import { purgeTool } from './editing/purge.js';
+import { sendEmailTool } from './editing/send-email.js';
+import { uploadTool } from './editing/upload.js';
+import { uploadByUrlTool } from './editing/upload-by-url.js';
+import { addFlowTopicTool } from './editing/add-flow-topic.js';
+import { createAccountTool } from './editing/create-account.js';
 
 const toolRegistrars = [
 	// Resource management
@@ -66,6 +77,7 @@ const toolRegistrars = [
 	getUserContribsTool,
 	whoamiTool,
 	whoisTool,
+	whoareTool,
 	getImagesTool,
 	getImagesFromArticleTool,
 	getImageUsageTool,
@@ -83,7 +95,17 @@ const toolRegistrars = [
 
 	// Write tools
 	editTool,
-	appendTool
+	appendTool,
+	prependTool,
+	moveTool,
+	deleteTool,
+	protectTool,
+	purgeTool,
+	sendEmailTool,
+	uploadTool,
+	uploadByUrlTool,
+	addFlowTopicTool,
+	createAccountTool
 ];
 
 export function registerAllTools( server: McpServer ): RegisteredTool[] {

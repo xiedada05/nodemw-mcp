@@ -4,31 +4,29 @@ import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
-export function editTool( server: McpServer ): RegisteredTool {
+export function prependTool( server: McpServer ): RegisteredTool {
 	return server.tool(
-		'edit',
-		'Edit a wiki page (requires authentication)',
+		'prepend',
+		'Prepend content to a wiki page (requires authentication)',
 		{
-			title: z.string().describe( 'Page title to edit' ),
-			content: z.string().describe( 'New content for the page' ),
+			title: z.string().describe( 'Page title to prepend to' ),
+			content: z.string().describe( 'Content to prepend' ),
 			summary: z.string().describe( 'Edit summary' ),
-			minor: z.boolean().optional().default( false ).describe( 'Mark as minor edit' )
 		},
 		{
-			title: 'Edit page',
+			title: 'Prepend to page',
 			readOnlyHint: false,
 			destructiveHint: true
 		} as ToolAnnotations,
-		async ( params ) => handleEditTool( params )
+		async ( params ) => handlePrependTool( params )
 	);
 }
 
-async function handleEditTool(
+async function handlePrependTool(
 	params: {
 		title: string;
 		content: string;
 		summary: string;
-		minor?: boolean;
 	}
 ): Promise<CallToolResult> {
 	try {
@@ -42,15 +40,14 @@ async function handleEditTool(
 			newrevid?: number;
 		}>(
 			bot,
-			'edit',
+			'prepend',
 			params.title,
 			params.content,
-			prefixedSummary,
-			params.minor || false
+			prefixedSummary
 		);
 
 		return jsonResult(result);
 	} catch ( error ) {
-		return errorResult('Failed to edit page', error as Error);
+		return errorResult('Failed to prepend to page', error as Error);
 	}
 }
