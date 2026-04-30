@@ -1,94 +1,77 @@
 # Nodemw MCP Server
 
-A Model Context Protocol (MCP) server implementation for [nodemw](https://github.com/macbre/nodemw), a Node.js MediaWiki API client.
+A [Model Context Protocol (MCP)](https://modelcontextprotocol.org) server for [nodemw](https://github.com/macbre/nodemw), the Node.js MediaWiki API client.
 
-## Features
-
-- **Complete API Coverage**: Exposes all nodemw `Bot` class methods as MCP tools
-- **Resource Management**: Bot configurations are exposed as MCP resources
-- **Automatic Authentication**: Login state is managed internally, no credentials exposed to AI
-- **Type Safety**: Written in TypeScript with full type definitions
-
-## Installation
+## Quick Start
 
 ```bash
+# Install
 npm install
 npm run build
+
+# Connect as guest
+node dist/index.js zh.minecraft.wiki
+
+# Connect with credentials
+node dist/index.js -u myuser -p mypass mywiki.example.com
 ```
 
-## Single File Build
+## CLI Usage
 
-For closed-source distribution, you can build a minified single-file version:
+```
+nodemw-mcp-server [options] [server]
+```
+
+**Arguments**:
+
+| Option | Short | Description |
+|--------|-------|-------------|
+| `[server]` | (positional) | Target MediaWiki server, e.g. `en.wikipedia.org` |
+| `--server` | `-s` | Same as positional, explicit form |
+| `--path` | | API script path (default: auto-detect; tries `/w` then root) |
+| `--user` | `-u` | Login username |
+| `--pass` | `-p` | Login password |
+| `--dry-run` | | Dry-run mode (no actual edits) |
+
+**Examples**:
 
 ```bash
-# Build standard version (multiple files)
-npm run build
+# Guest access, auto-detect API path
+nodemw-mcp-server zh.minecraft.wiki
 
-# Build single-file bundle (includes dependencies)
-npm run build:bundle
+# Authenticated, explicit API path
+nodemw-mcp-server -u editor -p secret --path /w mywiki.example.com
 
-# Build standalone single-file version
-npm run build:standalone
+# With full URL
+nodemw-mcp-server -s https://en.wikipedia.org
 
-# Clean build artifacts
-npm run clean
+# Dry-run mode for safe testing
+nodemw-mcp-server --dry-run -u editor -p secret mywiki.example.com
 ```
 
-The single-file build outputs to `dist-bundle/index.js` (approx. 1.3MB). This file contains all dependencies bundled together, excluding Node.js built-in modules.
+## Environment Variables
 
-Usage with Claude Desktop (single-file version):
-```json
-{
-  "mcpServers": {
-    "nodemw": {
-      "command": "node",
-      "args": ["/path/to/nodemw-mcp/dist-bundle/index.js"],
-      "env": {
-        "CONFIG": "/path/to/your/config.json"
-      }
-    }
-  }
-}
-```
+All settings can be configured via environment variables. CLI arguments take precedence.
 
-## Configuration
+| Variable | Equivalent |
+|----------|------------|
+| `NODEMW_MCP_SERVER` | `--server` / positional |
+| `NODEMW_MCP_ENDPOINT_PATH` | `--path` |
+| `NODEMW_MCP_MW_USER` | `--user` / `-u` |
+| `NODEMW_MCP_MW_PASS` | `--pass` / `-p` |
 
-Create a `config.json` file in the project root (or set `CONFIG` environment variable to point to your config file):
-
-```json
-{
-  "defaultBot": "en.wikipedia.org",
-  "bots": {
-    "en.wikipedia.org": {
-      "server": "https://en.wikipedia.org",
-      "path": "/w",
-      "debug": false,
-      "username": null,
-      "password": null
-    },
-    "mywiki": {
-      "server": "https://mywiki.example.com",
-      "path": "/w",
-      "debug": false,
-      "username": "myuser",
-      "password": "${MY_PASSWORD}"  // Environment variable substitution
-    }
-  }
-}
-```
-
-## Usage with Claude Desktop
-
-Add to your Claude Desktop configuration (`claude_desktop_config.json`):
+## Usage with config files
 
 ```json
 {
   "mcpServers": {
     "nodemw": {
-      "command": "node",
-      "args": ["/path/to/nodemw-mcp/dist/index.js"],
+      "command": "npx",
+      "args": ["@xiedada/nodemw-mcp-server"],
       "env": {
-        "CONFIG": "/path/to/your/config.json"
+        "NODEMW_MCP_SERVER": "mywiki.example.com",
+        "NODEMW_MCP_MW_USER": "editor",
+        "NODEMW_MCP_MW_PASS": "secret"
       }
     }
   }
@@ -97,49 +80,45 @@ Add to your Claude Desktop configuration (`claude_desktop_config.json`):
 
 ## Available Tools
 
-### Resource Management
+### Read Operations (29 tools)
 
-- `add-bot`: Add a new bot configuration
-- `remove-bot`: Remove a bot configuration
-- `set-bot`: Switch to a different bot configuration
+`get-article`, `search`, `get-pages-in-category`, `get-categories`, `get-users`, `get-all-pages`, `get-pages-in-namespace`, `get-pages-by-prefix`, `get-pages-transcluding`, `get-article-revisions`, `get-article-categories`, `get-article-properties`, `get-article-info`, `get-user-contribs`, `whoami`, `whois`, `whoare`, `get-images`, `get-images-from-article`, `get-image-usage`, `get-image-info`, `get-log`, `expand-templates`, `parse`, `get-recent-changes`, `get-site-info`, `get-site-stats`, `get-mediawiki-version`, `get-external-links`, `get-backlinks`, `get-query-page`
 
-### Read Operations
+### Write Operations (12 tools, require authentication)
 
-- `get-article`: Get the content of a wiki page
-- `search`: Search for pages by keyword
-- `get-pages-in-category`: List all pages in a category
+`edit`, `append`, `prepend`, `move`, `delete`, `protect`, `purge`, `send-email`, `upload`, `upload-by-url`, `add-flow-topic`, `create-account`
 
-### Write Operations (Requires Authentication)
-
-- `edit`: Edit a wiki page
-- `append`: Append content to a wiki page
-
-## Testing with MCP Inspector
+## Development
 
 ```bash
-# List all tools
-npx @modelcontextprotocol/inspector --cli node dist/index.js \
-  --method tools/list
-
-# Get a page
-npx @modelcontextprotocol/inspector --cli node dist/index.js \
-  --method tools/call \
-  --tool-name get-article \
-  --tool-arg 'title=Main Page'
-
-# Search
-npx @modelcontextprotocol/inspector --cli node dist/index.js \
-  --method tools/call \
-  --tool-name search \
-  --tool-arg 'keyword=MediaWiki'
-
-# Read a resource
-npx @modelcontextprotocol/inspector --cli node dist/index.js \
-  --method resources/read \
-  --uri 'mcp://bots/en.wikipedia.org'
+npm run build        # Build dist/index.js
+npm run dev          # Watch mode
+npm run clean        # Remove dist/
+npm test             # Run tests
 ```
 
-## Copyright
-© 2025 Xie Youtian. All rights reserved.
+## License
 
-Warning: This computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.
+    Copyright (c) 2026 Xie Youtian
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    1. Redistributions of source code must retain the above copyright notice, this
+      list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+    OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+

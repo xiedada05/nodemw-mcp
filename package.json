@@ -1,6 +1,6 @@
 {
   "name": "@xiedada/nodemw-mcp-server",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "MCP server for nodemw - MediaWiki API client",
   "type": "module",
   "main": "dist/index.js",
@@ -8,18 +8,12 @@
     "nodemw-mcp-server": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "node scripts/build.js",
+    "dev": "node scripts/build.js --watch",
     "lint": "eslint src/**/*.ts",
     "test": "vitest",
     "prepare": "npm run build",
-    "debug": "ts-node --inspect-brk dist/index.js",
-    "clean": "rimraf dist dist-bundle",
-    "clean:bundle": "rimraf dist-bundle",
-    "build:single": "node scripts/build-single.js",
-    "build:bundle": "npm run build && npm run build:single",
-    "build:standalone": "npm run clean:bundle && npm run build:single",
-    "build:all": "npm run clean && npm run build && npm run build:single"
+    "clean": "rimraf dist"
   },
   "keywords": [
     "mcp",
@@ -28,7 +22,7 @@
     "wiki"
   ],
   "author": "",
-  "license": "LGPL-3.0",
+  "license": "BSD-2-Clause",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
     "nodemw": "^0.26.0",
