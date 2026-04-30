@@ -1,11 +1,5 @@
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 
-// Resource management tools
-import { addBotTool } from './meta/add-bot.js';
-import { removeBotTool } from './meta/remove-bot.js';
-import { setBotTool } from './meta/set-bot.js';
-import { quickAddBotTool } from './meta/quick-add-bot.js';
-
 // Read tools
 import { getArticleTool } from './ro/get-article.js';
 import { searchTool } from './ro/search.js';
@@ -54,12 +48,6 @@ import { addFlowTopicTool } from './editing/add-flow-topic.js';
 import { createAccountTool } from './editing/create-account.js';
 
 const toolRegistrars = [
-	// Resource management
-	addBotTool,
-	quickAddBotTool,
-	removeBotTool,
-	setBotTool,
-
 	// Read tools
 	getArticleTool,
 	searchTool,
@@ -108,13 +96,13 @@ const toolRegistrars = [
 	createAccountTool
 ];
 
-export function registerAllTools( server: McpServer ): RegisteredTool[] {
+export function registerAllTools(server: McpServer): RegisteredTool[] {
 	const registeredTools: RegisteredTool[] = [];
-	for ( const registrar of toolRegistrars ) {
+	for (const registrar of toolRegistrars) {
 		try {
-			registeredTools.push( registrar( server ) );
-		} catch ( error ) {
-			console.error( `Error registering tool: ${ ( error as Error ).message }` );
+			registeredTools.push(registrar(server));
+		} catch (error) {
+			console.error(`Error registering tool: ${(error as Error).message}`);
 		}
 	}
 	return registeredTools;
