@@ -75,63 +75,67 @@ import { uploadByUrlTool } from './editing/upload-by-url.js';
 import { addFlowTopicTool } from './editing/add-flow-topic.js';
 import { createAccountTool } from './editing/create-account.js';
 
-const toolRegistrars = [
-	// Read tools
-	getArticleTool,
-	searchTool,
-	getPagesInCategoryTool,
-	getCategoriesTool,
-	getUsersTool,
-	getAllPagesTool,
-	getPagesInNamespaceTool,
-	getPagesByPrefixTool,
-	getPagesTranscludingTool,
-	getArticleRevisionsTool,
-	getArticleCategoriesTool,
-	getArticlePropertiesTool,
-	getArticleInfoTool,
-	getUserContribsTool,
-	whoamiTool,
-	whoisTool,
-	whoareTool,
-	getImagesTool,
-	getImagesFromArticleTool,
-	getImageUsageTool,
-	getImageInfoTool,
-	getLogTool,
-	expandTemplatesTool,
-	parseTool,
-	getRecentChangesTool,
-	getSiteInfoTool,
-	getSiteStatsTool,
-	getMediaWikiVersionTool,
-	getQueryPageTool,
-	getExternalLinksTool,
-	getBacklinksTool,
-
-	// Write tools
-	editTool,
-	appendTool,
-	prependTool,
-	moveTool,
-	deleteTool,
-	protectTool,
-	purgeTool,
-	sendEmailTool,
-	uploadTool,
-	uploadByUrlTool,
-	addFlowTopicTool,
-	createAccountTool
+const readToolRegistrars = [
+    getArticleTool,
+    searchTool,
+    getPagesInCategoryTool,
+    getCategoriesTool,
+    getUsersTool,
+    getAllPagesTool,
+    getPagesInNamespaceTool,
+    getPagesByPrefixTool,
+    getPagesTranscludingTool,
+    getArticleRevisionsTool,
+    getArticleCategoriesTool,
+    getArticlePropertiesTool,
+    getArticleInfoTool,
+    getUserContribsTool,
+    whoamiTool,
+    whoisTool,
+    whoareTool,
+    getImagesTool,
+    getImagesFromArticleTool,
+    getImageUsageTool,
+    getImageInfoTool,
+    getLogTool,
+    expandTemplatesTool,
+    parseTool,
+    getRecentChangesTool,
+    getSiteInfoTool,
+    getSiteStatsTool,
+    getMediaWikiVersionTool,
+    getQueryPageTool,
+    getExternalLinksTool,
+    getBacklinksTool,
 ];
 
-export function registerAllTools(server: McpServer): RegisteredTool[] {
-	const registeredTools: RegisteredTool[] = [];
-	for (const registrar of toolRegistrars) {
-		try {
-			registeredTools.push(registrar(server));
-		} catch (error) {
-			console.error(`Error registering tool: ${(error as Error).message}`);
-		}
-	}
-	return registeredTools;
+const writeToolRegistrars = [
+    editTool,
+    appendTool,
+    prependTool,
+    moveTool,
+    deleteTool,
+    protectTool,
+    purgeTool,
+    sendEmailTool,
+    uploadTool,
+    uploadByUrlTool,
+    addFlowTopicTool,
+    createAccountTool,
+];
+
+export function registerAllTools(server: McpServer, includeWriteTools = true): RegisteredTool[] {
+    const registrars = includeWriteTools
+        ? [...readToolRegistrars, ...writeToolRegistrars]
+        : readToolRegistrars;
+
+    const registeredTools: RegisteredTool[] = [];
+    for (const registrar of registrars) {
+        try {
+            registeredTools.push(registrar(server));
+        } catch (error) {
+            console.error(`Error registering tool: ${(error as Error).message}`);
+        }
+    }
+    return registeredTools;
 }

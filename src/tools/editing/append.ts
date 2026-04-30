@@ -33,44 +33,44 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function appendTool( server: McpServer ): RegisteredTool {
-	return server.tool(
-		'append',
-		'Append content to a wiki page (requires authentication)',
-		{
-			title: z.string().describe( 'Page title' ),
-			content: z.string().describe( 'Content to append' ),
-			summary: z.string().describe( 'Edit summary' )
-		},
-		{
-			title: 'Append to page',
-			readOnlyHint: false,
-			destructiveHint: true
-		} as ToolAnnotations,
-		async ( params ) => handleAppendTool( params )
-	);
+    return server.tool(
+        'append',
+        'Append content to a wiki page (requires authentication)',
+        {
+            title: z.string().describe( 'Page title' ),
+            content: z.string().describe( 'Content to append' ),
+            summary: z.string().describe( 'Edit summary' )
+        },
+        {
+            title: 'Append to page',
+            readOnlyHint: false,
+            destructiveHint: true
+        } as ToolAnnotations,
+        async ( params ) => handleAppendTool( params )
+    );
 }
 
 async function handleAppendTool(
-	params: {
-		title: string;
-		content: string;
-		summary: string;
-	}
+    params: {
+        title: string;
+        content: string;
+        summary: string;
+    }
 ): Promise<CallToolResult> {
-	try {
-		const bot = await getBot();
-		const prefixedSummary = `[nodemw-mcp] ${params.summary}`;
+    try {
+        const bot = await getBot();
+        const prefixedSummary = `[nodemw-mcp] ${params.summary}`;
 
-		await promisifyBotMethod<void>(
-			bot,
-			'append',
-			params.title,
-			params.content,
-			prefixedSummary
-		);
+        await promisifyBotMethod<void>(
+            bot,
+            'append',
+            params.title,
+            params.content,
+            prefixedSummary
+        );
 
-		return jsonResult({ success: true, title: params.title });
-	} catch ( error ) {
-		return errorResult('Failed to append to page', error as Error);
-	}
+        return jsonResult({ success: true, title: params.title });
+    } catch ( error ) {
+        return errorResult('Failed to append to page', error as Error);
+    }
 }

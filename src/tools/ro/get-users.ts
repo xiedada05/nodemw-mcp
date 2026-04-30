@@ -34,46 +34,46 @@ import { jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface UserInfo extends Record<string, any> {
-	name: string;
-	userid: number;
+    name: string;
+    userid: number;
 }
 
 export function getUsersTool( server: McpServer ): RegisteredTool {
-	return server.tool(
-		'get-users',
-		'Get all users matching a prefix',
-		{
-			prefix: z.string().optional().default('').describe('Prefix to filter usernames'),
-			onlyWithEdits: z.boolean().optional().default(false).describe('Only include users with at least one edit')
-		},
-		{
-			title: 'Get users',
-			readOnlyHint: true,
-			destructiveHint: false
-		} as ToolAnnotations,
-		async ( { prefix, onlyWithEdits } ) => handleGetUsersTool( prefix, onlyWithEdits )
-	);
+    return server.tool(
+        'get-users',
+        'Get all users matching a prefix',
+        {
+            prefix: z.string().optional().default('').describe('Prefix to filter usernames'),
+            onlyWithEdits: z.boolean().optional().default(false).describe('Only include users with at least one edit')
+        },
+        {
+            title: 'Get users',
+            readOnlyHint: true,
+            destructiveHint: false
+        } as ToolAnnotations,
+        async ( { prefix, onlyWithEdits } ) => handleGetUsersTool( prefix, onlyWithEdits )
+    );
 }
 
 async function handleGetUsersTool(
-	prefix: string,
-	onlyWithEdits: boolean
+    prefix: string,
+    onlyWithEdits: boolean
 ): Promise<CallToolResult> {
-	try {
-		const bot = await getBot();
-		const results = await promisifyBotMethod<UserInfo[]>(
-			bot,
-			'getUsers',
-			{ prefix, witheditsonly: onlyWithEdits }
-		);
+    try {
+        const bot = await getBot();
+        const results = await promisifyBotMethod<UserInfo[]>(
+            bot,
+            'getUsers',
+            { prefix, witheditsonly: onlyWithEdits }
+        );
 
-		return jsonResult({
-			prefix,
-			onlyWithEdits,
-			users: results,
-			count: results.length
-		});
-	} catch ( error ) {
-		return errorResult('Failed to get users', error as Error);
-	}
+        return jsonResult({
+            prefix,
+            onlyWithEdits,
+            users: results,
+            count: results.length
+        });
+    } catch ( error ) {
+        return errorResult('Failed to get users', error as Error);
+    }
 }

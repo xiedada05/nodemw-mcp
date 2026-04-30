@@ -34,44 +34,44 @@ import { jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface PageInNamespace extends Record<string, any> {
-	title: string;
-	pageid: number;
-	ns: number;
+    title: string;
+    pageid: number;
+    ns: number;
 }
 
 export function getPagesInNamespaceTool( server: McpServer ): RegisteredTool {
-	return server.tool(
-		'get-pages-in-namespace',
-		'Get all non-redirect pages in a specific namespace',
-		{
-			namespace: z.number().describe('Namespace number to filter pages')
-		},
-		{
-			title: 'Get pages in namespace',
-			readOnlyHint: true,
-			destructiveHint: false
-		} as ToolAnnotations,
-		async ( { namespace } ) => handleGetPagesInNamespaceTool( namespace )
-	);
+    return server.tool(
+        'get-pages-in-namespace',
+        'Get all non-redirect pages in a specific namespace',
+        {
+            namespace: z.number().describe('Namespace number to filter pages')
+        },
+        {
+            title: 'Get pages in namespace',
+            readOnlyHint: true,
+            destructiveHint: false
+        } as ToolAnnotations,
+        async ( { namespace } ) => handleGetPagesInNamespaceTool( namespace )
+    );
 }
 
 async function handleGetPagesInNamespaceTool(
-	namespace: number
+    namespace: number
 ): Promise<CallToolResult> {
-	try {
-		const bot = await getBot();
-		const results = await promisifyBotMethod<PageInNamespace[]>(
-			bot,
-			'getPagesInNamespace',
-			namespace
-		);
+    try {
+        const bot = await getBot();
+        const results = await promisifyBotMethod<PageInNamespace[]>(
+            bot,
+            'getPagesInNamespace',
+            namespace
+        );
 
-		return jsonResult({
-			namespace,
-			pages: results,
-			count: results.length
-		});
-	} catch ( error ) {
-		return errorResult('Failed to get pages in namespace', error as Error);
-	}
+        return jsonResult({
+            namespace,
+            pages: results,
+            count: results.length
+        });
+    } catch ( error ) {
+        return errorResult('Failed to get pages in namespace', error as Error);
+    }
 }

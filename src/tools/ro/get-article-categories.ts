@@ -33,38 +33,38 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function getArticleCategoriesTool( server: McpServer ): RegisteredTool {
-	return server.tool(
-		'get-article-categories',
-		'Get all categories that an article belongs to',
-		{
-			title: z.union([z.string(), z.number()]).describe('Article title or page ID')
-		},
-		{
-			title: 'Get article categories',
-			readOnlyHint: true,
-			destructiveHint: false
-		} as ToolAnnotations,
-		async ( { title } ) => handleGetArticleCategoriesTool( title )
-	);
+    return server.tool(
+        'get-article-categories',
+        'Get all categories that an article belongs to',
+        {
+            title: z.union([z.string(), z.number()]).describe('Article title or page ID')
+        },
+        {
+            title: 'Get article categories',
+            readOnlyHint: true,
+            destructiveHint: false
+        } as ToolAnnotations,
+        async ( { title } ) => handleGetArticleCategoriesTool( title )
+    );
 }
 
 async function handleGetArticleCategoriesTool(
-	title: string | number
+    title: string | number
 ): Promise<CallToolResult> {
-	try {
-		const bot = await getBot();
-		const categories = await promisifyBotMethod<string[]>(
-			bot,
-			'getArticleCategories',
-			title
-		);
+    try {
+        const bot = await getBot();
+        const categories = await promisifyBotMethod<string[]>(
+            bot,
+            'getArticleCategories',
+            title
+        );
 
-		return jsonResult({
-			title,
-			categories,
-			count: categories.length
-		});
-	} catch ( error ) {
-		return errorResult('Failed to get article categories', error as Error);
-	}
+        return jsonResult({
+            title,
+            categories,
+            count: categories.length
+        });
+    } catch ( error ) {
+        return errorResult('Failed to get article categories', error as Error);
+    }
 }

@@ -30,132 +30,139 @@ import Bot from 'nodemw';
 import { USER_AGENT } from '../server.js';
 
 export interface ServerConfig {
-	server: string;
-	path: string;
-	protocol?: string;
-	port?: number;
-	proxy?: string;
-	userAgent?: string;
-	concurrency?: number;
-	debug?: boolean;
-	username?: string;
-	password?: string;
-	token?: string;
-	domain?: string;
-	dryRun?: boolean;
+    server: string;
+    path: string;
+    protocol?: string;
+    port?: number;
+    proxy?: string;
+    userAgent?: string;
+    concurrency?: number;
+    debug?: boolean;
+    username?: string;
+    password?: string;
+    token?: string;
+    domain?: string;
+    dryRun?: boolean;
 }
 
 let botInstance: Bot | null = null;
 let serverConfig: ServerConfig | null = null;
+let authenticated = false;
 
 export function initServerConfig(config: ServerConfig): void {
-	serverConfig = config;
+    serverConfig = config;
 }
 
 function createBotFromConfig(config: ServerConfig): Bot {
-	const {
-		server,
-		path,
-		protocol,
-		port,
-		proxy,
-		userAgent,
-		concurrency,
-		debug,
-		username,
-		password,
-		domain,
-		dryRun
-	} = config;
+    const {
+        server,
+        path,
+        protocol,
+        port,
+        proxy,
+        userAgent,
+        concurrency,
+        debug,
+        username,
+        password,
+        domain,
+        dryRun
+    } = config;
 
-	return new Bot({
-		server,
-		protocol: protocol || 'https',
-		port,
-		path,
-		proxy,
-		userAgent: userAgent || USER_AGENT,
-		concurrency,
-		debug,
-		username: username || undefined,
-		password: password || undefined,
-		domain,
-		// @ts-expect-error: dryRun is supported by nodemw at runtime but missing from BotOptions types
-		dryRun
-	});
+    return new Bot({
+        server,
+        protocol: protocol || 'https',
+        port,
+        path,
+        proxy,
+        userAgent: userAgent || USER_AGENT,
+        concurrency,
+        debug,
+        username: username || undefined,
+        password: password || undefined,
+        domain,
+        // @ts-expect-error: dryRun is supported by nodemw at runtime but missing from BotOptions types
+        dryRun
+    });
 }
 
 async function testApiConnection(bot: Bot): Promise<boolean> {
-	try {
-		await promisifyBotMethod(bot, 'getSiteInfo', ['general']);
-		return true;
-	} catch {
-		return false;
-	}
+    try {
+        await promisifyBotMethod(bot, 'getSiteInfo', ['general']);
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 export async function autoDetectPath(baseConfig: ServerConfig): Promise<string> {
-	// nodemw constructs URL as ${server}${path}/api.php — so /w means /w/api.php, '' means /api.php
-	const pathsToTry = ['/w', ''];
-	for (const path of pathsToTry) {
-		const testConfig = { ...baseConfig, path };
-		const bot = createBotFromConfig(testConfig);
-		if (await testApiConnection(bot)) {
-			return path;
-		}
-	}
-	throw new Error(
-		'Could not auto-detect MediaWiki API path. ' +
-		'Tried /w/api.php and /api.php. ' +
-		'Please specify --path explicitly (e.g., --path /w or --path "" for root).'
-	);
+    // nodemw constructs URL as ${server}${path}/api.php — so /w means /w/api.php, '' means /api.php
+    const pathsToTry = ['/w', ''];
+    for (const path of pathsToTry) {
+        const testConfig = { ...baseConfig, path };
+        const bot = createBotFromConfig(testConfig);
+        if (await testApiConnection(bot)) {
+            return path;
+        }
+    }
+    throw new Error(
+        'Could not auto-detect MediaWiki API path. ' +
+        'Tried /w/api.php and /api.php. ' +
+        'Please specify --path explicitly (e.g., --path /w or --path "" for root).'
+    );
 }
 
 export async function initBot(config: ServerConfig): Promise<Bot> {
-	botInstance = createBotFromConfig(config);
+    botInstance = createBotFromConfig(config);
 
-	const { username, password } = config;
-	if (username && password) {
-		await new Promise<void>((resolve, reject) => {
-			botInstance!.logIn((err: Error | null) => {
-				if (err) {
-					reject(new Error(`Login failed for user '${username}': ${err.message}`));
-				} else {
-					resolve();
-				}
-			});
-		});
-	}
+    const { username, password } = config;
+    if (username && password) {
+        await new Promise<void>((resolve, reject) => {
+            botInstance!.logIn((err: Error | null) => {
+                if (err) {
+                    reject(new Error(`Login failed for user '${username}': ${err.message}`));
+                } else {
+                    authenticated = true;
+                    resolve();
+                }
+            });
+        });
+    }
 
-	return botInstance;
+    return botInstance;
 }
 
 export function getBot(): Bot {
-	if (!botInstance) {
-		throw new Error('Bot not initialized. Server must be started first.');
-	}
-	return botInstance;
+    if (!botInstance) {
+        throw new Error('Bot not initialized. Server must be started first.');
+    }
+    return botInstance;
 }
 
 export function clearBotCache(): void {
-	botInstance = null;
+    botInstance = null;
+    authenticated = false;
+}
+
+export function isAuthenticated(): boolean {
+    return authenticated;
 }
 
 export function promisifyBotMethod<T>(
-	bot: Bot,
-	method: string,
-	...args: unknown[]
+    bot: Bot,
+    method: string,
+    ...args: unknown[]
 ): Promise<T> {
-	return new Promise((resolve, reject) => {
-		const callback = (err: Error | null, result: T) => {
-			if (err) {
-				reject(err);
-			} else {
-				resolve(result);
-			}
-		};
+    return new Promise((resolve, reject) => {
+        const callback = (err: Error | null, result: T) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        };
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(bot as any)[method](...args, callback);
-	});
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (bot as any)[method](...args, callback);
+    });
 }

@@ -34,48 +34,48 @@ import { jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface PageInCategory extends Record<string, any> {
-	title: string;
-	pageid?: number;
-	ns?: number;
+    title: string;
+    pageid?: number;
+    ns?: number;
 }
 
 export function getPagesInCategoryTool( server: McpServer ): RegisteredTool {
-	return server.tool(
-		'get-pages-in-category',
-		'Get all pages in a category',
-		{
-			category: z.string().describe( 'Category name (with or without Category: prefix)' )
-		},
-		{
-			title: 'Get pages in category',
-			readOnlyHint: true,
-			destructiveHint: false
-		} as ToolAnnotations,
-		async ( { category } ) => handleGetPagesInCategoryTool( category )
-	);
+    return server.tool(
+        'get-pages-in-category',
+        'Get all pages in a category',
+        {
+            category: z.string().describe( 'Category name (with or without Category: prefix)' )
+        },
+        {
+            title: 'Get pages in category',
+            readOnlyHint: true,
+            destructiveHint: false
+        } as ToolAnnotations,
+        async ( { category } ) => handleGetPagesInCategoryTool( category )
+    );
 }
 
 async function handleGetPagesInCategoryTool(
-	category: string
+    category: string
 ): Promise<CallToolResult> {
-	try {
-		const bot = await getBot();
+    try {
+        const bot = await getBot();
 
-		// Remove "Category:" prefix if present
-		const cleanCategory = category.replace( /^Category:/i, '' );
+        // Remove "Category:" prefix if present
+        const cleanCategory = category.replace( /^Category:/i, '' );
 
-		const results = await promisifyBotMethod<PageInCategory[]>(
-			bot,
-			'getPagesInCategory',
-			cleanCategory
-		);
+        const results = await promisifyBotMethod<PageInCategory[]>(
+            bot,
+            'getPagesInCategory',
+            cleanCategory
+        );
 
-		return jsonResult({
-			category: cleanCategory,
-			pages: results,
-			count: results.length
-		});
-	} catch ( error ) {
-		return errorResult('Failed to get pages in category', error as Error);
-	}
+        return jsonResult({
+            category: cleanCategory,
+            pages: results,
+            count: results.length
+        });
+    } catch ( error ) {
+        return errorResult('Failed to get pages in category', error as Error);
+    }
 }

@@ -33,34 +33,34 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function getSiteInfoTool( server: McpServer ): RegisteredTool {
-	return server.tool(
-		'get-site-info',
-		'Get site information from MediaWiki',
-		{
-			properties: z.array(z.string()).describe('List of site information properties to retrieve')
-		},
-		{
-			title: 'Get site info',
-			readOnlyHint: true,
-			destructiveHint: false
-		} as ToolAnnotations,
-		async ( { properties } ) => handleGetSiteInfoTool( properties )
-	);
+    return server.tool(
+        'get-site-info',
+        'Get site information from MediaWiki',
+        {
+            properties: z.array(z.string()).describe('List of site information properties to retrieve')
+        },
+        {
+            title: 'Get site info',
+            readOnlyHint: true,
+            destructiveHint: false
+        } as ToolAnnotations,
+        async ( { properties } ) => handleGetSiteInfoTool( properties )
+    );
 }
 
 async function handleGetSiteInfoTool(
-	properties: string[]
+    properties: string[]
 ): Promise<CallToolResult> {
-	try {
-		const bot = await getBot();
-		const info = await promisifyBotMethod<Record<string, unknown>>(
-			bot,
-			'getSiteInfo',
-			properties
-		);
+    try {
+        const bot = await getBot();
+        const info = await promisifyBotMethod<Record<string, unknown>>(
+            bot,
+            'getSiteInfo',
+            properties
+        );
 
-		return jsonResult(info || {});
-	} catch ( error ) {
-		return errorResult('Failed to get site info', error as Error);
-	}
+        return jsonResult(info || {});
+    } catch ( error ) {
+        return errorResult('Failed to get site info', error as Error);
+    }
 }

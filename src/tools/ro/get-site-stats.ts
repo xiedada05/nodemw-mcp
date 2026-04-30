@@ -33,40 +33,40 @@ import { jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface SiteStats extends Record<string, any> {
-	pages: number;
-	articles: number;
-	edits: number;
-	images: number;
-	users: number;
-	activeusers: number;
-	admins: number;
-	jobs: number;
+    pages: number;
+    articles: number;
+    edits: number;
+    images: number;
+    users: number;
+    activeusers: number;
+    admins: number;
+    jobs: number;
 }
 
 export function getSiteStatsTool( server: McpServer ): RegisteredTool {
-	return server.tool(
-		'get-site-stats',
-		'Get site statistics',
-		{},
-		{
-			title: 'Get site stats',
-			readOnlyHint: true,
-			destructiveHint: false
-		} as ToolAnnotations,
-		async () => handleGetSiteStatsTool()
-	);
+    return server.tool(
+        'get-site-stats',
+        'Get site statistics',
+        {},
+        {
+            title: 'Get site stats',
+            readOnlyHint: true,
+            destructiveHint: false
+        } as ToolAnnotations,
+        async () => handleGetSiteStatsTool()
+    );
 }
 
 async function handleGetSiteStatsTool(): Promise<CallToolResult> {
-	try {
-		const bot = await getBot();
-		const stats = await promisifyBotMethod<SiteStats>(
-			bot,
-			'getSiteStats'
-		);
+    try {
+        const bot = await getBot();
+        const stats = await promisifyBotMethod<SiteStats>(
+            bot,
+            'getSiteStats'
+        );
 
-		return jsonResult(stats);
-	} catch ( error ) {
-		return errorResult('Failed to get site stats', error as Error);
-	}
+        return jsonResult(stats);
+    } catch ( error ) {
+        return errorResult('Failed to get site stats', error as Error);
+    }
 }

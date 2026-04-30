@@ -33,36 +33,36 @@ import { jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface UserInfo extends Record<string, any> {
-	name: string;
-	id: number;
-	groups: string[];
-	rights: string[];
+    name: string;
+    id: number;
+    groups: string[];
+    rights: string[];
 }
 
 export function whoamiTool( server: McpServer ): RegisteredTool {
-	return server.tool(
-		'whoami',
-		'Get information about the currently logged in user',
-		{},
-		{
-			title: 'Who am I',
-			readOnlyHint: true,
-			destructiveHint: false
-		} as ToolAnnotations,
-		async () => handleWhoamiTool()
-	);
+    return server.tool(
+        'whoami',
+        'Get information about the currently logged in user',
+        {},
+        {
+            title: 'Who am I',
+            readOnlyHint: true,
+            destructiveHint: false
+        } as ToolAnnotations,
+        async () => handleWhoamiTool()
+    );
 }
 
 async function handleWhoamiTool(): Promise<CallToolResult> {
-	try {
-		const bot = await getBot();
-		const userInfo = await promisifyBotMethod<UserInfo>(
-			bot,
-			'whoami'
-		);
+    try {
+        const bot = await getBot();
+        const userInfo = await promisifyBotMethod<UserInfo>(
+            bot,
+            'whoami'
+        );
 
-		return jsonResult(userInfo);
-	} catch ( error ) {
-		return errorResult('Failed to get current user info', error as Error);
-	}
+        return jsonResult(userInfo);
+    } catch ( error ) {
+        return errorResult('Failed to get current user info', error as Error);
+    }
 }

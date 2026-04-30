@@ -34,43 +34,43 @@ import { jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface Backlink extends Record<string, any> {
-	title: string;
-	pageid: number;
+    title: string;
+    pageid: number;
 }
 
 export function getBacklinksTool( server: McpServer ): RegisteredTool {
-	return server.tool(
-		'get-backlinks',
-		'Get all backlinks to a specific page',
-		{
-			title: z.string().describe('Target page title to find backlinks for')
-		},
-		{
-			title: 'Get backlinks',
-			readOnlyHint: true,
-			destructiveHint: false
-		} as ToolAnnotations,
-		async ( { title } ) => handleGetBacklinksTool( title )
-	);
+    return server.tool(
+        'get-backlinks',
+        'Get all backlinks to a specific page',
+        {
+            title: z.string().describe('Target page title to find backlinks for')
+        },
+        {
+            title: 'Get backlinks',
+            readOnlyHint: true,
+            destructiveHint: false
+        } as ToolAnnotations,
+        async ( { title } ) => handleGetBacklinksTool( title )
+    );
 }
 
 async function handleGetBacklinksTool(
-	title: string
+    title: string
 ): Promise<CallToolResult> {
-	try {
-		const bot = await getBot();
-		const backlinks = await promisifyBotMethod<Backlink[]>(
-			bot,
-			'getBacklinks',
-			title
-		);
+    try {
+        const bot = await getBot();
+        const backlinks = await promisifyBotMethod<Backlink[]>(
+            bot,
+            'getBacklinks',
+            title
+        );
 
-		return jsonResult({
-			target: title,
-			backlinks,
-			count: backlinks.length
-		});
-	} catch ( error ) {
-		return errorResult('Failed to get backlinks', error as Error);
-	}
+        return jsonResult({
+            target: title,
+            backlinks,
+            count: backlinks.length
+        });
+    } catch ( error ) {
+        return errorResult('Failed to get backlinks', error as Error);
+    }
 }
