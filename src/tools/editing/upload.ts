@@ -33,7 +33,7 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function uploadTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'upload',
         'Upload a file to wiki (requires authentication)',
         {
@@ -48,6 +48,8 @@ export function uploadTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleUploadTool( params )
     );
+    tool.update({ outputSchema: {} });
+    return tool;
 }
 
 async function handleUploadTool(

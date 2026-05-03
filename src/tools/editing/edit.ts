@@ -33,7 +33,7 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function editTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'edit',
         'Edit a wiki page (requires authentication)',
         {
@@ -49,6 +49,8 @@ export function editTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleEditTool( params )
     );
+    tool.update({ outputSchema: {} });
+    return tool;
 }
 
 async function handleEditTool(

@@ -33,7 +33,7 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function getArticleCategoriesTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-article-categories',
         'Get all categories that an article belongs to',
         {
@@ -46,6 +46,8 @@ export function getArticleCategoriesTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { title } ) => handleGetArticleCategoriesTool( title )
     );
+    tool.update({ outputSchema: { title: z.string(), categories: z.array(z.record(z.unknown())), count: z.number() } });
+    return tool;
 }
 
 async function handleGetArticleCategoriesTool(

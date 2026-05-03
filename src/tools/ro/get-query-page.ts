@@ -39,7 +39,7 @@ interface QueryPageResult extends Record<string, any> {
 }
 
 export function getQueryPageTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-query-page',
         'Get results from a query page (special page)',
         {
@@ -52,6 +52,8 @@ export function getQueryPageTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { name } ) => handleGetQueryPageTool( name )
     );
+    tool.update({ outputSchema: { name: z.string(), results: z.array(z.record(z.unknown())), count: z.number() } });
+    return tool;
 }
 
 async function handleGetQueryPageTool(

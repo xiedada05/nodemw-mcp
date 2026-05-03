@@ -33,7 +33,7 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function appendTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'append',
         'Append content to a wiki page (requires authentication)',
         {
@@ -48,6 +48,8 @@ export function appendTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleAppendTool( params )
     );
+    tool.update({ outputSchema: { success: z.boolean(), title: z.string() } });
+    return tool;
 }
 
 async function handleAppendTool(

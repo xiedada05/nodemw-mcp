@@ -38,7 +38,7 @@ interface PageProperties extends Record<string, any> {
 }
 
 export function getArticlePropertiesTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-article-properties',
         'Get page properties for a wiki article',
         {
@@ -51,6 +51,8 @@ export function getArticlePropertiesTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { title } ) => handleGetArticlePropertiesTool( title )
     );
+    tool.update({ outputSchema: { title: z.string(), properties: z.record(z.unknown()) } });
+    return tool;
 }
 
 async function handleGetArticlePropertiesTool(

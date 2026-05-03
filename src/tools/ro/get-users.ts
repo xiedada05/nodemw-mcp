@@ -39,7 +39,7 @@ interface UserInfo extends Record<string, any> {
 }
 
 export function getUsersTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-users',
         'Get all users matching a prefix',
         {
@@ -53,6 +53,8 @@ export function getUsersTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { prefix, onlyWithEdits } ) => handleGetUsersTool( prefix, onlyWithEdits )
     );
+    tool.update({ outputSchema: { prefix: z.string(), onlyWithEdits: z.boolean(), users: z.array(z.record(z.unknown())), count: z.number() } });
+    return tool;
 }
 
 async function handleGetUsersTool(

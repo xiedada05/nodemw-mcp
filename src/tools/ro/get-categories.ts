@@ -33,7 +33,7 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function getCategoriesTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-categories',
         'Get all categories matching a prefix',
         {
@@ -46,6 +46,8 @@ export function getCategoriesTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { prefix } ) => handleGetCategoriesTool( prefix )
     );
+    tool.update({ outputSchema: { prefix: z.string(), categories: z.array(z.record(z.unknown())), count: z.number() } });
+    return tool;
 }
 
 async function handleGetCategoriesTool(

@@ -44,7 +44,7 @@ interface SiteStats extends Record<string, any> {
 }
 
 export function getSiteStatsTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-site-stats',
         'Get site statistics',
         {},
@@ -55,6 +55,8 @@ export function getSiteStatsTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async () => handleGetSiteStatsTool()
     );
+    tool.update({ outputSchema: {} });
+    return tool;
 }
 
 async function handleGetSiteStatsTool(): Promise<CallToolResult> {

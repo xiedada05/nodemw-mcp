@@ -40,7 +40,7 @@ interface PageInCategory extends Record<string, any> {
 }
 
 export function getPagesInCategoryTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-pages-in-category',
         'Get all pages in a category',
         {
@@ -53,6 +53,8 @@ export function getPagesInCategoryTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { category } ) => handleGetPagesInCategoryTool( category )
     );
+    tool.update({ outputSchema: { category: z.string(), pages: z.array(z.record(z.unknown())), count: z.number() } });
+    return tool;
 }
 
 async function handleGetPagesInCategoryTool(

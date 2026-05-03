@@ -33,7 +33,7 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function sendEmailTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'send-email',
         'Send email to a wiki user (requires authentication)',
         {
@@ -48,6 +48,8 @@ export function sendEmailTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleSendEmailTool( params )
     );
+    tool.update({ outputSchema: {} });
+    return tool;
 }
 
 async function handleSendEmailTool(

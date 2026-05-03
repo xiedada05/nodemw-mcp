@@ -33,7 +33,7 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function createAccountTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'create-account',
         'Create a new MediaWiki user account (requires authentication)',
         {
@@ -47,6 +47,8 @@ export function createAccountTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleCreateAccountTool( params )
     );
+    tool.update({ outputSchema: {} });
+    return tool;
 }
 
 async function handleCreateAccountTool(

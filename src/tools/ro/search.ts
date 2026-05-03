@@ -41,7 +41,7 @@ interface SearchResult extends Record<string, any> {
 }
 
 export function searchTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'search',
         'Search for wiki pages by keyword',
         {
@@ -55,6 +55,8 @@ export function searchTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { keyword, limit } ) => handleSearchTool( keyword, limit )
     );
+    tool.update({ outputSchema: { total: z.number(), limit: z.number(), keyword: z.string(), results: z.array(z.record(z.unknown())) } });
+    return tool;
 }
 
 async function handleSearchTool(

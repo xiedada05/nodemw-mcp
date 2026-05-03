@@ -40,7 +40,7 @@ interface PageByPrefix extends Record<string, any> {
 }
 
 export function getPagesByPrefixTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-pages-by-prefix',
         'Get pages starting with a specific prefix',
         {
@@ -53,6 +53,8 @@ export function getPagesByPrefixTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { prefix } ) => handleGetPagesByPrefixTool( prefix )
     );
+    tool.update({ outputSchema: { prefix: z.string(), pages: z.array(z.record(z.unknown())), count: z.number() } });
+    return tool;
 }
 
 async function handleGetPagesByPrefixTool(

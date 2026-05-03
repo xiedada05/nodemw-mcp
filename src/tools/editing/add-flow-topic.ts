@@ -33,7 +33,7 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function addFlowTopicTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'add-flow-topic',
         'Add a new Flow topic to a wiki page (requires authentication)',
         {
@@ -48,6 +48,8 @@ export function addFlowTopicTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleAddFlowTopicTool( params )
     );
+    tool.update({ outputSchema: {} });
+    return tool;
 }
 
 async function handleAddFlowTopicTool(

@@ -42,7 +42,7 @@ interface Revision extends Record<string, any> {
 }
 
 export function getArticleRevisionsTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-article-revisions',
         'Get all revisions of a wiki article',
         {
@@ -55,6 +55,8 @@ export function getArticleRevisionsTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { title } ) => handleGetArticleRevisionsTool( title )
     );
+    tool.update({ outputSchema: { title: z.string(), revisions: z.array(z.record(z.unknown())), count: z.number() } });
+    return tool;
 }
 
 async function handleGetArticleRevisionsTool(

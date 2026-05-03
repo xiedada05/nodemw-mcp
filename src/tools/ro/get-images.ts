@@ -40,7 +40,7 @@ interface Image extends Record<string, any> {
 }
 
 export function getImagesTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-images',
         'Get list of images starting from a specific name',
         {
@@ -54,6 +54,8 @@ export function getImagesTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { startFrom, limit } ) => handleGetImagesTool( startFrom, limit )
     );
+    tool.update({ outputSchema: { total: z.number(), limit: z.number(), startFrom: z.string(), images: z.array(z.record(z.unknown())) } });
+    return tool;
 }
 
 async function handleGetImagesTool(

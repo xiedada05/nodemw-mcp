@@ -41,7 +41,7 @@ interface UserContrib extends Record<string, any> {
 }
 
 export function getUserContribsTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-user-contribs',
         'Get contributions made by a specific user',
         {
@@ -56,6 +56,8 @@ export function getUserContribsTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { username, namespace, limit } ) => handleGetUserContribsTool( username, namespace, limit )
     );
+    tool.update({ outputSchema: { username: z.string(), namespace: z.number(), limit: z.number(), total: z.number(), displayed: z.number(), contributions: z.array(z.record(z.unknown())) } });
+    return tool;
 }
 
 async function handleGetUserContribsTool(

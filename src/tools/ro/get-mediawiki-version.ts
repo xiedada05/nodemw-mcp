@@ -32,7 +32,7 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function getMediaWikiVersionTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-mediawiki-version',
         'Get MediaWiki version running on the server',
         {},
@@ -43,6 +43,8 @@ export function getMediaWikiVersionTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async () => handleGetMediaWikiVersionTool()
     );
+    tool.update({ outputSchema: { version: z.string() } });
+    return tool;
 }
 
 async function handleGetMediaWikiVersionTool(): Promise<CallToolResult> {

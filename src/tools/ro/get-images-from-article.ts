@@ -39,7 +39,7 @@ interface ArticleImage extends Record<string, any> {
 }
 
 export function getImagesFromArticleTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-images-from-article',
         'Get all images embedded in a specific article',
         {
@@ -52,6 +52,8 @@ export function getImagesFromArticleTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { title } ) => handleGetImagesFromArticleTool( title )
     );
+    tool.update({ outputSchema: { title: z.string(), images: z.array(z.record(z.unknown())), count: z.number() } });
+    return tool;
 }
 
 async function handleGetImagesFromArticleTool(

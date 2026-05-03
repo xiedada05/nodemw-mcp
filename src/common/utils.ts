@@ -59,7 +59,8 @@ export function jsonResult(data: unknown): CallToolResult {
         content: [{
             type: 'text',
             text: JSON.stringify(data, null, 2)
-        }]
+        }],
+        structuredContent: data as Record<string, unknown>
     };
 }
 

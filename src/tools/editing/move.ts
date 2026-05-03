@@ -33,7 +33,7 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function moveTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'move',
         'Move (rename) a wiki page (requires authentication)',
         {
@@ -48,6 +48,8 @@ export function moveTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleMoveTool( params )
     );
+    tool.update({ outputSchema: {} });
+    return tool;
 }
 
 async function handleMoveTool(

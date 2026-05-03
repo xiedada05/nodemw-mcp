@@ -40,7 +40,7 @@ interface ArticleInfo extends Record<string, any> {
 }
 
 export function getArticleInfoTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-article-info',
         'Get detailed information about one or more articles',
         {
@@ -58,6 +58,8 @@ export function getArticleInfoTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { title, properties } ) => handleGetArticleInfoTool( title, properties )
     );
+    tool.update({ outputSchema: { title: z.string(), results: z.array(z.record(z.unknown())), count: z.number() } });
+    return tool;
 }
 
 async function handleGetArticleInfoTool(

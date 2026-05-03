@@ -39,7 +39,7 @@ interface Backlink extends Record<string, any> {
 }
 
 export function getBacklinksTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-backlinks',
         'Get all backlinks to a specific page',
         {
@@ -52,6 +52,8 @@ export function getBacklinksTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { title } ) => handleGetBacklinksTool( title )
     );
+    tool.update({ outputSchema: { target: z.string(), backlinks: z.array(z.record(z.unknown())), count: z.number() } });
+    return tool;
 }
 
 async function handleGetBacklinksTool(

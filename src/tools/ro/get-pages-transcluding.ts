@@ -40,7 +40,7 @@ interface TranscludingPage extends Record<string, any> {
 }
 
 export function getPagesTranscludingTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-pages-transcluding',
         'Get all pages that transclude (include) a specific template',
         {
@@ -53,6 +53,8 @@ export function getPagesTranscludingTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { template } ) => handleGetPagesTranscludingTool( template )
     );
+    tool.update({ outputSchema: { template: z.string(), pages: z.array(z.record(z.unknown())), count: z.number() } });
+    return tool;
 }
 
 async function handleGetPagesTranscludingTool(

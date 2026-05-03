@@ -41,7 +41,7 @@ interface WhoisUserInfo extends Record<string, any> {
 }
 
 export function whoisTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'whois',
         'Get information about a specific user',
         {
@@ -54,6 +54,8 @@ export function whoisTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { username } ) => handleWhoisTool( username )
     );
+    tool.update({ outputSchema: {} });
+    return tool;
 }
 
 async function handleWhoisTool(

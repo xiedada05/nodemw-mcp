@@ -33,7 +33,7 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function purgeTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'purge',
         'Purge cache for wiki pages',
         {
@@ -46,6 +46,8 @@ export function purgeTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handlePurgeTool( params )
     );
+    tool.update({ outputSchema: {} });
+    return tool;
 }
 
 async function handlePurgeTool(

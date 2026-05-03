@@ -40,7 +40,7 @@ interface PageInNamespace extends Record<string, any> {
 }
 
 export function getPagesInNamespaceTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-pages-in-namespace',
         'Get all non-redirect pages in a specific namespace',
         {
@@ -53,6 +53,8 @@ export function getPagesInNamespaceTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { namespace } ) => handleGetPagesInNamespaceTool( namespace )
     );
+    tool.update({ outputSchema: { namespace: z.number(), pages: z.array(z.record(z.unknown())), count: z.number() } });
+    return tool;
 }
 
 async function handleGetPagesInNamespaceTool(

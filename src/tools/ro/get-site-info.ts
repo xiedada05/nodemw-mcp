@@ -33,7 +33,7 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function getSiteInfoTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-site-info',
         'Get site information from MediaWiki',
         {
@@ -46,6 +46,8 @@ export function getSiteInfoTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { properties } ) => handleGetSiteInfoTool( properties )
     );
+    tool.update({ outputSchema: {} });
+    return tool;
 }
 
 async function handleGetSiteInfoTool(

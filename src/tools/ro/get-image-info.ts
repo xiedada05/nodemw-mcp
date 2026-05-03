@@ -45,7 +45,7 @@ interface ImageInfo extends Record<string, any> {
 }
 
 export function getImageInfoTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-image-info',
         'Get detailed information about an image file',
         {
@@ -58,6 +58,8 @@ export function getImageInfoTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { filename } ) => handleGetImageInfoTool( filename )
     );
+    tool.update({ outputSchema: { filename: z.string(), info: z.record(z.unknown()) } });
+    return tool;
 }
 
 async function handleGetImageInfoTool(

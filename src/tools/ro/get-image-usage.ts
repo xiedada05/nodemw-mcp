@@ -40,7 +40,7 @@ interface ImageUsage extends Record<string, any> {
 }
 
 export function getImageUsageTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-image-usage',
         'Get all pages that use a specific image',
         {
@@ -53,6 +53,8 @@ export function getImageUsageTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { filename } ) => handleGetImageUsageTool( filename )
     );
+    tool.update({ outputSchema: { filename: z.string(), pages: z.array(z.record(z.unknown())), count: z.number() } });
+    return tool;
 }
 
 async function handleGetImageUsageTool(

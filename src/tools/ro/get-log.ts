@@ -42,7 +42,7 @@ interface LogEntry extends Record<string, any> {
 }
 
 export function getLogTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-log',
         'Get log entries of a specific type',
         {
@@ -57,6 +57,8 @@ export function getLogTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { type, start, limit } ) => handleGetLogTool( type, start, limit )
     );
+    tool.update({ outputSchema: { type: z.string(), start: z.string(), limit: z.number(), total: z.number(), displayed: z.number(), entries: z.array(z.record(z.unknown())) } });
+    return tool;
 }
 
 async function handleGetLogTool(

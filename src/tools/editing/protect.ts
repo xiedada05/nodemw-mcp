@@ -33,7 +33,7 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function protectTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'protect',
         'Protect a wiki page (requires authentication)',
         {
@@ -55,6 +55,8 @@ export function protectTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleProtectTool( params )
     );
+    tool.update({ outputSchema: {} });
+    return tool;
 }
 
 async function handleProtectTool(

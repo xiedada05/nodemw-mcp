@@ -38,7 +38,7 @@ interface ExternalLink extends Record<string, any> {
 }
 
 export function getExternalLinksTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-external-links',
         'Get all external links from an article',
         {
@@ -51,6 +51,8 @@ export function getExternalLinksTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { title } ) => handleGetExternalLinksTool( title )
     );
+    tool.update({ outputSchema: { title: z.string(), links: z.array(z.record(z.unknown())), count: z.number() } });
+    return tool;
 }
 
 async function handleGetExternalLinksTool(

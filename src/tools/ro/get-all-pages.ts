@@ -40,7 +40,7 @@ interface AllPage extends Record<string, any> {
 }
 
 export function getAllPagesTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'get-all-pages',
         'Get all non-redirect pages from the wiki',
         {
@@ -53,6 +53,8 @@ export function getAllPagesTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { limit } ) => handleGetAllPagesTool( limit )
     );
+    tool.update({ outputSchema: { total: z.number(), displayed: z.number(), pages: z.array(z.record(z.unknown())), limit: z.number() } });
+    return tool;
 }
 
 async function handleGetAllPagesTool(

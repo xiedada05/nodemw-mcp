@@ -40,7 +40,7 @@ interface UserInfo extends Record<string, any> {
 }
 
 export function whoamiTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'whoami',
         'Get information about the currently logged in user',
         {},
@@ -51,6 +51,8 @@ export function whoamiTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async () => handleWhoamiTool()
     );
+    tool.update({ outputSchema: {} });
+    return tool;
 }
 
 async function handleWhoamiTool(): Promise<CallToolResult> {

@@ -33,7 +33,7 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function prependTool( server: McpServer ): RegisteredTool {
-    return server.tool(
+    const tool = server.tool(
         'prepend',
         'Prepend content to a wiki page (requires authentication)',
         {
@@ -48,6 +48,8 @@ export function prependTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handlePrependTool( params )
     );
+    tool.update({ outputSchema: {} });
+    return tool;
 }
 
 async function handlePrependTool(
