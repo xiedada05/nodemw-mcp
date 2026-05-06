@@ -147,6 +147,11 @@ async function main(): Promise<void> {
     // Step 5: Connect stdio transport
     const transport = new StdioServerTransport();
     await server.connect(transport);
+
+    const protocol = config.protocol ?? 'https';
+    const endpoint = `${protocol}://${config.server}${config.path}/api.php`;
+    const sitename = siteInfo?.sitename ?? config.server;
+    console.error(`Ready to operate on "${sitename}" <${endpoint}>`);
 }
 
 main().catch(console.error);
