@@ -30,15 +30,17 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { requireRead } from '../../common/pageState.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function appendTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'append',
-        'Append content to a wiki page (requires authentication)',
+        'Append content to the END of a wiki page without changing existing content (requires authentication). ' +
+        'Safe for adding categories, interwiki links, or any content that belongs at the bottom of a page.',
         {
             title: z.string().describe( 'Page title' ),
-            content: z.string().describe( 'Content to append' ),
+            content: z.string().describe( 'Content to append to the end of the page (e.g., "\\n[[Category:MyCategory]]")' ),
             summary: z.string().describe( 'Edit summary' )
         },
         {
@@ -61,7 +63,8 @@ async function handleAppendTool(
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
-        const prefixedSummary = `[nodemw-mcp] ${params.summary}`;
+        await requireRead(params.title);
+        const prefixedSummary = `[nodemw-mcp.append] ${params.summary}`;
 
         await promisifyBotMethod<void>(
             bot,

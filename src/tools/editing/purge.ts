@@ -35,9 +35,10 @@ import { jsonResult, errorResult } from '../../common/utils.js';
 export function purgeTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'purge',
-        'Purge cache for wiki pages',
+        'Purge the server-side cache for one or more wiki pages (requires authentication). ' +
+        'Forces MediaWiki to regenerate the page from current wikitext. This is a safe, non-destructive action.',
         {
-            titles: z.union([z.string(), z.array(z.string())]).describe( 'Page title(s) or category to purge' ),
+            titles: z.union([z.string(), z.array(z.string())]).describe( 'Page title(s) or category name to purge' ),
         },
         {
             title: 'Purge pages',

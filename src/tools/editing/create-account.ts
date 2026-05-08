@@ -35,15 +35,17 @@ import { jsonResult, errorResult } from '../../common/utils.js';
 export function createAccountTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'create-account',
-        'Create a new MediaWiki user account (requires authentication)',
+        'Create a NEW user account on the wiki (requires authentication). ' +
+        'CRITICAL: This creates a real user account. Do NOT create accounts for yourself or without explicit user request. ' +
+        'The account will be permanently registered on the wiki.',
         {
-            username: z.string().describe( 'New account username' ),
-            password: z.string().describe( 'New account password' ),
+            username: z.string().describe( 'Desired username for the new account — must follow wiki username rules' ),
+            password: z.string().describe( 'Password for the new account — use a strong, unique password' ),
         },
         {
             title: 'Create user account',
             readOnlyHint: false,
-            destructiveHint: false
+            destructiveHint: true
         } as ToolAnnotations,
         async ( params ) => handleCreateAccountTool( params )
     );

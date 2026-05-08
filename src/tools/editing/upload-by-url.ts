@@ -35,16 +35,18 @@ import { jsonResult, errorResult } from '../../common/utils.js';
 export function uploadByUrlTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'upload-by-url',
-        'Upload a file to wiki from URL (requires authentication)',
+        'Upload a file to the wiki by downloading it from a URL (requires authentication). ' +
+        'CRITICAL: If a file with the same name already exists, it WILL BE OVERWRITTEN. ' +
+        'Ensure you have the right to upload the content from the source URL.',
         {
-            filename: z.string().describe( 'Destination filename on wiki' ),
-            url: z.string().url().describe( 'Source URL to download file from' ),
+            filename: z.string().describe( 'Destination filename on wiki (e.g., "Diagram.png") — existing file will be overwritten!' ),
+            url: z.string().url().describe( 'Source URL to download the file from — must be publicly accessible' ),
             summary: z.string().optional().describe( 'Upload summary' ),
         },
         {
             title: 'Upload file by URL',
             readOnlyHint: false,
-            destructiveHint: false
+            destructiveHint: true
         } as ToolAnnotations,
         async ( params ) => handleUploadByUrlTool( params )
     );
@@ -61,7 +63,7 @@ async function handleUploadByUrlTool(
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
-        const prefixedSummary = params.summary ? `[nodemw-mcp] ${params.summary}` : '[nodemw-mcp] File upload from URL';
+        const prefixedSummary = params.summary ? `[nodemw-mcp.upload-by-url] ${params.summary}` : '[nodemw-mcp.upload-by-url] File upload from URL';
 
         const result = await promisifyBotMethod<{
             result: string;

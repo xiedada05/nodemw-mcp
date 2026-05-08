@@ -30,16 +30,18 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { requireRead } from '../../common/pageState.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function moveTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'move',
-        'Move (rename) a wiki page (requires authentication)',
+        'Move (rename) a wiki page — changes the page title and creates a redirect from the old name (requires authentication). ' +
+        'The old page title becomes a redirect to the new title. All page history moves with the page.',
         {
-            from: z.string().describe( 'Current page title' ),
-            to: z.string().describe( 'New page title' ),
-            summary: z.string().describe( 'Move summary' ),
+            from: z.string().describe( 'Current/existing page title to rename' ),
+            to: z.string().describe( 'New target page title — must not already exist (unless moving to overwrite)' ),
+            summary: z.string().describe( 'Reason for the move (visible in move log)' ),
         },
         {
             title: 'Move page',
@@ -61,7 +63,8 @@ async function handleMoveTool(
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
-        const prefixedSummary = `[nodemw-mcp] ${params.summary}`;
+        await requireRead(params.from);
+        const prefixedSummary = `[nodemw-mcp.move] ${params.summary}`;
 
         const result = await promisifyBotMethod<{
             from: string;

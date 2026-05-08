@@ -30,6 +30,38 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { markAsRead } from '../../common/pageState.js';
+
+interface PageInfoResponse {
+    query?: {
+        pages?: Record<string, {
+            pageid?: number;
+            lastrevid?: number;
+            missing?: boolean;
+        }>;
+    };
+}
+
+async function recordReadState(title: string | number): Promise<void> {
+    try {
+        const bot = await getBot();
+        const info = await promisifyBotMethod<PageInfoResponse>(
+            bot,
+            'getArticleInfo',
+            title,
+            { prop: 'info' }
+        );
+        const pages = info?.query?.pages;
+        if (pages) {
+            const page = Object.values(pages)[0];
+            if (page?.pageid != null && page?.lastrevid != null) {
+                markAsRead(page.pageid, page.lastrevid);
+            }
+        }
+    } catch {
+        // Non-critical: read-state recording failure should not break the tool
+    }
+}
 
 export function getArticleTool( server: McpServer ): RegisteredTool {
     return server.tool(
@@ -81,6 +113,7 @@ async function handleGetArticleTool(
                 ? `Content:\n\n${content}\n\nRedirect Information:\n\n${JSON.stringify(redirect, null, 2)}`
                 : content;
 
+            await recordReadState(title);
             return {
                 content: [ { type: 'text', text: responseText } ]
             };
@@ -98,6 +131,7 @@ async function handleGetArticleTool(
                     isError: true
                 };
             }
+            await recordReadState(title);
             return {
                 content: [ { type: 'text', text: result } ]
             };

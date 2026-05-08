@@ -30,15 +30,17 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { requireRead } from '../../common/pageState.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function prependTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'prepend',
-        'Prepend content to a wiki page (requires authentication)',
+        'Prepend content to the TOP of a wiki page without changing existing content (requires authentication). ' +
+        'Useful for adding notices, templates, or cleanup tags that belong at the top of a page.',
         {
             title: z.string().describe( 'Page title to prepend to' ),
-            content: z.string().describe( 'Content to prepend' ),
+            content: z.string().describe( 'Content to prepend to the top of the page (e.g., "{{Cleanup}}\\n")' ),
             summary: z.string().describe( 'Edit summary' ),
         },
         {
@@ -61,7 +63,8 @@ async function handlePrependTool(
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
-        const prefixedSummary = `[nodemw-mcp] ${params.summary}`;
+        await requireRead(params.title);
+        const prefixedSummary = `[nodemw-mcp.prepend] ${params.summary}`;
 
         const result = await promisifyBotMethod<{
             title: string;

@@ -30,15 +30,19 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { requireRead } from '../../common/pageState.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function deleteTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'delete',
-        'Delete a wiki page (requires authentication)',
+        'PERMANENTLY delete a wiki page (requires authentication). ' +
+        'CRITICAL: This action is IRREVERSIBLE — there is NO undelete/undo tool available. ' +
+        'Any deletion must be manually restored by a human administrator. ' +
+        'Only delete a page when the user explicitly asks for it. Always verify the title is correct before proceeding.',
         {
-            title: z.string().describe( 'Page title to delete' ),
-            reason: z.string().describe( 'Reason for deletion' ),
+            title: z.string().describe( 'Exact page title to permanently delete — double-check this is correct' ),
+            reason: z.string().describe( 'Detailed reason for deletion (visible in deletion log)' ),
         },
         {
             title: 'Delete page',
@@ -59,7 +63,8 @@ async function handleDeleteTool(
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
-        const prefixedReason = `[nodemw-mcp] ${params.reason}`;
+        await requireRead(params.title);
+        const prefixedReason = `[nodemw-mcp.delete] ${params.reason}`;
 
         const result = await promisifyBotMethod<{
             title: string;

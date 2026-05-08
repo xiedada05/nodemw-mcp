@@ -35,16 +35,17 @@ import { jsonResult, errorResult } from '../../common/utils.js';
 export function addFlowTopicTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'add-flow-topic',
-        'Add a new Flow topic to a wiki page (requires authentication)',
+        'Add a new Flow/Structured Discussions topic to a wiki talk page (requires authentication). ' +
+        'Creates a publicly visible discussion thread on the wiki. Ensure the content is appropriate and relevant.',
         {
-            title: z.string().describe( 'Page title to add topic to' ),
-            subject: z.string().describe( 'Topic subject' ),
-            content: z.string().describe( 'Topic content in wikitext' ),
+            title: z.string().describe( 'Talk page title to add the topic to (e.g., "Talk:Main Page")' ),
+            subject: z.string().describe( 'Topic title/heading — should summarize the discussion topic' ),
+            content: z.string().describe( 'Topic body content in wikitext format' ),
         },
         {
             title: 'Add Flow topic',
             readOnlyHint: false,
-            destructiveHint: false
+            destructiveHint: true
         } as ToolAnnotations,
         async ( params ) => handleAddFlowTopicTool( params )
     );

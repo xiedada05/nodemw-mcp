@@ -27,6 +27,7 @@
  */
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import pkg from '../package.json';
 
 export const USER_AGENT = 'nodemw-mcp-server/1.0';
 
@@ -50,7 +51,7 @@ export function createServer(siteInfo?: SiteInfoSummary, authenticated = false):
     return new McpServer(
         {
             name: 'nodemw-mcp-server',
-            version: '1.0.0',
+            version: pkg.version,
             description
         },
         { capabilities: { tools: {} } }

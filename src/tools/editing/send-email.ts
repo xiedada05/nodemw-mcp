@@ -35,16 +35,20 @@ import { jsonResult, errorResult } from '../../common/utils.js';
 export function sendEmailTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'send-email',
-        'Send email to a wiki user (requires authentication)',
+        'Send an ACTUAL email to a wiki user via the wiki\'s built-in email system (requires authentication). ' +
+        'CRITICAL: This sends a real email to the user\'s registered address — it is NOT a simulation. ' +
+        'The recipient will see it came from the authenticated bot operator\'s wiki account. ' +
+        'Abuse (spam, harassment, unsolicited messages) WILL result in the bot account being blocked. ' +
+        'ONLY use this when the human user has explicitly asked you to send an email.',
         {
-            username: z.string().describe( 'Username to email' ),
-            subject: z.string().describe( 'Email subject' ),
-            text: z.string().describe( 'Email content' ),
+            username: z.string().describe( 'Target wiki username — email goes to their registered email address' ),
+            subject: z.string().describe( 'Email subject line — be clear and professional, no misleading subjects' ),
+            text: z.string().describe( 'Plain text email body — will be delivered as-is to the recipient\'s inbox' ),
         },
         {
             title: 'Send email',
             readOnlyHint: false,
-            destructiveHint: false
+            destructiveHint: true
         } as ToolAnnotations,
         async ( params ) => handleSendEmailTool( params )
     );

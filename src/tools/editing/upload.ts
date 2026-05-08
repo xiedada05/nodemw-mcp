@@ -35,16 +35,18 @@ import { jsonResult, errorResult } from '../../common/utils.js';
 export function uploadTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'upload',
-        'Upload a file to wiki (requires authentication)',
+        'Upload a file to the wiki (requires authentication). ' +
+        'CRITICAL: If a file with the same name already exists, it WILL BE OVERWRITTEN. ' +
+        'Ensure you have the right to upload the content. Use only when explicitly requested.',
         {
-            filename: z.string().describe( 'Destination filename on wiki' ),
-            content: z.string().describe( 'File content as base64 string' ),
-            comment: z.string().optional().describe( 'Upload comment' ),
+            filename: z.string().describe( 'Destination filename on wiki (e.g., "MyImage.png") — existing file will be overwritten!' ),
+            content: z.string().describe( 'File content encoded as base64 string' ),
+            comment: z.string().optional().describe( 'Upload comment describing the file' ),
         },
         {
             title: 'Upload file',
             readOnlyHint: false,
-            destructiveHint: false
+            destructiveHint: true
         } as ToolAnnotations,
         async ( params ) => handleUploadTool( params )
     );
@@ -62,7 +64,7 @@ async function handleUploadTool(
     try {
         const bot = await getBot();
         const fileContent = Buffer.from(params.content, 'base64');
-        const comment = params.comment ? `[nodemw-mcp] ${params.comment}` : '[nodemw-mcp] File upload';
+        const comment = params.comment ? `[nodemw-mcp.upload] ${params.comment}` : '[nodemw-mcp.upload] File upload';
 
         const result = await promisifyBotMethod<{
             result: string;

@@ -30,16 +30,27 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { requireRead } from '../../common/pageState.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function editTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'edit',
-        'Edit a wiki page (requires authentication)',
+        'Replace the ENTIRE content of a wiki page (requires authentication). ' +
+        'CRITICAL: This is a FULL replacement — content you provide becomes the complete page, not an addition. ' +
+        'There is NO undelete/undo tool — any damage you cause must be manually reverted by a human. ' +
+        'To add a category or make a small change, you MUST first call get-article to retrieve the current content, ' +
+        'modify it as needed, then pass the FULL modified content here. ' +
+        'For appending or prepending without fetching the full page first, use the append/prepend tools instead.',
         {
             title: z.string().describe( 'Page title to edit' ),
-            content: z.string().describe( 'New content for the page' ),
-            summary: z.string().describe( 'Edit summary' ),
+            content: z.string().describe( 'COMPLETE new wikitext for the ENTIRE page — not a snippet, not a prefix, not an appendage. ' +
+                'This replaces everything. Always fetch the current content with get-article first, then modify and resubmit the full text.' ),
+            intent: z.enum(['add', 'revise', 'delete']).describe(
+                'Your editing intent: "add" = adding content (page should grow), ' +
+                '"revise" = modifying content (small net change, must keep ≥3/4 of existing bytes), ' +
+                '"delete" = removing significant content (page should shrink significantly)' ),
+            summary: z.string().describe( 'Edit summary describing what was changed and why' ),
             minor: z.boolean().optional().default( false ).describe( 'Mark as minor edit' )
         },
         {
@@ -57,13 +68,50 @@ async function handleEditTool(
     params: {
         title: string;
         content: string;
+        intent: 'add' | 'revise' | 'delete';
         summary: string;
         minor?: boolean;
     }
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
-        const prefixedSummary = `[nodemw-mcp] ${params.summary}`;
+        await requireRead(params.title);
+
+        // Fetch current page content for size validation
+        const currentContent = await promisifyBotMethod<string>(bot, 'getArticle', params.title, false);
+        if (currentContent != null) {
+            const currentBytes = Buffer.byteLength(currentContent, 'utf8');
+            const proposedBytes = Buffer.byteLength(params.content, 'utf8');
+
+            switch (params.intent) {
+                case 'add':
+                    if (proposedBytes < currentBytes) {
+                        return errorResult(
+                            `Size mismatch: intent is "add" but proposed (${proposedBytes} B) < current (${currentBytes} B). ` +
+                            `Add operations should not shrink the page. If you meant to remove content, use intent "delete".`
+                        );
+                    }
+                    break;
+                case 'revise':
+                    if (proposedBytes < currentBytes * 3 / 4) {
+                        return errorResult(
+                            `Size mismatch: intent is "revise" but proposed (${proposedBytes} B) < 3/4 of current (${currentBytes} B, threshold ${Math.floor(currentBytes * 3 / 4)} B). ` +
+                            `Revise should keep most content intact. For larger removals, use intent "delete".`
+                        );
+                    }
+                    break;
+                case 'delete':
+                    if (proposedBytes < currentBytes * 1 / 10) {
+                        return errorResult(
+                            `Size mismatch: intent is "delete" but proposed (${proposedBytes} B) < 1/10 of current (${currentBytes} B, threshold ${Math.floor(currentBytes / 10)} B). ` +
+                            `This looks like an accidental page wipe. If intentional, verify the content is correct and retry.`
+                        );
+                    }
+                    break;
+            }
+        }
+
+        const prefixedSummary = `[nodemw-mcp.edit] ${params.summary}`;
 
         const result = await promisifyBotMethod<{
             title: string;

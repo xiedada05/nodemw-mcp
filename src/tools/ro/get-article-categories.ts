@@ -46,7 +46,7 @@ export function getArticleCategoriesTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { title } ) => handleGetArticleCategoriesTool( title )
     );
-    tool.update({ outputSchema: { title: z.string(), categories: z.array(z.record(z.unknown())), count: z.number() } });
+    tool.update({ outputSchema: { title: z.string(), categories: z.array(z.string()), count: z.number() } });
     return tool;
 }
 
