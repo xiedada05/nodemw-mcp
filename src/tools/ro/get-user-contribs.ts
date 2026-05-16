@@ -56,7 +56,7 @@ export function getUserContribsTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { username, namespace, limit } ) => handleGetUserContribsTool( username, namespace, limit )
     );
-    tool.update({ outputSchema: { username: z.string(), namespace: z.number(), limit: z.number(), total: z.number(), displayed: z.number(), contributions: z.array(z.record(z.unknown())) } });
+    tool.update({ outputSchema: { username: z.string(), namespace: z.number().optional(), limit: z.number(), total: z.number(), displayed: z.number(), contributions: z.array(z.record(z.unknown())) } });
     return tool;
 }
 

@@ -50,7 +50,7 @@ export function uploadTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleUploadTool( params )
     );
-    tool.update({ outputSchema: {} });
+    tool.update({ outputSchema: { result: z.string(), filename: z.string(), imageinfo: z.record(z.unknown()).optional() } });
     return tool;
 }
 

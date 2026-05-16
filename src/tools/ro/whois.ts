@@ -54,7 +54,18 @@ export function whoisTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { username } ) => handleWhoisTool( username )
     );
-    tool.update({ outputSchema: {} });
+    tool.update({ outputSchema: { user: z.object({
+        userid: z.number(),
+        name: z.string(),
+        groups: z.array(z.string()),
+        implicitgroups: z.array(z.string()),
+        rights: z.array(z.string()),
+        editcount: z.number(),
+        registration: z.string(),
+        emailable: z.string(),
+        gender: z.string(),
+        blockinfo: z.record(z.unknown()).optional()
+    }) } });
     return tool;
 }
 
@@ -73,7 +84,7 @@ async function handleWhoisTool(
             return errorResult(`User "${username}" not found.`);
         }
 
-        return jsonResult(userInfo);
+        return jsonResult({ user: userInfo });
     } catch ( error ) {
         return errorResult('Failed to get user info', error as Error);
     }

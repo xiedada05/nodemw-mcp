@@ -61,7 +61,7 @@ export function protectTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleProtectTool( params )
     );
-    tool.update({ outputSchema: {} });
+    tool.update({ outputSchema: { title: z.string(), reason: z.string().optional(), protections: z.array(z.record(z.unknown())), cascade: z.boolean() } });
     return tool;
 }
 

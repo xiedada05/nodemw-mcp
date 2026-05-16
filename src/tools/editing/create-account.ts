@@ -49,7 +49,7 @@ export function createAccountTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleCreateAccountTool( params )
     );
-    tool.update({ outputSchema: {} });
+    tool.update({ outputSchema: { account: z.record(z.unknown()) } });
     return tool;
 }
 
@@ -69,7 +69,7 @@ async function handleCreateAccountTool(
             params.password
         );
 
-        return jsonResult(result);
+        return jsonResult({ account: result });
     } catch ( error ) {
         return errorResult('Failed to create account', error as Error);
     }

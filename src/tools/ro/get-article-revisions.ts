@@ -70,8 +70,8 @@ async function handleGetArticleRevisionsTool(
             title
         );
 
-        // Flatten the results
-        const revisions = allRevisions.flat();
+        // Flatten the results, dropping batches that returned undefined (e.g. empty pages)
+        const revisions = allRevisions.flat().filter(rev => rev != null);
 
         return jsonResult({
             title,

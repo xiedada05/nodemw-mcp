@@ -46,7 +46,7 @@ export function getSiteInfoTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { properties } ) => handleGetSiteInfoTool( properties )
     );
-    tool.update({ outputSchema: {} });
+    tool.update({ outputSchema: { siteinfo: z.record(z.unknown()) } });
     return tool;
 }
 
@@ -61,7 +61,7 @@ async function handleGetSiteInfoTool(
             properties
         );
 
-        return jsonResult(info || {});
+        return jsonResult({ siteinfo: info || {} });
     } catch ( error ) {
         return errorResult('Failed to get site info', error as Error);
     }

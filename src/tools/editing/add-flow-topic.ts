@@ -49,7 +49,7 @@ export function addFlowTopicTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleAddFlowTopicTool( params )
     );
-    tool.update({ outputSchema: {} });
+    tool.update({ outputSchema: { 'new-topic': z.record(z.unknown()) } });
     return tool;
 }
 

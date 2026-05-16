@@ -52,7 +52,7 @@ export function sendEmailTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleSendEmailTool( params )
     );
-    tool.update({ outputSchema: {} });
+    tool.update({ outputSchema: { result: z.string(), message: z.string().optional() } });
     return tool;
 }
 

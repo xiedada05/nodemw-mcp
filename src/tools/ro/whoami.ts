@@ -26,6 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
@@ -51,7 +52,17 @@ export function whoamiTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async () => handleWhoamiTool()
     );
-    tool.update({ outputSchema: {} });
+    tool.update({ outputSchema: { user: z.object({
+        name: z.string(),
+        id: z.number(),
+        groups: z.array(z.string()),
+        rights: z.array(z.string()),
+        ratelimits: z.union([z.record(z.unknown()), z.array(z.unknown())]),
+        editcount: z.number(),
+        realname: z.string(),
+        email: z.string(),
+        emailauthenticated: z.string()
+    }) } });
     return tool;
 }
 
@@ -63,7 +74,7 @@ async function handleWhoamiTool(): Promise<CallToolResult> {
             'whoami'
         );
 
-        return jsonResult(userInfo);
+        return jsonResult({ user: userInfo });
     } catch ( error ) {
         return errorResult('Failed to get current user info', error as Error);
     }

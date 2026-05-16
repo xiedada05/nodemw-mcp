@@ -26,6 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
@@ -55,7 +56,16 @@ export function getSiteStatsTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async () => handleGetSiteStatsTool()
     );
-    tool.update({ outputSchema: {} });
+    tool.update({ outputSchema: { statistics: z.object({
+        pages: z.number(),
+        articles: z.number(),
+        edits: z.number(),
+        images: z.number(),
+        users: z.number(),
+        activeusers: z.number(),
+        admins: z.number(),
+        jobs: z.number()
+    }) } });
     return tool;
 }
 
@@ -67,7 +77,7 @@ async function handleGetSiteStatsTool(): Promise<CallToolResult> {
             'getSiteStats'
         );
 
-        return jsonResult(stats);
+        return jsonResult({ statistics: stats });
     } catch ( error ) {
         return errorResult('Failed to get site stats', error as Error);
     }

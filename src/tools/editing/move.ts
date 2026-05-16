@@ -50,7 +50,7 @@ export function moveTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleMoveTool( params )
     );
-    tool.update({ outputSchema: {} });
+    tool.update({ outputSchema: { from: z.string(), to: z.string(), reason: z.string(), redirectcreated: z.boolean().optional() } });
     return tool;
 }
 

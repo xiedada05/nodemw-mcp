@@ -55,7 +55,7 @@ export function getRecentChangesTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { start, limit } ) => handleGetRecentChangesTool( start, limit )
     );
-    tool.update({ outputSchema: { total: z.number(), limit: z.number(), start: z.string(), changes: z.array(z.record(z.unknown())) } });
+    tool.update({ outputSchema: { total: z.number(), limit: z.number(), start: z.string().optional(), changes: z.array(z.record(z.unknown())) } });
     return tool;
 }
 

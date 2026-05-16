@@ -47,7 +47,7 @@ export function purgeTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handlePurgeTool( params )
     );
-    tool.update({ outputSchema: {} });
+    tool.update({ outputSchema: { pages: z.array(z.record(z.unknown())) } });
     return tool;
 }
 
@@ -65,7 +65,7 @@ async function handlePurgeTool(
             params.titles
         );
 
-        return jsonResult(result);
+        return jsonResult({ pages: result });
     } catch ( error ) {
         return errorResult('Failed to purge pages', error as Error);
     }

@@ -46,7 +46,18 @@ export function whoareTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleWhoareTool( params )
     );
-    tool.update({ outputSchema: {} });
+    tool.update({ outputSchema: { users: z.array(z.object({
+        userid: z.number(),
+        name: z.string(),
+        groups: z.array(z.string()),
+        implicitgroups: z.array(z.string()),
+        rights: z.array(z.string()),
+        editcount: z.number(),
+        registration: z.string(),
+        emailable: z.string(),
+        gender: z.string(),
+        blockinfo: z.record(z.unknown()).optional()
+    })), count: z.number() } });
     return tool;
 }
 
@@ -64,7 +75,7 @@ async function handleWhoareTool(
             params.usernames
         );
 
-        return jsonResult(users);
+        return jsonResult({ users, count: users.length });
     } catch ( error ) {
         return errorResult('Failed to get user information', error as Error);
     }
