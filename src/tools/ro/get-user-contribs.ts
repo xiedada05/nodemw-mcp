@@ -29,7 +29,7 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { getBot } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,6 +40,15 @@ interface UserContrib extends Record<string, any> {
     comment: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface ApiResponse extends Record<string, any> {
+    query?: {
+        usercontribs?: UserContrib[];
+    };
+    continue?: Record<string, unknown>;
+    'query-continue'?: Record<string, Record<string, unknown>>;
+}
+
 export function getUserContribsTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'get-user-contribs',
@@ -47,47 +56,84 @@ export function getUserContribsTool( server: McpServer ): RegisteredTool {
         {
             username: z.string().describe('Username to get contributions for'),
             namespace: z.number().optional().describe('Filter contributions by namespace'),
-            limit: z.number().optional().default(50).describe('Maximum number of contributions to return')
+            limit: z.number().optional().default(50).describe('Maximum number of contributions to return'),
+            start: z.string().optional().describe('Start timestamp (YYYYMMDDHHMMSS format) — only return edits before this time. Use to paginate through results efficiently.')
         },
         {
             title: 'Get user contributions',
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( { username, namespace, limit } ) => handleGetUserContribsTool( username, namespace, limit )
+        async ( { username, namespace, limit, start } ) => handleGetUserContribsTool( username, namespace, limit, start )
     );
-    tool.update({ outputSchema: { username: z.string(), namespace: z.number().optional(), limit: z.number(), total: z.number(), displayed: z.number(), contributions: z.array(z.record(z.unknown())) } });
+    tool.update({ outputSchema: { username: z.string(), namespace: z.number().optional(), limit: z.number(), start: z.string().optional(), total: z.number(), displayed: z.number(), contributions: z.array(z.record(z.unknown())) } });
     return tool;
 }
 
 async function handleGetUserContribsTool(
     username: string,
     namespace?: number,
-    limit: number = 50
+    limit: number = 50,
+    start?: string
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
-        const options = {
-            user: username,
-            ...(namespace !== undefined && { namespace })
+        const allContribs: UserContrib[] = [];
+
+        // Use the smaller of limit and 500 (MW max per page) for uclimit
+        const perPage = Math.min(limit, 500);
+
+        const baseParams: Record<string, unknown> = {
+            action: 'query',
+            list: 'usercontribs',
+            ucuser: username,
+            uclimit: perPage,
+            ucprop: 'ids|title|timestamp|comment|size|flags',
+            ...(namespace !== undefined && { ucnamespace: namespace }),
+            ...(start && { ucstart: start })
         };
 
-        const callbackArgs = await promisifyBotMethod<[Error | null, UserContrib[], string | boolean]>(
-            bot,
-            'getUserContribs',
-            options
-        );
+        let continueParams: Record<string, unknown> | undefined;
 
-        const contribs = Array.isArray(callbackArgs[1]) ? callbackArgs[1] : [];
+        do {
+            const params = { ...baseParams, ...(continueParams || {}) };
+            const rawData = await new Promise<ApiResponse>((resolve, reject) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (bot as any).api.call(params, (_err: Error | null, _info: unknown, _next: unknown, raw: ApiResponse) => {
+                    if (_err) reject(_err);
+                    else resolve(raw);
+                });
+            });
 
-        // Limit results
-        const limitedContribs = contribs.slice(0, limit);
+            const usercontribs = rawData.query?.usercontribs;
+            if (usercontribs) {
+                allContribs.push(...usercontribs);
+            }
+
+            // Stop if we have enough
+            if (allContribs.length >= limit) {
+                break;
+            }
+
+            // MW 1.26+ uses "continue", MW 1.23 uses "query-continue"
+            if (rawData.continue) {
+                continueParams = rawData.continue as Record<string, unknown>;
+            } else if (rawData['query-continue']) {
+                const qc = rawData['query-continue'] as Record<string, Record<string, unknown>>;
+                continueParams = qc.usercontribs || qc[Object.keys(qc)[0]];
+            } else {
+                continueParams = undefined;
+            }
+        } while (continueParams);
+
+        const limitedContribs = allContribs.slice(0, limit);
 
         return jsonResult({
             username,
             namespace,
             limit,
-            total: contribs.length,
+            start,
+            total: allContribs.length,
             displayed: limitedContribs.length,
             contributions: limitedContribs
         });
