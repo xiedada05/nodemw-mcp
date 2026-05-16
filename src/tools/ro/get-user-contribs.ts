@@ -29,7 +29,7 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { getBot } from '../../common/nodemwBot.js';
+import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,12 +52,20 @@ interface ApiResponse extends Record<string, any> {
 export function getUserContribsTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'get-user-contribs',
-        'Get contributions made by a specific user',
+        'Get contributions made by a specific user. ' +
+        'Pagination: the response includes total (matching edits found) and displayed (returned in this batch). ' +
+        'If displayed < total, more results exist — use the timestamp of the LAST returned contribution as the start parameter for the next page. ' +
+        'Repeat until displayed < limit to get all results.',
         {
             username: z.string().describe('Username to get contributions for'),
             namespace: z.number().optional().describe('Filter contributions by namespace'),
             limit: z.number().optional().default(50).describe('Maximum number of contributions to return'),
-            start: z.string().optional().describe('Start timestamp (YYYYMMDDHHMMSS format) — only return edits before this time. Use to paginate through results efficiently.')
+            start: z.string().optional().describe(
+                'Timestamp to start listing from — only return edits before this time (not inclusive). ' +
+                'Accepts ISO 8601 (e.g. "2026-05-10T22:54:37Z"), MediaWiki format "YYYYMMDDHHMMSS", or unix timestamp. ' +
+                'All times are UTC — MW ignores timezone offsets. ' +
+                'To paginate: pass the timestamp of the LAST item from the previous page as start. ' +
+                'The returned contributions are guaranteed to be strictly older than this timestamp.')
         },
         {
             title: 'Get user contributions',
@@ -78,6 +86,17 @@ async function handleGetUserContribsTool(
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
+
+        // Verify user exists before fetching contributions
+        const userInfo = await promisifyBotMethod<{ missing?: string }>(
+            bot,
+            'whois',
+            username
+        );
+        if (userInfo.missing !== undefined) {
+            return errorResult(`User "${username}" not found.`);
+        }
+
         const allContribs: UserContrib[] = [];
 
         // Use the smaller of limit and 500 (MW max per page) for uclimit

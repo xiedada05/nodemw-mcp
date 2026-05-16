@@ -152,13 +152,13 @@ async function handleGetArticleTool(
             const [content, redirect] = result;
             if (content == null) {
                 return {
-                    content: [{ type: 'text', text: `Page "${title}" not found or has no content.` }],
+                    content: [{ type: 'text', text: `Page "${title}" not found.` }],
                     isError: true
                 };
             }
             const responseText = redirect
                 ? `Content:\n\n${content}\n\nRedirect Information:\n\n${JSON.stringify(redirect, null, 2)}`
-                : content;
+                : (content === '' ? '(empty page)' : content);
 
             await recordReadState(title);
             return {
@@ -173,13 +173,13 @@ async function handleGetArticleTool(
             );
             if (result == null) {
                 return {
-                    content: [{ type: 'text', text: `Page "${title}" not found or has no content.` }],
+                    content: [{ type: 'text', text: `Page "${title}" not found.` }],
                     isError: true
                 };
             }
             await recordReadState(title);
             return {
-                content: [ { type: 'text', text: result } ]
+                content: [ { type: 'text', text: result === '' ? '(empty page)' : result } ]
             };
         }
     } catch ( error ) {

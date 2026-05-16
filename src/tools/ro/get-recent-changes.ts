@@ -43,9 +43,15 @@ interface RecentChange extends Record<string, any> {
 export function getRecentChangesTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'get-recent-changes',
-        'Get recent changes on the wiki',
+        'Get recent changes on the wiki. ' +
+        'Pagination: the response includes total (matching changes found) and displayed (returned in this batch). ' +
+        'If displayed < total, more results exist — use the timestamp of the LAST returned change as the start parameter for the next page.' +
         {
-            start: z.string().optional().describe('Start timestamp (YYYYMMDDHHMMSS format)'),
+            start: z.string().optional().describe(
+                'Timestamp to start listing from — only return changes before this time. ' +
+                'Accepts ISO 8601 (e.g. "2026-05-10T22:54:37Z"), MediaWiki format "YYYYMMDDHHMMSS", or unix timestamp. ' +
+                'All times are UTC — MW ignores timezone offsets. ' +
+                'To paginate: pass the timestamp of the LAST item from the previous page as start.'),
             limit: z.number().optional().default(50).describe('Maximum number of changes to return')
         },
         {

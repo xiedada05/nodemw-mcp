@@ -64,7 +64,12 @@ async function handleWhoareTool(
             params.usernames
         );
 
-        return jsonResult({ users, count: users.length });
+        // Normalize MW API's `missing: ""` to `missing: true`
+        const normalized = users.map(u =>
+            u && u.missing !== undefined ? { ...u, missing: true } : u
+        );
+
+        return jsonResult({ users: normalized, count: normalized.length });
     } catch ( error ) {
         return errorResult('Failed to get user information', error as Error);
     }

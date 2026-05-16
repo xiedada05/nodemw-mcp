@@ -44,10 +44,16 @@ interface LogEntry extends Record<string, any> {
 export function getLogTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'get-log',
-        'Get log entries of a specific type',
+        'Get log entries of a specific type (e.g. delete, block, move). ' +
+        'Pagination: the response includes total (matching entries found) and displayed (returned in this batch). ' +
+        'If displayed < total, more results exist — use the timestamp of the LAST returned entry as the start parameter for the next page.' +
         {
             type: z.string().describe('Log type (e.g. delete, block, move)'),
-            start: z.string().optional().default('').describe('Start timestamp (YYYYMMDDHHMMSS format)'),
+            start: z.string().optional().describe(
+                'Timestamp to start listing from — only return entries before this time. ' +
+                'Accepts ISO 8601 (e.g. "2026-05-10T22:54:37Z"), MediaWiki format "YYYYMMDDHHMMSS", or unix timestamp. ' +
+                'All times are UTC — MW ignores timezone offsets. ' +
+                'To paginate: pass the timestamp of the LAST item from the previous page as start.'),
             limit: z.number().optional().default(50).describe('Maximum number of entries to return')
         },
         {
@@ -57,14 +63,14 @@ export function getLogTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( { type, start, limit } ) => handleGetLogTool( type, start, limit )
     );
-    tool.update({ outputSchema: { type: z.string(), start: z.string(), limit: z.number(), total: z.number(), displayed: z.number(), entries: z.array(z.record(z.unknown())) } });
+    tool.update({ outputSchema: { type: z.string(), start: z.string().optional(), limit: z.number(), total: z.number(), displayed: z.number(), entries: z.array(z.record(z.unknown())) } });
     return tool;
 }
 
 async function handleGetLogTool(
     type: string,
-    start: string,
-    limit: number
+    start?: string,
+    limit: number = 50
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();

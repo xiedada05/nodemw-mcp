@@ -68,7 +68,7 @@ async function handleGetArticlePropertiesTool(
 
         return jsonResult({
             title,
-            properties
+            properties: properties || {}
         });
     } catch ( error ) {
         return errorResult('Failed to get article properties', error as Error);
