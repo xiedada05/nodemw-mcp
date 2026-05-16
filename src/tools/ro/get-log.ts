@@ -46,7 +46,7 @@ export function getLogTool( server: McpServer ): RegisteredTool {
         'get-log',
         'Get log entries of a specific type (e.g. delete, block, move). ' +
         'Pagination: the response includes total (matching entries found) and displayed (returned in this batch). ' +
-        'If displayed < total, more results exist — use the timestamp of the LAST returned entry as the start parameter for the next page.' +
+        'If displayed < total, more results exist — use the timestamp of the LAST returned entry as the start parameter for the next page.',
         {
             type: z.string().describe('Log type (e.g. delete, block, move)'),
             start: z.string().optional().describe(
@@ -77,7 +77,7 @@ async function handleGetLogTool(
         // Handle getLog's callback signature manually
         const entries = await new Promise<LogEntry[]>((resolve, reject) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (bot as any).getLog(type, start, (err: Error | null, ...args: any[]) => {
+            (bot as any).getLog(type, start || '', (err: Error | null, ...args: any[]) => {
                 if (err) {
                     reject(err);
                 } else {

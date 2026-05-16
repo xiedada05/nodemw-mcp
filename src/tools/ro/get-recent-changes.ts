@@ -45,7 +45,7 @@ export function getRecentChangesTool( server: McpServer ): RegisteredTool {
         'get-recent-changes',
         'Get recent changes on the wiki. ' +
         'Pagination: the response includes total (matching changes found) and displayed (returned in this batch). ' +
-        'If displayed < total, more results exist — use the timestamp of the LAST returned change as the start parameter for the next page.' +
+        'If displayed < total, more results exist — use the timestamp of the LAST returned change as the start parameter for the next page.',
         {
             start: z.string().optional().describe(
                 'Timestamp to start listing from — only return changes before this time. ' +
