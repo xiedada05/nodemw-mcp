@@ -56,6 +56,14 @@ async function recordReadState(title: string | number): Promise<void> {
     }
 }
 
+function getFirstItem<T>(obj: Record<string, T> | null | undefined): T | null {
+    if (!obj) return null;
+    for (const key in obj) {
+        return obj[key];
+    }
+    return null;
+}
+
 export function getArticleTool( server: McpServer ): RegisteredTool {
     return server.tool(
         'get-article',
@@ -63,26 +71,72 @@ export function getArticleTool( server: McpServer ): RegisteredTool {
         {
             title: z.string().describe( 'Article title' ),
             followRedirect: z.boolean().optional().default( true ).describe( 'Follow redirects' ),
-            redirectInfo: z.boolean().optional().default( false ).describe( 'Include information about redirects' )
+            redirectInfo: z.boolean().optional().default( false ).describe( 'Include information about redirects' ),
+            revision: z.number().optional().describe( 'Specific revision ID to fetch. If omitted, returns the latest version.' )
         },
         {
             title: 'Get article',
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( { title, followRedirect, redirectInfo } ) => handleGetArticleTool( title, followRedirect, redirectInfo )
+        async ( { title, followRedirect, redirectInfo, revision } ) => handleGetArticleTool( title, followRedirect, redirectInfo, revision )
     );
 }
 
 async function handleGetArticleTool(
     title: string,
     followRedirect: boolean,
-    redirectInfo: boolean
+    redirectInfo: boolean,
+    revision?: number
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
+
+        if (revision !== undefined) {
+            // Bypass bot.getArticle — call the API directly with rvstartid to fetch a specific revision
+            const params: Record<string, unknown> = {
+                action: 'query',
+                prop: 'revisions',
+                rvprop: 'content',
+                rvstartid: revision,
+                rvlimit: 1,
+                titles: title,
+                ...(followRedirect && { redirects: '' })
+            };
+
+            const info = await new Promise<Record<string, unknown>>((resolve, reject) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (bot as any).api.call(params, (err: Error | null, info: Record<string, unknown>) => {
+                    if (err) reject(err);
+                    else resolve(info);
+                }, 'GET');
+            });
+
+            const pages = info.pages as Record<string, Record<string, unknown>> | undefined;
+            const page = getFirstItem(pages);
+            if (!page || page.missing) {
+                return {
+                    content: [{ type: 'text', text: `Page "${title}" not found.` }],
+                    isError: true
+                };
+            }
+            const revisions = page.revisions as Array<{ '*': string }> | undefined;
+            const rev = revisions?.[0];
+            if (!rev || rev['*'] == null) {
+                return {
+                    content: [{ type: 'text', text: `Revision ${revision} not found for page "${title}".` }],
+                    isError: true
+                };
+            }
+
+            await recordReadState(title);
+            return {
+                content: [{ type: 'text', text: rev['*'] }]
+            };
+        }
+
+        // Original path: fetch latest version via bot.getArticle
         if (redirectInfo) {
-            // When redirectInfo is requested, get both content and redirect info
             const result = await new Promise<[string, unknown]>((resolve, reject) => {
                 const callback = (err: Error | null, content: string, redirectInfo: unknown) => {
                     if (err) {
@@ -111,7 +165,6 @@ async function handleGetArticleTool(
                 content: [ { type: 'text', text: responseText } ]
             };
         } else {
-            // Original behavior: just return content
             const result = await promisifyBotMethod<string>(
                 bot,
                 'getArticle',
