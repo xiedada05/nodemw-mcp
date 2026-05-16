@@ -62,8 +62,8 @@ export function whoisTool( server: McpServer ): RegisteredTool {
         rights: z.array(z.string()),
         editcount: z.number(),
         registration: z.string(),
-        emailable: z.string(),
-        gender: z.string(),
+        emailable: z.string().optional(),
+        gender: z.string().optional(),
         blockinfo: z.record(z.unknown()).optional()
     }) } });
     return tool;
