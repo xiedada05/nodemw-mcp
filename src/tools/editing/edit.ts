@@ -60,7 +60,7 @@ export function editTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleEditTool( params )
     );
-    tool.update({ outputSchema: { result: z.string(), pageid: z.number(), title: z.string(), contentmodel: z.string(), newrevid: z.number(), newtimestamp: z.string(), oldrevid: z.number().optional() } });
+    tool.update({ outputSchema: { result: z.string(), pageid: z.number(), title: z.string(), contentmodel: z.string().optional(), newrevid: z.number(), newtimestamp: z.string().optional(), oldrevid: z.number().optional() } });
     return tool;
 }
 

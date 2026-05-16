@@ -51,7 +51,7 @@ export function deleteTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleDeleteTool( params )
     );
-    tool.update({ outputSchema: { title: z.string(), reason: z.string(), logid: z.number() } });
+    tool.update({ outputSchema: { title: z.string(), reason: z.string(), logid: z.number().optional() } });
     return tool;
 }
 

@@ -62,9 +62,9 @@ export function getSiteStatsTool( server: McpServer ): RegisteredTool {
         edits: z.number(),
         images: z.number(),
         users: z.number(),
-        activeusers: z.number(),
-        admins: z.number(),
-        jobs: z.number()
+        activeusers: z.number().optional(),
+        admins: z.number().optional(),
+        jobs: z.number().optional()
     }) } });
     return tool;
 }

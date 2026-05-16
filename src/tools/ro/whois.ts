@@ -58,10 +58,10 @@ export function whoisTool( server: McpServer ): RegisteredTool {
         userid: z.number(),
         name: z.string(),
         groups: z.array(z.string()),
-        implicitgroups: z.array(z.string()),
+        implicitgroups: z.array(z.string()).optional(),
         rights: z.array(z.string()),
         editcount: z.number(),
-        registration: z.string(),
+        registration: z.string().optional(),
         emailable: z.string().optional(),
         gender: z.string().optional(),
         blockinfo: z.record(z.unknown()).optional()
