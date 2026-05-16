@@ -32,31 +32,24 @@ import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { markAsRead } from '../../common/pageState.js';
 
-interface PageInfoResponse {
-    query?: {
-        pages?: Record<string, {
-            pageid?: number;
-            lastrevid?: number;
-            missing?: boolean;
-        }>;
-    };
+interface PageInfo {
+    pageid?: number;
+    lastrevid?: number;
+    missing?: boolean;
 }
 
 async function recordReadState(title: string | number): Promise<void> {
     try {
         const bot = await getBot();
-        const info = await promisifyBotMethod<PageInfoResponse>(
+        const pages = await promisifyBotMethod<PageInfo[]>(
             bot,
             'getArticleInfo',
             title,
             { prop: 'info' }
         );
-        const pages = info?.query?.pages;
-        if (pages) {
-            const page = Object.values(pages)[0];
-            if (page?.pageid != null && page?.lastrevid != null) {
-                markAsRead(page.pageid, page.lastrevid);
-            }
+        const page = Array.isArray(pages) ? pages[0] : null;
+        if (page?.pageid != null && page?.lastrevid != null) {
+            markAsRead(page.pageid, page.lastrevid);
         }
     } catch {
         // Non-critical: read-state recording failure should not break the tool

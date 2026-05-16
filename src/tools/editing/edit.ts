@@ -83,31 +83,35 @@ async function handleEditTool(
             const currentBytes = Buffer.byteLength(currentContent, 'utf8');
             const proposedBytes = Buffer.byteLength(params.content, 'utf8');
 
-            switch (params.intent) {
-                case 'add':
-                    if (proposedBytes < currentBytes) {
-                        return errorResult(
-                            `Size mismatch: intent is "add" but proposed (${proposedBytes} B) < current (${currentBytes} B). ` +
-                            `Add operations should not shrink the page. If you meant to remove content, use intent "delete".`
-                        );
-                    }
-                    break;
-                case 'revise':
-                    if (proposedBytes < currentBytes * 3 / 4) {
-                        return errorResult(
-                            `Size mismatch: intent is "revise" but proposed (${proposedBytes} B) < 3/4 of current (${currentBytes} B, threshold ${Math.floor(currentBytes * 3 / 4)} B). ` +
-                            `Revise should keep most content intact. For larger removals, use intent "delete".`
-                        );
-                    }
-                    break;
-                case 'delete':
-                    if (proposedBytes < currentBytes * 1 / 10) {
-                        return errorResult(
-                            `Size mismatch: intent is "delete" but proposed (${proposedBytes} B) < 1/10 of current (${currentBytes} B, threshold ${Math.floor(currentBytes / 10)} B). ` +
-                            `This looks like an accidental page wipe. If intentional, verify the content is correct and retry.`
-                        );
-                    }
-                    break;
+            const delta = currentBytes - proposedBytes;
+            if (delta > 200) {
+                // Only enforce ratio checks when the absolute change is significant
+                switch (params.intent) {
+                    case 'add':
+                        if (proposedBytes < currentBytes) {
+                            return errorResult(
+                                `Size mismatch: intent is "add" but proposed (${proposedBytes} B) < current (${currentBytes} B). ` +
+                                `Add operations should not shrink the page. If you meant to remove content, use intent "delete".`
+                            );
+                        }
+                        break;
+                    case 'revise':
+                        if (proposedBytes < currentBytes * 3 / 4) {
+                            return errorResult(
+                                `Size mismatch: intent is "revise" but proposed (${proposedBytes} B) < 3/4 of current (${currentBytes} B, threshold ${Math.floor(currentBytes * 3 / 4)} B). ` +
+                                `Revise should keep most content intact. For larger removals, use intent "delete".`
+                            );
+                        }
+                        break;
+                    case 'delete':
+                        if (proposedBytes < currentBytes * 1 / 10) {
+                            return errorResult(
+                                `Size mismatch: intent is "delete" but proposed (${proposedBytes} B) < 1/10 of current (${currentBytes} B, threshold ${Math.floor(currentBytes / 10)} B). ` +
+                                `This looks like an accidental page wipe. If intentional, verify the content is correct and retry.`
+                            );
+                        }
+                        break;
+                }
             }
         }
 

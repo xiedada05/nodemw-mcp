@@ -39,6 +39,11 @@ interface PageInfo {
     missing?: boolean;
 }
 
+interface ArticleInfoResult {
+    title?: string;
+    results?: PageInfo[];
+}
+
 export function markAsRead(pageid: number, revid: number): void {
     readState.set(pageid, revid);
 }
@@ -55,20 +60,18 @@ export function isRead(pageid: number): boolean {
  */
 export async function requireRead(title: string): Promise<number> {
     const bot = getBot();
-    const info = await promisifyBotMethod<{ query?: { pages?: Record<string, PageInfo> } }>(
+    const pages = await promisifyBotMethod<PageInfo[]>(
         bot,
         'getArticleInfo',
         title,
         { prop: 'info' }
     );
 
-    const pages = info?.query?.pages;
-    if (!pages) {
-        // Can't verify — allow through but warn via low-confidence
+    if (!Array.isArray(pages) || pages.length === 0) {
         return 0;
     }
 
-    const page = Object.values(pages)[0];
+    const page = pages[0];
     if (!page || page.missing) {
         // Page does not exist — allow creation
         return 0;
