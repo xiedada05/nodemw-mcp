@@ -51,11 +51,11 @@ async function build() {
  * POSSIBILITY OF SUCH DAMAGE.
  */`,
 		},
-		minify: true,
+		minify: false,
 		logLevel: 'info',
 		treeShaking: true,
 		legalComments: 'none',
-		sourcemap: true,
+		sourcemap: false,
 	};
 
 	try {
