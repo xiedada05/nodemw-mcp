@@ -49,7 +49,7 @@ export function getArticleInfoTool( server: McpServer ): RegisteredTool {
                 z.number(),
                 z.array(z.union([z.string(), z.number()]))
             ]).describe('Article title, page ID, or array of titles/IDs'),
-            properties: z.array(z.string()).optional().describe('Specific properties to retrieve')
+            properties: z.array(z.string()).optional().describe('Specific properties to retrieve (e.g. protection, talkid, url)')
         },
         {
             title: 'Get article info',

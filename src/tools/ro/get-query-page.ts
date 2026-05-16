@@ -41,7 +41,7 @@ interface QueryPageResult extends Record<string, any> {
 export function getQueryPageTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'get-query-page',
-        'Get results from a query page (special page)',
+        'Get results from a query page (e.g. Ancientpages, Lonelypages, Wantedpages)',
         {
             name: z.string().describe('Name of the query page')
         },

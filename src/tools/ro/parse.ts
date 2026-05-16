@@ -37,7 +37,7 @@ export function parseTool( server: McpServer ): RegisteredTool {
         'Parse wikitext to HTML',
         {
             text: z.string().describe('Wikitext to parse'),
-            title: z.string().optional().describe('Context page title')
+            title: z.string().optional().describe('Context page title (for resolving {{PAGENAME}} and similar magic words)')
         },
         {
             title: 'Parse wikitext',

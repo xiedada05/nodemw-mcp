@@ -40,7 +40,7 @@ interface PageProperties extends Record<string, any> {
 export function getArticlePropertiesTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'get-article-properties',
-        'Get page properties for a wiki article',
+        'Get page properties (page_props table data) for a wiki article',
         {
             title: z.string().describe('Article title')
         },

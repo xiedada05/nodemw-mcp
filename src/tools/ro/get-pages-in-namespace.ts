@@ -44,7 +44,7 @@ export function getPagesInNamespaceTool( server: McpServer ): RegisteredTool {
         'get-pages-in-namespace',
         'Get all non-redirect pages in a specific namespace',
         {
-            namespace: z.number().describe('Namespace number to filter pages')
+            namespace: z.number().describe('Namespace number (0=Main, 2=User, 6=File, 10=Template, 14=Category)')
         },
         {
             title: 'Get pages in namespace',

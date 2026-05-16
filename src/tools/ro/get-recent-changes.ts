@@ -45,7 +45,7 @@ export function getRecentChangesTool( server: McpServer ): RegisteredTool {
         'get-recent-changes',
         'Get recent changes on the wiki',
         {
-            start: z.string().optional().describe('Start timestamp'),
+            start: z.string().optional().describe('Start timestamp (YYYYMMDDHHMMSS format)'),
             limit: z.number().optional().default(50).describe('Maximum number of changes to return')
         },
         {

@@ -37,7 +37,7 @@ export function expandTemplatesTool( server: McpServer ): RegisteredTool {
         'Expand templates in wikitext',
         {
             text: z.string().describe('Wikitext with templates to expand'),
-            title: z.string().optional().describe('Context page title'),
+            title: z.string().optional().describe('Context page title (for resolving {{PAGENAME}} and similar magic words)'),
         },
         {
             title: 'Expand templates',
