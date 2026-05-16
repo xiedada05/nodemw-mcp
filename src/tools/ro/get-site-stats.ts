@@ -56,16 +56,7 @@ export function getSiteStatsTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async () => handleGetSiteStatsTool()
     );
-    tool.update({ outputSchema: { statistics: z.object({
-        pages: z.number(),
-        articles: z.number(),
-        edits: z.number(),
-        images: z.number(),
-        users: z.number(),
-        activeusers: z.number().optional(),
-        admins: z.number().optional(),
-        jobs: z.number().optional()
-    }) } });
+    tool.update({ outputSchema: { statistics: z.record(z.unknown()) } });
     return tool;
 }
 

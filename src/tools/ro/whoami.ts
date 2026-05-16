@@ -52,17 +52,7 @@ export function whoamiTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async () => handleWhoamiTool()
     );
-    tool.update({ outputSchema: { user: z.object({
-        name: z.string(),
-        id: z.number(),
-        groups: z.array(z.string()),
-        rights: z.array(z.string()),
-        ratelimits: z.union([z.record(z.unknown()), z.array(z.unknown())]),
-        editcount: z.number(),
-        realname: z.string().optional(),
-        email: z.string().optional(),
-        emailauthenticated: z.string().optional()
-    }) } });
+    tool.update({ outputSchema: { user: z.record(z.unknown()) } });
     return tool;
 }
 

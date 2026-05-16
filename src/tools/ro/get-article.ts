@@ -114,7 +114,7 @@ async function handleGetArticleTool(
 
             const pages = info.pages as Record<string, Record<string, unknown>> | undefined;
             const page = getFirstItem(pages);
-            if (!page || page.missing) {
+            if (!page || page.missing !== undefined) {
                 return {
                     content: [{ type: 'text', text: `Page "${title}" not found.` }],
                     isError: true

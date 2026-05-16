@@ -46,18 +46,7 @@ export function whoareTool( server: McpServer ): RegisteredTool {
         } as ToolAnnotations,
         async ( params ) => handleWhoareTool( params )
     );
-    tool.update({ outputSchema: { users: z.array(z.object({
-        userid: z.number(),
-        name: z.string(),
-        groups: z.array(z.string()),
-        implicitgroups: z.array(z.string()).optional(),
-        rights: z.array(z.string()),
-        editcount: z.number(),
-        registration: z.string().optional(),
-        emailable: z.string().optional(),
-        gender: z.string().optional(),
-        blockinfo: z.record(z.unknown()).optional()
-    })), count: z.number() } });
+    tool.update({ outputSchema: { users: z.array(z.record(z.unknown())), count: z.number() } });
     return tool;
 }
 
