@@ -42,24 +42,67 @@ export function getArticlePropertiesTool( server: McpServer ): RegisteredTool {
         'get-article-properties',
         'Get page properties (page_props table data) for a wiki article',
         {
-            title: z.string().describe('Article title')
+            title: z.string().optional().describe('Article title (required if "id" is not provided)'),
+            id: z.number().optional().describe('Page ID (required if "title" is not provided)')
         },
         {
             title: 'Get article properties',
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( { title } ) => handleGetArticlePropertiesTool( title )
+        async ( { title, id } ) => handleGetArticlePropertiesTool( title, id )
     );
-    tool.update({ outputSchema: { title: z.string(), properties: z.record(z.unknown()) } });
+    tool.update({ outputSchema: { title: z.union([z.string(), z.number()]), properties: z.record(z.unknown()) } });
     return tool;
 }
 
+function getFirstItem<T>(obj: Record<string, T> | null | undefined): T | null {
+    if (!obj) return null;
+    for (const key in obj) {
+        return obj[key];
+    }
+    return null;
+}
+
 async function handleGetArticlePropertiesTool(
-    title: string
+    title: string | undefined,
+    id: number | undefined
 ): Promise<CallToolResult> {
     try {
+        if (!title && id == null) {
+            return errorResult('Either "title" or "id" must be provided');
+        }
+        if (title && id != null) {
+            return errorResult('Provide either "title" or "id", not both');
+        }
+
         const bot = await getBot();
+
+        if (id !== undefined) {
+            // Use low-level API: the high-level Bot method may not support page IDs
+            const result = await new Promise<Record<string, unknown>>((resolve, reject) => {
+                (bot as any).api.call(
+                    { action: 'query', prop: 'pageprops', pageids: id },
+                    (err: Error | null, data: Record<string, unknown>) => {
+                        if (err) reject(err);
+                        else resolve(data);
+                    },
+                    'GET'
+                );
+            });
+
+            const pages = result.pages as Record<string, Record<string, unknown>> | undefined;
+            const page = getFirstItem(pages);
+            if (!page || page.missing !== undefined) {
+                return errorResult(`Page with ID ${id} not found`);
+            }
+
+            return jsonResult({
+                title: page.title ?? id,
+                properties: page.pageprops || {}
+            });
+        }
+
         const properties = await promisifyBotMethod<PageProperties>(
             bot,
             'getArticleProperties',

@@ -46,9 +46,12 @@ export function getArticleInfoTool( server: McpServer ): RegisteredTool {
         {
             title: z.union([
                 z.string(),
+                z.array(z.string())
+            ]).optional().describe('Article title or array of titles (required if "id" is not provided)'),
+            id: z.union([
                 z.number(),
-                z.array(z.union([z.string(), z.number()]))
-            ]).describe('Article title, page ID, or array of titles/IDs'),
+                z.array(z.number())
+            ]).optional().describe('Page ID or array of page IDs (required if "title" is not provided)'),
             properties: z.array(z.string()).optional().describe('Specific properties to retrieve (e.g. protection, talkid, url)')
         },
         {
@@ -56,31 +59,73 @@ export function getArticleInfoTool( server: McpServer ): RegisteredTool {
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( { title, properties } ) => handleGetArticleInfoTool( title, properties )
+        async ( { title, id, properties } ) => handleGetArticleInfoTool( title, id, properties )
     );
-    tool.update({ outputSchema: { title: z.string(), results: z.array(z.record(z.unknown())), count: z.number() } });
+    tool.update({ outputSchema: { identifier: z.union([z.string(), z.number(), z.array(z.unknown())]), results: z.array(z.record(z.unknown())), count: z.number() } });
     return tool;
 }
 
 async function handleGetArticleInfoTool(
-    title: string | number | (string | number)[],
+    title: string | string[] | undefined,
+    id: number | number[] | undefined,
     properties?: string[]
 ): Promise<CallToolResult> {
     try {
+        const hasTitle = typeof title === 'string' ? title.length > 0 : Array.isArray(title) ? title.length > 0 : false;
+        const hasId = typeof id === 'number' ? id > 0 : Array.isArray(id) ? id.length > 0 : false;
+
+        if (!hasTitle && !hasId) {
+            return errorResult('Either "title" or "id" must be provided');
+        }
+        if (hasTitle && hasId) {
+            return errorResult('Provide either "title" or "id", not both');
+        }
+
         const bot = await getBot();
-        const options = properties ? { inprop: properties } : {};
+
+        if (hasId) {
+            // Use low-level API: the high-level Bot method may not support page IDs
+            const ids = Array.isArray(id) ? id : [id];
+            const pageids = ids.join('|');
+            const apiParams: Record<string, unknown> = {
+                action: 'query',
+                prop: 'info',
+                pageids,
+                inprop: properties?.join('|') || 'protection|talkid|url'
+            };
+
+            const result = await new Promise<Record<string, unknown>>((resolve, reject) => {
+                (bot as any).api.call(
+                    apiParams,
+                    (err: Error | null, data: Record<string, unknown>) => {
+                        if (err) reject(err);
+                        else resolve(data);
+                    },
+                    'GET'
+                );
+            });
+
+            const pages = result.pages as Record<string, Record<string, unknown>> | undefined;
+            const results = pages ? Object.values(pages).filter(p => p.missing === undefined) : [];
+
+            return jsonResult({
+                identifier: Array.isArray(id) ? id : id,
+                results,
+                count: results.length
+            });
+        }
+
         const info = await promisifyBotMethod<ArticleInfo>(
             bot,
             'getArticleInfo',
             title,
-            options
+            {}
         );
 
-        // Handle array of results vs single result
         const results = Array.isArray(info) ? info : [info];
 
         return jsonResult({
-            title,
+            identifier: title,
             results,
             count: results.length
         });

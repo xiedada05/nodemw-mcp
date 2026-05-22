@@ -37,24 +37,70 @@ export function getArticleCategoriesTool( server: McpServer ): RegisteredTool {
         'get-article-categories',
         'Get all categories that an article belongs to',
         {
-            title: z.union([z.string(), z.number()]).describe('Article title or page ID')
+            title: z.string().optional().describe('Article title (required if "id" is not provided)'),
+            id: z.number().optional().describe('Page ID (required if "title" is not provided)')
         },
         {
             title: 'Get article categories',
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( { title } ) => handleGetArticleCategoriesTool( title )
+        async ( { title, id } ) => handleGetArticleCategoriesTool( title, id )
     );
-    tool.update({ outputSchema: { title: z.string(), categories: z.array(z.string()), count: z.number() } });
+    tool.update({ outputSchema: { title: z.union([z.string(), z.number()]), categories: z.array(z.string()), count: z.number() } });
     return tool;
 }
 
+function getFirstItem<T>(obj: Record<string, T> | null | undefined): T | null {
+    if (!obj) return null;
+    for (const key in obj) {
+        return obj[key];
+    }
+    return null;
+}
+
 async function handleGetArticleCategoriesTool(
-    title: string | number
+    title: string | undefined,
+    id: number | undefined
 ): Promise<CallToolResult> {
     try {
+        if (!title && id == null) {
+            return errorResult('Either "title" or "id" must be provided');
+        }
+        if (title && id != null) {
+            return errorResult('Provide either "title" or "id", not both');
+        }
+
         const bot = await getBot();
+
+        if (id !== undefined) {
+            // Use low-level API: the high-level Bot method may not support page IDs
+            const result = await new Promise<Record<string, unknown>>((resolve, reject) => {
+                (bot as any).api.call(
+                    { action: 'query', prop: 'categories', pageids: id, cllimit: 'max' },
+                    (err: Error | null, data: Record<string, unknown>) => {
+                        if (err) reject(err);
+                        else resolve(data);
+                    },
+                    'GET'
+                );
+            });
+
+            const pages = result.pages as Record<string, Record<string, unknown>> | undefined;
+            const page = getFirstItem(pages);
+            if (!page || page.missing !== undefined) {
+                return errorResult(`Page with ID ${id} not found`);
+            }
+            const rawCategories = page.categories as Array<{ title: string }> | undefined;
+            const categories = (rawCategories || []).map(c => c.title);
+
+            return jsonResult({
+                title: page.title ?? id,
+                categories,
+                count: categories.length
+            });
+        }
+
         const categories = await promisifyBotMethod<string[]>(
             bot,
             'getArticleCategories',

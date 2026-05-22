@@ -46,24 +46,88 @@ export function getArticleRevisionsTool( server: McpServer ): RegisteredTool {
         'get-article-revisions',
         'Get all revisions of a wiki article',
         {
-            title: z.union([z.string(), z.number()]).describe('Article title or page ID')
+            title: z.string().optional().describe('Article title (required if "id" is not provided)'),
+            id: z.number().optional().describe('Page ID (required if "title" is not provided)')
         },
         {
             title: 'Get article revisions',
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( { title } ) => handleGetArticleRevisionsTool( title )
+        async ( { title, id } ) => handleGetArticleRevisionsTool( title, id )
     );
-    tool.update({ outputSchema: { title: z.string(), revisions: z.array(z.record(z.unknown())), count: z.number() } });
+    tool.update({ outputSchema: { identifier: z.union([z.string(), z.number()]), revisions: z.array(z.record(z.unknown())), count: z.number() } });
     return tool;
 }
 
+async function apiCall(bot: any, params: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return new Promise<Record<string, unknown>>((resolve, reject) => {
+        (bot as any).api.call(
+            params,
+            (err: Error | null, data: Record<string, unknown>) => {
+                if (err) reject(err);
+                else resolve(data);
+            },
+            'GET'
+        );
+    });
+}
+
 async function handleGetArticleRevisionsTool(
-    title: string | number
+    title: string | undefined,
+    id: number | undefined
 ): Promise<CallToolResult> {
     try {
+        if (!title && id == null) {
+            return errorResult('Either "title" or "id" must be provided');
+        }
+        if (title && id != null) {
+            return errorResult('Provide either "title" or "id", not both');
+        }
+
         const bot = await getBot();
+
+        if (id !== undefined) {
+            // Use low-level API with pagination to get all revisions by page ID
+            const allRevisions: Revision[] = [];
+            let rvcontinue: string | undefined;
+
+            do {
+                const params: Record<string, unknown> = {
+                    action: 'query',
+                    prop: 'revisions',
+                    pageids: id,
+                    rvprop: 'ids|timestamp|user|comment|size',
+                    rvlimit: 500,
+                    rvdir: 'older'
+                };
+                if (rvcontinue) {
+                    params.rvcontinue = rvcontinue;
+                }
+
+                const result = await apiCall(bot, params);
+                const pages = result.pages as Record<string, Record<string, unknown>> | undefined;
+                if (!pages) break;
+
+                const pageId = String(id);
+                const page = pages[pageId];
+                if (!page || page.missing !== undefined) break;
+
+                const revs = page.revisions as Revision[] | undefined;
+                if (revs) {
+                    allRevisions.push(...revs);
+                }
+
+                rvcontinue = (result.continue as { rvcontinue?: string } | undefined)?.rvcontinue;
+            } while (rvcontinue && allRevisions.length < 10000);
+
+            return jsonResult({
+                identifier: id,
+                revisions: allRevisions,
+                count: allRevisions.length
+            });
+        }
+
         const allRevisions = await promisifyBotMethod<Revision[][]>(
             bot,
             'getArticleRevisions',
@@ -74,7 +138,7 @@ async function handleGetArticleRevisionsTool(
         const revisions = allRevisions.flat().filter(rev => rev != null);
 
         return jsonResult({
-            title,
+            identifier: title,
             revisions,
             count: revisions.length
         });

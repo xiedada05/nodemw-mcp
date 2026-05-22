@@ -38,13 +38,13 @@ interface PageInfo {
     missing?: boolean;
 }
 
-async function recordReadState(title: string | number): Promise<void> {
+async function recordReadState(identifier: string | number): Promise<void> {
     try {
         const bot = await getBot();
         const pages = await promisifyBotMethod<PageInfo[]>(
             bot,
             'getArticleInfo',
-            title,
+            identifier,
             { prop: 'info' }
         );
         const page = Array.isArray(pages) ? pages[0] : null;
@@ -69,8 +69,9 @@ export function getArticleTool( server: McpServer ): RegisteredTool {
         'get-article',
         'Retrieve the content of a wiki article',
         {
-            title: z.string().describe( 'Article title' ),
-            followRedirect: z.boolean().optional().default( true ).describe( 'Follow redirects' ),
+            title: z.string().optional().describe( 'Article title (required if "id" is not provided)' ),
+            id: z.number().optional().describe( 'Page ID (required if "title" is not provided)' ),
+            followRedirect: z.boolean().optional().default( true ).describe( 'Follow redirects (only applies when using "title")' ),
             redirectInfo: z.boolean().optional().default( false ).describe( 'Include information about redirects' ),
             revision: z.number().optional().describe( 'Specific revision ID to fetch. If omitted, returns the latest version.' )
         },
@@ -79,12 +80,14 @@ export function getArticleTool( server: McpServer ): RegisteredTool {
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( { title, followRedirect, redirectInfo, revision } ) => handleGetArticleTool( title, followRedirect, redirectInfo, revision )
+        async ( { title, id, followRedirect, redirectInfo, revision } ) =>
+            handleGetArticleTool( title, id, followRedirect, redirectInfo, revision )
     );
 }
 
 async function handleGetArticleTool(
-    title: string,
+    title: string | undefined,
+    id: number | undefined,
     followRedirect: boolean,
     redirectInfo: boolean,
     revision?: number
@@ -92,16 +95,33 @@ async function handleGetArticleTool(
     try {
         const bot = await getBot();
 
-        if (revision !== undefined) {
-            // Bypass bot.getArticle — call the API directly with rvstartid to fetch a specific revision
+        // Validate: exactly one of title or id must be provided
+        if (!title && id == null) {
+            return {
+                content: [{ type: 'text', text: 'Either "title" or "id" must be provided.' }],
+                isError: true
+            };
+        }
+        if (title && id != null) {
+            return {
+                content: [{ type: 'text', text: 'Provide either "title" or "id", not both.' }],
+                isError: true
+            };
+        }
+
+        const useDirectApi = revision !== undefined || id !== undefined;
+
+        if (useDirectApi) {
+            // Use direct API call (for revision lookup and/or page-id lookup)
             const params: Record<string, unknown> = {
                 action: 'query',
                 prop: 'revisions',
                 rvprop: 'content',
-                rvstartid: revision,
                 rvlimit: 1,
-                titles: title,
-                ...(followRedirect && { redirects: '' })
+                ...(id !== undefined ? { pageids: id } : { titles: title }),
+                ...(revision !== undefined && { rvstartid: revision }),
+                // redirects param is ignored by MW API when pageids is used
+                ...(id === undefined && followRedirect && { redirects: '' })
             };
 
             const info = await new Promise<Record<string, unknown>>((resolve, reject) => {
@@ -115,27 +135,45 @@ async function handleGetArticleTool(
             const pages = info.pages as Record<string, Record<string, unknown>> | undefined;
             const page = getFirstItem(pages);
             if (!page || page.missing !== undefined) {
+                const identifier = title ?? `id ${id}`;
                 return {
-                    content: [{ type: 'text', text: `Page "${title}" not found.` }],
-                    isError: true
-                };
-            }
-            const revisions = page.revisions as Array<{ '*': string }> | undefined;
-            const rev = revisions?.[0];
-            if (!rev || rev['*'] == null) {
-                return {
-                    content: [{ type: 'text', text: `Revision ${revision} not found for page "${title}".` }],
+                    content: [{ type: 'text', text: `Page "${identifier}" not found.` }],
                     isError: true
                 };
             }
 
-            await recordReadState(title);
+            if (revision !== undefined) {
+                const revisions = page.revisions as Array<{ '*': string }> | undefined;
+                const rev = revisions?.[0];
+                if (!rev || rev['*'] == null) {
+                    const identifier = title ?? `id ${id}`;
+                    return {
+                        content: [{ type: 'text', text: `Revision ${revision} not found for page "${identifier}".` }],
+                        isError: true
+                    };
+                }
+                await recordReadState(id ?? title!);
+                return {
+                    content: [{ type: 'text', text: rev['*'] }]
+                };
+            }
+
+            // id-only path: page content is in revisions[0]['*']
+            const revisions = page.revisions as Array<{ '*': string }> | undefined;
+            const content = revisions?.[0]?.['*'];
+            if (content == null) {
+                return {
+                    content: [{ type: 'text', text: page.title ? `Page "${page.title}" is empty.` : `Page ID ${id} is empty.` }],
+                    isError: false
+                };
+            }
+            await recordReadState(id ?? title!);
             return {
-                content: [{ type: 'text', text: rev['*'] }]
+                content: [{ type: 'text', text: content === '' ? '(empty page)' : content }]
             };
         }
 
-        // Original path: fetch latest version via bot.getArticle
+        // Original path: fetch latest version via bot.getArticle (title-only)
         if (redirectInfo) {
             const result = await new Promise<[string, unknown]>((resolve, reject) => {
                 const callback = (err: Error | null, content: string, redirectInfo: unknown) => {
@@ -160,7 +198,7 @@ async function handleGetArticleTool(
                 ? `Content:\n\n${content}\n\nRedirect Information:\n\n${JSON.stringify(redirect, null, 2)}`
                 : (content === '' ? '(empty page)' : content);
 
-            await recordReadState(title);
+            await recordReadState(title!);
             return {
                 content: [ { type: 'text', text: responseText } ]
             };
@@ -177,7 +215,7 @@ async function handleGetArticleTool(
                     isError: true
                 };
             }
-            await recordReadState(title);
+            await recordReadState(title!);
             return {
                 content: [ { type: 'text', text: result === '' ? '(empty page)' : result } ]
             };

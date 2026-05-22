@@ -60,6 +60,7 @@ import { getMediaWikiVersionTool } from './ro/get-mediawiki-version.js';
 import { getQueryPageTool } from './ro/get-query-page.js';
 import { getExternalLinksTool } from './ro/get-external-links.js';
 import { getBacklinksTool } from './ro/get-backlinks.js';
+import { getArticleByRevisionTool } from './ro/get-article-by-revision.js';
 
 // Write tools
 import { editTool } from './editing/edit.js';
@@ -107,6 +108,7 @@ const readToolRegistrars = [
     getQueryPageTool,
     getExternalLinksTool,
     getBacklinksTool,
+    getArticleByRevisionTool,
 ];
 
 const writeToolRegistrars = [
