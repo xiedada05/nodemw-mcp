@@ -57,7 +57,8 @@ export function getUserContribsTool( server: McpServer ): RegisteredTool {
         'If displayed < total, more results exist — use the timestamp of the LAST returned contribution as the start parameter for the next page. ' +
         'Repeat until displayed < limit to get all results.',
         {
-            username: z.string().describe('Username to get contributions for'),
+            username: z.string().optional().describe('Username to get contributions for (required if "id" is not provided)'),
+            id: z.number().optional().describe('User ID to get contributions for (required if "username" is not provided)'),
             namespace: z.number().optional().describe('Filter contributions by namespace'),
             limit: z.number().optional().default(50).describe('Maximum number of contributions to return'),
             start: z.string().optional().describe(
@@ -72,40 +73,53 @@ export function getUserContribsTool( server: McpServer ): RegisteredTool {
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( { username, namespace, limit, start } ) => handleGetUserContribsTool( username, namespace, limit, start )
+        async ( { username, id, namespace, limit, start } ) => handleGetUserContribsTool( username, id, namespace, limit, start )
     );
-    tool.update({ outputSchema: { username: z.string(), namespace: z.number().optional(), limit: z.number(), start: z.string().optional(), total: z.number(), displayed: z.number(), contributions: z.array(z.record(z.unknown())) } });
+    tool.update({ outputSchema: { username: z.string().optional(), id: z.number().optional(), namespace: z.number().optional(), limit: z.number(), start: z.string().optional(), total: z.number(), displayed: z.number(), contributions: z.array(z.record(z.unknown())) } });
     return tool;
 }
 
 async function handleGetUserContribsTool(
-    username: string,
+    username?: string,
+    id?: number,
     namespace?: number,
     limit: number = 50,
     start?: string
 ): Promise<CallToolResult> {
     try {
+        if (!username && id == null) {
+            return errorResult('Either "username" or "id" must be provided');
+        }
+        if (username && id != null) {
+            return errorResult('Provide either "username" or "id", not both');
+        }
+
         const bot = await getBot();
 
-        // Verify user exists before fetching contributions
-        const userInfo = await promisifyBotMethod<{ missing?: string }>(
-            bot,
-            'whois',
-            username
-        );
-        if (userInfo.missing !== undefined) {
-            return errorResult(`User "${username}" not found.`);
+        // Verify user exists (only for username path; for id path, MW returns empty results if stale)
+        if (username) {
+            const userInfo = await promisifyBotMethod<{ missing?: string }>(
+                bot,
+                'whois',
+                username
+            );
+            if (userInfo.missing !== undefined) {
+                return errorResult(`User "${username}" not found.`);
+            }
         }
 
         const allContribs: UserContrib[] = [];
 
-        // Use the smaller of limit and 500 (MW max per page) for uclimit
         const perPage = Math.min(limit, 500);
+
+        const userParam = id !== undefined
+            ? { ucuserids: id }
+            : { ucuser: username };
 
         const baseParams: Record<string, unknown> = {
             action: 'query',
             list: 'usercontribs',
-            ucuser: username,
+            ...userParam,
             uclimit: perPage,
             ucprop: 'ids|title|timestamp|comment|size|flags',
             ...(namespace !== undefined && { ucnamespace: namespace }),
@@ -129,12 +143,10 @@ async function handleGetUserContribsTool(
                 allContribs.push(...usercontribs);
             }
 
-            // Stop if we have enough
             if (allContribs.length >= limit) {
                 break;
             }
 
-            // MW 1.26+ uses "continue", MW 1.23 uses "query-continue"
             if (rawData.continue) {
                 continueParams = rawData.continue as Record<string, unknown>;
             } else if (rawData['query-continue']) {
@@ -149,6 +161,7 @@ async function handleGetUserContribsTool(
 
         return jsonResult({
             username,
+            id,
             namespace,
             limit,
             start,

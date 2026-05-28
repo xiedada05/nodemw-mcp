@@ -36,99 +36,104 @@ import { jsonResult, errorResult } from '../../common/utils.js';
 export function editTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'edit',
-        'Replace the ENTIRE content of a wiki page (requires authentication). ' +
-        'CRITICAL: This is a FULL replacement — content you provide becomes the complete page, not an addition. ' +
-        'There is NO undelete/undo tool — any damage you cause must be manually reverted by a human. ' +
-        'To add a category or make a small change, you MUST first call get-article to retrieve the current content, ' +
-        'modify it as needed, then pass the FULL modified content here. ' +
-        'For appending or prepending without fetching the full page first, use the append/prepend tools instead.',
+        'Replace specific lines in a wiki page by exact string match (requires authentication). ' +
+        'Like a code editor: provide old_lines (the text to find) and new_lines (the replacement). ' +
+        'LOW RISK: Only replaces one exact match — safer than full-page write. ' +
+        'Use get-article-with-lineno first to see the current content with line numbers, ' +
+        'then copy the exact text you want to replace into old_lines. ' +
+        'Only ONE occurrence will be replaced. If the text appears multiple times, the match will fail. ' +
+        'For full-page replacement, use the write tool instead.',
         {
             title: z.string().describe( 'Page title to edit' ),
-            content: z.string().describe( 'COMPLETE new wikitext for the ENTIRE page — not a snippet, not a prefix, not an appendage. ' +
-                'This replaces everything. Always fetch the current content with get-article first, then modify and resubmit the full text.' ),
-            intent: z.enum(['add', 'revise', 'delete']).describe(
-                'Your editing intent: "add" = adding content (page should grow), ' +
-                '"revise" = modifying content (small net change, must keep ≥3/4 of existing bytes), ' +
-                '"delete" = removing significant content (page should shrink significantly)' ),
+            old_lines: z.string().describe(
+                'Exact text to replace — copy verbatim from get-article-with-lineno output. ' +
+                'JSON string rules (ONLY these apply): ' +
+                '" → \\" (backslash-doublequote), ' +
+                '\\ → \\\\ (double backslash), ' +
+                'literal newline → \\n. ' +
+                'Do NOT "HTML-escape" anything — <, >, & are just normal characters in JSON. ' +
+                'The get-article-with-lineno result IS the raw wikitext; match against it directly.' ),
+            new_lines: z.string().describe( 'Replacement text to insert in place of old_lines' ),
             summary: z.string().describe( 'Edit summary describing what was changed and why' ),
-            minor: z.boolean().optional().default( false ).describe( 'Mark as minor edit' )
+            minor: z.boolean().optional().default(false).describe( 'Mark as minor edit' )
         },
         {
-            title: 'Edit page',
+            title: 'Edit page (line-based)',
             readOnlyHint: false,
             destructiveHint: true
         } as ToolAnnotations,
-        async ( params ) => handleEditTool( params )
+        async ( { title, old_lines, new_lines, summary, minor } ) =>
+            handleEditTool( title, old_lines, new_lines, summary, minor )
     );
-    tool.update({ outputSchema: { result: z.string(), pageid: z.number(), title: z.string(), contentmodel: z.string().optional(), newrevid: z.number(), newtimestamp: z.string().optional(), oldrevid: z.number().optional() } });
+    tool.update({ outputSchema: {
+        result: z.string(),
+        title: z.string(),
+        newrevid: z.number().optional(),
+        oldrevid: z.number().optional()
+    }});
     return tool;
 }
 
 async function handleEditTool(
-    params: {
-        title: string;
-        content: string;
-        intent: 'add' | 'revise' | 'delete';
-        summary: string;
-        minor?: boolean;
-    }
+    title: string,
+    old_lines: string,
+    new_lines: string,
+    summary: string,
+    minor: boolean = false
 ): Promise<CallToolResult> {
     try {
-        const bot = await getBot();
-        await requireRead(params.title);
+        const bot = getBot();
+        await requireRead(title);
 
-        // Fetch current page content for size validation
-        const currentContent = await promisifyBotMethod<string>(bot, 'getArticle', params.title, false);
-        if (currentContent != null) {
-            const currentBytes = Buffer.byteLength(currentContent, 'utf8');
-            const proposedBytes = Buffer.byteLength(params.content, 'utf8');
+        // Fetch current content
+        const currentContent = await promisifyBotMethod<string>(
+            bot,
+            'getArticle',
+            title,
+            true
+        );
 
-            const delta = currentBytes - proposedBytes;
-            if (delta > 200) {
-                // Only enforce ratio checks when the absolute change is significant
-                switch (params.intent) {
-                    case 'add':
-                        if (proposedBytes < currentBytes) {
-                            return errorResult(
-                                `Size mismatch: intent is "add" but proposed (${proposedBytes} B) < current (${currentBytes} B). ` +
-                                `Add operations should not shrink the page. If you meant to remove content, use intent "delete".`
-                            );
-                        }
-                        break;
-                    case 'revise':
-                        if (proposedBytes < currentBytes * 3 / 4) {
-                            return errorResult(
-                                `Size mismatch: intent is "revise" but proposed (${proposedBytes} B) < 3/4 of current (${currentBytes} B, threshold ${Math.floor(currentBytes * 3 / 4)} B). ` +
-                                `Revise should keep most content intact. For larger removals, use intent "delete".`
-                            );
-                        }
-                        break;
-                    case 'delete':
-                        if (proposedBytes < currentBytes * 1 / 10) {
-                            return errorResult(
-                                `Size mismatch: intent is "delete" but proposed (${proposedBytes} B) < 1/10 of current (${currentBytes} B, threshold ${Math.floor(currentBytes / 10)} B). ` +
-                                `This looks like an accidental page wipe. If intentional, verify the content is correct and retry.`
-                            );
-                        }
-                        break;
-                }
-            }
+        if (currentContent == null) {
+            return errorResult(`Page "${title}" not found.`);
         }
 
-        const prefixedSummary = `[nodemw-mcp.edit] ${params.summary}`;
+        // Exact match replacement (single occurrence only)
+        const firstIdx = currentContent.indexOf(old_lines);
+        if (firstIdx === -1) {
+            return errorResult(
+                'old_lines not found in the current page content. ' +
+                'The text must match EXACTLY (whitespace, newlines, etc.). ' +
+                'Use get-article-with-lineno to verify the current content before retrying.'
+            );
+        }
+
+        // Verify uniqueness
+        const secondIdx = currentContent.indexOf(old_lines, firstIdx + 1);
+        if (secondIdx !== -1) {
+            const line1 = currentContent.substring(0, firstIdx).split('\n').length;
+            const line2 = currentContent.substring(0, secondIdx).split('\n').length;
+            return errorResult(
+                `old_lines matches multiple locations in the page (lines ${line1} and ${line2}). ` +
+                'Provide more surrounding context to make the match unique.'
+            );
+        }
+
+        const newContent = currentContent.slice(0, firstIdx) + new_lines + currentContent.slice(firstIdx + old_lines.length);
+
+        const prefixedSummary = `[nodemw-mcp.edit] ${summary}`;
 
         const result = await promisifyBotMethod<{
+            result: string;
             title: string;
-            pageid?: number;
-            oldrevid?: number;
             newrevid?: number;
+            oldrevid?: number;
         }>(
             bot,
             'edit',
-            params.title,
-            params.content,
+            title,
+            newContent,
             prefixedSummary,
-            params.minor || false
+            minor
         );
 
         return jsonResult(result);

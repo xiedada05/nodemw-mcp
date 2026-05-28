@@ -37,7 +37,7 @@ export function appendTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'append',
         'Append content to the END of a wiki page without changing existing content (requires authentication). ' +
-        'Safe for adding categories, interwiki links, or any content that belongs at the bottom of a page.',
+        'LOW RISK: Additive only, easy to revert. Safe for adding categories, interwiki links, or bottom-of-page content.',
         {
             title: z.string().describe( 'Page title' ),
             content: z.string().describe( 'Content to append to the end of the page (e.g., "\\n[[Category:MyCategory]]")' ),

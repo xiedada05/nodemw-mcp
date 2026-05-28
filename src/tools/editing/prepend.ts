@@ -37,7 +37,7 @@ export function prependTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'prepend',
         'Prepend content to the TOP of a wiki page without changing existing content (requires authentication). ' +
-        'Useful for adding notices, templates, or cleanup tags that belong at the top of a page.',
+        'LOW RISK: Additive only, easy to revert. Useful for adding notices, templates, or cleanup tags.',
         {
             title: z.string().describe( 'Page title to prepend to' ),
             content: z.string().describe( 'Content to prepend to the top of the page (e.g., "{{Cleanup}}\\n")' ),

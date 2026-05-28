@@ -29,7 +29,7 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { getBot } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -44,34 +44,55 @@ export function getUsersTool( server: McpServer ): RegisteredTool {
         'Get all users matching a prefix',
         {
             prefix: z.string().optional().default('').describe('Prefix to filter usernames'),
-            onlyWithEdits: z.boolean().optional().default(false).describe('Only include users with at least one edit')
+            onlyWithEdits: z.boolean().optional().default(false).describe('Only include users with at least one edit'),
+            limit: z.number().int().min(1).max(5000).optional().default(50).describe('Maximum number of users to return (1-5000)')
         },
         {
             title: 'Get users',
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( { prefix, onlyWithEdits } ) => handleGetUsersTool( prefix, onlyWithEdits )
+        async ( { prefix, onlyWithEdits, limit } ) => handleGetUsersTool( prefix, onlyWithEdits, limit )
     );
-    tool.update({ outputSchema: { prefix: z.string(), onlyWithEdits: z.boolean(), users: z.array(z.record(z.unknown())), count: z.number() } });
+    tool.update({ outputSchema: { prefix: z.string(), onlyWithEdits: z.boolean(), limit: z.number(), users: z.array(z.record(z.unknown())), count: z.number() } });
     return tool;
 }
 
 async function handleGetUsersTool(
     prefix: string,
-    onlyWithEdits: boolean
+    onlyWithEdits: boolean,
+    limit: number
 ): Promise<CallToolResult> {
     try {
-        const bot = await getBot();
-        const results = await promisifyBotMethod<UserInfo[]>(
-            bot,
-            'getUsers',
-            { prefix, witheditsonly: onlyWithEdits }
-        );
+        const bot = getBot();
+        // Use low-level API: nodemw's getUsers always passes auwitheditsonly=0
+        // which MediaWiki incorrectly interprets as a filter, hiding users.
+        const params: Record<string, string | number> = {
+            action: 'query',
+            list: 'allusers',
+            aulimit: limit
+        };
+        if ( prefix ) {
+            params.auprefix = prefix;
+        }
+        if ( onlyWithEdits ) {
+            params.auwitheditsonly = 1;
+        }
+
+        const results = await new Promise<UserInfo[]>((resolve, reject) => {
+            (bot as any).api.call(params, (err: Error | null, data: any) => {
+                if ( err ) {
+                    reject(err);
+                } else {
+                    resolve((data && data.allusers) || []);
+                }
+            }, 'GET');
+        });
 
         return jsonResult({
             prefix,
             onlyWithEdits,
+            limit,
             users: results,
             count: results.length
         });

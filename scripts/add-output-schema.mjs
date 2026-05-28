@@ -11,7 +11,7 @@ const outputSchemas = {
     'get-article-properties': '{ title: z.string(), properties: z.record(z.unknown()) }',
     'get-article-revisions': '{ title: z.string(), revisions: z.array(z.record(z.unknown())), count: z.number() }',
     'get-backlinks':       '{ target: z.string(), backlinks: z.array(z.record(z.unknown())), count: z.number() }',
-    'get-categories':      '{ prefix: z.string(), categories: z.array(z.record(z.unknown())), count: z.number() }',
+    'get-categories':      '{ prefix: z.string(), categories: z.array(z.string()), count: z.number() }',
     'get-external-links':  '{ title: z.string(), links: z.array(z.record(z.unknown())), count: z.number() }',
     'get-image-info':      '{ filename: z.string(), info: z.record(z.unknown()) }',
     'get-image-usage':     '{ filename: z.string(), pages: z.array(z.record(z.unknown())), count: z.number() }',

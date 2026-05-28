@@ -36,8 +36,8 @@ export function uploadTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'upload',
         'Upload a file to the wiki (requires authentication). ' +
-        'CRITICAL: If a file with the same name already exists, it WILL BE OVERWRITTEN. ' +
-        'Ensure you have the right to upload the content. Use only when explicitly requested.',
+        'MEDIUM RISK: Existing files with the same name WILL BE OVERWRITTEN silently. ' +
+        'You must have rights to the content. Only use when explicitly requested.',
         {
             filename: z.string().describe( 'Destination filename on wiki (e.g., "MyImage.png") — existing file will be overwritten!' ),
             content: z.string().describe( 'File content encoded as base64 string' ),

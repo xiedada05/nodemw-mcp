@@ -29,7 +29,7 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { getBot, getMediaWikiVersion } from '../../common/nodemwBot.js';
 import { requireRead } from '../../common/pageState.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
@@ -37,8 +37,8 @@ export function protectTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'protect',
         'Protect or unprotect a wiki page to restrict editing/moving (requires authentication). ' +
-        'CRITICAL: Protection can lock out legitimate editors — only protect pages when there is a clear need ' +
-        '(ongoing vandalism, edit war, high-risk template, policy page). ' +
+        'HIGH RISK: Protection locks out legitimate editors and can be abused to win edit wars. ' +
+        'Only protect pages when there is a clear, ongoing need (vandalism, edit war, high-risk template). ' +
         'To remove protection, set level to "all". ' +
         'Available levels: "all" (anyone), "autoconfirmed" (trusted users), "sysop" (admins only).',
         {
@@ -74,28 +74,55 @@ async function handleProtectTool(
     }
 ): Promise<CallToolResult> {
     try {
-        const bot = await getBot();
+        const bot = getBot();
         await requireRead(params.title);
-        const options: any = {};
+
+        const mwVersion = getMediaWikiVersion();
+        const tokenType = (mwVersion !== null && mwVersion >= 1.24) ? 'csrf' : 'protect';
+
+        const token = await new Promise<string>((resolve, reject) => {
+            (bot as any).getToken(params.title, tokenType, (err: Error | null, t: string) => {
+                if (err) reject(err);
+                else resolve(t);
+            });
+        });
+
+        // Build protections string: "edit=sysop|move=autoconfirmed"
+        const protectionStr = params.protections
+            .map(p => `${p.type}=${p.level || 'all'}`)
+            .join('|');
+
+        // Build expiry string: "1 week|infinite"
+        const expiryStr = params.protections
+            .map(p => p.expiry || 'infinite')
+            .join('|');
+
+        const apiParams: Record<string, string | number | boolean> = {
+            action: 'protect',
+            title: params.title,
+            protections: protectionStr,
+            expiry: expiryStr,
+            token
+        };
         if (params.reason) {
-            options.reason = `[nodemw-mcp.protect] ${params.reason}`;
+            apiParams.reason = `[nodemw-mcp.protect] ${params.reason}`;
         }
         if (params.cascade) {
-            options.cascade = params.cascade;
+            apiParams.cascade = true;
         }
 
-        const result = await promisifyBotMethod<{
-            title: string;
-            protections: any[];
-        }>(
-            bot,
-            'protect',
-            params.title,
-            params.protections,
-            options
-        );
+        const data = await new Promise<Record<string, any>>((resolve, reject) => {
+            (bot as any).api.call(apiParams, (err: Error | null, result: Record<string, any>) => {
+                if (err) reject(err);
+                else resolve(result);
+            }, 'POST');
+        });
 
-        return jsonResult(result);
+        if (data.error) {
+            return errorResult(`Protect failed: ${data.error.info || data.error.code}`, new Error(JSON.stringify(data.error)));
+        }
+
+        return jsonResult(data.protect || data);
     } catch ( error ) {
         return errorResult('Failed to protect page', error as Error);
     }

@@ -73,16 +73,27 @@ export function getArticleTool( server: McpServer ): RegisteredTool {
             id: z.number().optional().describe( 'Page ID (required if "title" is not provided)' ),
             followRedirect: z.boolean().optional().default( true ).describe( 'Follow redirects (only applies when using "title")' ),
             redirectInfo: z.boolean().optional().default( false ).describe( 'Include information about redirects' ),
-            revision: z.number().optional().describe( 'Specific revision ID to fetch. If omitted, returns the latest version.' )
+            revision: z.number().optional().describe( 'Specific revision ID to fetch. If omitted, returns the latest version.' ),
+            maxlen: z.number().int().min( 0 ).optional().describe(
+                'Maximum response length in characters. ' +
+                'If the article exceeds this length, it will be truncated with a "[truncated]" marker. ' +
+                'Useful when deploying behind HTTP proxies with response size limits (e.g. Alibaba Cloud FC). ' +
+                'Omit for full content.' )
         },
         {
             title: 'Get article',
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( { title, id, followRedirect, redirectInfo, revision } ) =>
-            handleGetArticleTool( title, id, followRedirect, redirectInfo, revision )
+        async ( { title, id, followRedirect, redirectInfo, revision, maxlen } ) =>
+            handleGetArticleTool( title, id, followRedirect, redirectInfo, revision, maxlen )
     );
+}
+
+function applyMaxlen(content: string, maxlen?: number): string {
+    if (maxlen === undefined || maxlen <= 0) return content;
+    if (content.length <= maxlen) return content;
+    return content.slice(0, maxlen) + '\n\n[truncated — article exceeds maxlen, use a higher value or omit maxlen for full content]';
 }
 
 async function handleGetArticleTool(
@@ -90,7 +101,8 @@ async function handleGetArticleTool(
     id: number | undefined,
     followRedirect: boolean,
     redirectInfo: boolean,
-    revision?: number
+    revision?: number,
+    maxlen?: number
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
@@ -154,7 +166,7 @@ async function handleGetArticleTool(
                 }
                 await recordReadState(id ?? title!);
                 return {
-                    content: [{ type: 'text', text: rev['*'] }]
+                    content: [{ type: 'text', text: applyMaxlen(rev['*'], maxlen) }]
                 };
             }
 
@@ -169,7 +181,7 @@ async function handleGetArticleTool(
             }
             await recordReadState(id ?? title!);
             return {
-                content: [{ type: 'text', text: content === '' ? '(empty page)' : content }]
+                content: [{ type: 'text', text: applyMaxlen(content === '' ? '(empty page)' : content, maxlen) }]
             };
         }
 
@@ -195,8 +207,8 @@ async function handleGetArticleTool(
                 };
             }
             const responseText = redirect
-                ? `Content:\n\n${content}\n\nRedirect Information:\n\n${JSON.stringify(redirect, null, 2)}`
-                : (content === '' ? '(empty page)' : content);
+                ? `Content:\n\n${applyMaxlen(content, maxlen)}\n\nRedirect Information:\n\n${JSON.stringify(redirect, null, 2)}`
+                : applyMaxlen(content === '' ? '(empty page)' : content, maxlen);
 
             await recordReadState(title!);
             return {
@@ -217,7 +229,7 @@ async function handleGetArticleTool(
             }
             await recordReadState(title!);
             return {
-                content: [ { type: 'text', text: result === '' ? '(empty page)' : result } ]
+                content: [ { type: 'text', text: applyMaxlen(result === '' ? '(empty page)' : result, maxlen) } ]
             };
         }
     } catch ( error ) {

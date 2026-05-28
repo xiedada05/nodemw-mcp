@@ -12,7 +12,7 @@ const outputSchemas = {
     'get-article-properties': '{\n            title: z.string(),\n            properties: z.record(z.unknown())\n        }',
     'get-article-revisions': '{\n            title: z.string(),\n            revisions: z.array(z.record(z.unknown())),\n            count: z.number()\n        }',
     'get-backlinks': '{\n            target: z.string(),\n            backlinks: z.array(z.record(z.unknown())),\n            count: z.number()\n        }',
-    'get-categories': '{\n            prefix: z.string(),\n            categories: z.array(z.record(z.unknown())),\n            count: z.number()\n        }',
+    'get-categories': '{\n            prefix: z.string(),\n            categories: z.array(z.string()),\n            count: z.number()\n        }',
     'get-external-links': '{\n            title: z.string(),\n            links: z.array(z.record(z.unknown())),\n            count: z.number()\n        }',
     'get-image-info': '{\n            filename: z.string(),\n            info: z.record(z.unknown())\n        }',
     'get-image-usage': '{\n            filename: z.string(),\n            pages: z.array(z.record(z.unknown())),\n            count: z.number()\n        }',

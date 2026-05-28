@@ -36,7 +36,7 @@ export function purgeTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'purge',
         'Purge the server-side cache for one or more wiki pages (requires authentication). ' +
-        'Forces MediaWiki to regenerate the page from current wikitext. This is a safe, non-destructive action.',
+        'LOW RISK: Forces MediaWiki to regenerate the page — non-destructive, cache-only operation.',
         {
             titles: z.union([z.string(), z.array(z.string())]).describe( 'Page title(s) or category name to purge' ),
         },

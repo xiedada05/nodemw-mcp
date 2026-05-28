@@ -36,7 +36,7 @@ export function addFlowTopicTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'add-flow-topic',
         'Add a new Flow/Structured Discussions topic to a wiki talk page (requires authentication). ' +
-        'Creates a publicly visible discussion thread on the wiki. Ensure the content is appropriate and relevant.',
+        'MEDIUM RISK: Creates a publicly visible discussion thread — ensure content is appropriate and on-topic.',
         {
             title: z.string().describe( 'Talk page title to add the topic to (e.g., "Talk:Main Page")' ),
             subject: z.string().describe( 'Topic title/heading — should summarize the discussion topic' ),

@@ -81,7 +81,7 @@ export async function requireRead(title: string): Promise<number> {
         if (!isRead(page.pageid)) {
             throw new Error(
                 `Page "${title}" (pageid ${page.pageid}) has NOT been read. ` +
-                `You MUST call get-article first to fetch the current page content before editing. ` +
+                `You MUST call get-article or get-article-with-lineno first to fetch the current page content before editing. ` +
                 `This is a safety requirement to prevent accidental data loss.`
             );
         }

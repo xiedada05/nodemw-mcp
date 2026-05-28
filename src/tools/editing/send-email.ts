@@ -36,10 +36,8 @@ export function sendEmailTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'send-email',
         'Send an ACTUAL email to a wiki user via the wiki\'s built-in email system (requires authentication). ' +
-        'CRITICAL: This sends a real email to the user\'s registered address — it is NOT a simulation. ' +
-        'The recipient will see it came from the authenticated bot operator\'s wiki account. ' +
-        'Abuse (spam, harassment, unsolicited messages) WILL result in the bot account being blocked. ' +
-        'ONLY use this when the human user has explicitly asked you to send an email.',
+        'HIGH RISK: This delivers real email to a real person\'s inbox — NOT a simulation. ' +
+        'Misuse is spam/harassment. ONLY send when the human operator explicitly commands it.',
         {
             username: z.string().describe( 'Target wiki username — email goes to their registered email address' ),
             subject: z.string().describe( 'Email subject line — be clear and professional, no misleading subjects' ),

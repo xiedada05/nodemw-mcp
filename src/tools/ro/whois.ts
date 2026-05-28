@@ -32,38 +32,60 @@ import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface WhoisUserInfo extends Record<string, any> {
-    name: string;
-    userid: number;
-    groups: string[];
-    rights: string[];
-}
-
 export function whoisTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'whois',
         'Get information about a specific user',
         {
-            username: z.string().describe('Username to look up')
+            username: z.string().optional().describe('Username to look up (required if "id" is not provided)'),
+            id: z.number().optional().describe('User ID to look up (required if "username" is not provided)')
         },
         {
             title: 'Whois',
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( { username } ) => handleWhoisTool( username )
+        async ( { username, id } ) => handleWhoisTool( username, id )
     );
     tool.update({ outputSchema: { user: z.record(z.unknown()) } });
     return tool;
 }
 
 async function handleWhoisTool(
-    username: string
+    username?: string,
+    id?: number
 ): Promise<CallToolResult> {
     try {
+        if (!username && id == null) {
+            return errorResult('Either "username" or "id" must be provided');
+        }
+        if (username && id != null) {
+            return errorResult('Provide either "username" or "id", not both');
+        }
+
         const bot = await getBot();
-        const userInfo = await promisifyBotMethod<WhoisUserInfo & { missing?: string }>(
+
+        if (id !== undefined) {
+            const data = await new Promise<Record<string, any>>((resolve, reject) => {
+                (bot as any).api.call(
+                    { action: 'query', list: 'users', ususerids: id, usprop: 'blockinfo|groups|rights|editcount|registration' },
+                    (err: Error | null, result: Record<string, any>) => {
+                        if (err) reject(err);
+                        else resolve(result);
+                    },
+                    'GET'
+                );
+            });
+
+            const users = data?.query?.users as any[] | undefined;
+            if (!users || users.length === 0 || users[0].missing !== undefined) {
+                return errorResult(`User with ID ${id} not found.`);
+            }
+
+            return jsonResult({ user: users[0] });
+        }
+
+        const userInfo = await promisifyBotMethod<any>(
             bot,
             'whois',
             username

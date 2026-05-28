@@ -144,6 +144,20 @@ export function clearBotCache(): void {
     authenticated = false;
 }
 
+let mediaWikiVersion: string | null = null;
+
+export function setMediaWikiVersion(version: string): void {
+    mediaWikiVersion = version;
+}
+
+/** Return the major+minor version as a number, e.g. 1.23 → 1.23, 1.43 → 1.43 */
+export function getMediaWikiVersion(): number | null {
+    if (!mediaWikiVersion) return null;
+    const m = mediaWikiVersion.match(/^(\d+)\.(\d+)/);
+    if (!m) return null;
+    return parseFloat(m[1] + '.' + m[2]);
+}
+
 export function isAuthenticated(): boolean {
     return authenticated;
 }

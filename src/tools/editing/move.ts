@@ -37,7 +37,8 @@ export function moveTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'move',
         'Move (rename) a wiki page — changes the page title and creates a redirect from the old name (requires authentication). ' +
-        'The old page title becomes a redirect to the new title. All page history moves with the page.',
+        'MEDIUM RISK: Moving pages breaks existing redirects and inbound links. ' +
+        'Verify the target namespace and naming convention are correct. The old page title becomes a redirect to the new title. All page history moves with the page.',
         {
             from: z.string().describe( 'Current/existing page title to rename' ),
             to: z.string().describe( 'New target page title — must not already exist (unless moving to overwrite)' ),

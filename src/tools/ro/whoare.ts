@@ -37,34 +37,60 @@ export function whoareTool( server: McpServer ): RegisteredTool {
         'whoare',
         'Get information about multiple wiki users',
         {
-            usernames: z.array( z.string() ).describe( 'Array of usernames to query' ),
+            usernames: z.array( z.string() ).optional().describe( 'Array of usernames to query (required if "ids" is not provided)' ),
+            ids: z.array( z.number() ).optional().describe( 'Array of user IDs to query (required if "usernames" is not provided)' )
         },
         {
             title: 'Who are',
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( params ) => handleWhoareTool( params )
+        async ( { usernames, ids } ) => handleWhoareTool( usernames, ids )
     );
     tool.update({ outputSchema: { users: z.array(z.record(z.unknown())), count: z.number() } });
     return tool;
 }
 
 async function handleWhoareTool(
-    params: {
-        usernames: string[];
-    }
+    usernames?: string[],
+    ids?: number[]
 ): Promise<CallToolResult> {
     try {
+        if ( (!usernames || usernames.length === 0) && (!ids || ids.length === 0) ) {
+            return errorResult('Either "usernames" or "ids" must be provided and non-empty');
+        }
+        if ( usernames && usernames.length > 0 && ids && ids.length > 0 ) {
+            return errorResult('Provide either "usernames" or "ids", not both');
+        }
+
         const bot = await getBot();
+
+        if ( ids && ids.length > 0 ) {
+            const data = await new Promise<Record<string, any>>((resolve, reject) => {
+                (bot as any).api.call(
+                    { action: 'query', list: 'users', ususerids: ids.join('|'), usprop: 'blockinfo|groups|rights|editcount|registration' },
+                    (err: Error | null, result: Record<string, any>) => {
+                        if (err) reject(err);
+                        else resolve(result);
+                    },
+                    'GET'
+                );
+            });
+
+            const users = (data?.query?.users as any[]) || [];
+            const normalized = users.map(u =>
+                u && u.missing !== undefined ? { ...u, missing: true } : u
+            );
+
+            return jsonResult({ users: normalized, count: normalized.length });
+        }
 
         const users = await promisifyBotMethod<any[]>(
             bot,
             'whoare',
-            params.usernames
+            usernames
         );
 
-        // Normalize MW API's `missing: ""` to `missing: true`
         const normalized = users.map(u =>
             u && u.missing !== undefined ? { ...u, missing: true } : u
         );

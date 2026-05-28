@@ -36,8 +36,8 @@ export function uploadByUrlTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'upload-by-url',
         'Upload a file to the wiki by downloading it from a URL (requires authentication). ' +
-        'CRITICAL: If a file with the same name already exists, it WILL BE OVERWRITTEN. ' +
-        'Ensure you have the right to upload the content from the source URL.',
+        'MEDIUM RISK: Source URLs may be untrusted. Existing files WILL BE OVERWRITTEN silently. ' +
+        'You must have rights to the content. Only use when explicitly requested.',
         {
             filename: z.string().describe( 'Destination filename on wiki (e.g., "Diagram.png") — existing file will be overwritten!' ),
             url: z.string().url().describe( 'Source URL to download the file from — must be publicly accessible' ),

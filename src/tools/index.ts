@@ -61,9 +61,11 @@ import { getQueryPageTool } from './ro/get-query-page.js';
 import { getExternalLinksTool } from './ro/get-external-links.js';
 import { getBacklinksTool } from './ro/get-backlinks.js';
 import { getArticleByRevisionTool } from './ro/get-article-by-revision.js';
+import { getArticleWithLinenoTool } from './ro/get-article-with-lineno.js';
 
 // Write tools
 import { editTool } from './editing/edit.js';
+import { writeTool } from './editing/write.js';
 import { appendTool } from './editing/append.js';
 import { prependTool } from './editing/prepend.js';
 import { moveTool } from './editing/move.js';
@@ -75,8 +77,11 @@ import { uploadTool } from './editing/upload.js';
 import { uploadByUrlTool } from './editing/upload-by-url.js';
 import { addFlowTopicTool } from './editing/add-flow-topic.js';
 import { createAccountTool } from './editing/create-account.js';
+import { blockTool } from './editing/block.js';
+import { unblockTool } from './editing/unblock.js';
+import { undeleteTool } from './editing/undelete.js';
 
-const readToolRegistrars = [
+export const readToolRegistrars = [
     getArticleTool,
     searchTool,
     getPagesInCategoryTool,
@@ -109,9 +114,11 @@ const readToolRegistrars = [
     getExternalLinksTool,
     getBacklinksTool,
     getArticleByRevisionTool,
+    getArticleWithLinenoTool,
 ];
 
-const writeToolRegistrars = [
+export const writeToolRegistrars = [
+    writeTool,
     editTool,
     appendTool,
     prependTool,
@@ -124,6 +131,9 @@ const writeToolRegistrars = [
     uploadByUrlTool,
     addFlowTopicTool,
     createAccountTool,
+    blockTool,
+    unblockTool,
+    undeleteTool,
 ];
 
 export function registerAllTools(server: McpServer, includeWriteTools = true): RegisteredTool[] {

@@ -37,9 +37,9 @@ export function deleteTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'delete',
         'PERMANENTLY delete a wiki page (requires authentication). ' +
-        'CRITICAL: This action is IRREVERSIBLE — there is NO undelete/undo tool available. ' +
-        'Any deletion must be manually restored by a human administrator. ' +
-        'Only delete a page when the user explicitly asks for it. Always verify the title is correct before proceeding.',
+        'HIGH RISK: This removes all page content and history from public view. ' +
+        'While undelete may recover it on some wikis, deletion should never be taken lightly. ' +
+        'Only delete when the user explicitly asks. Always verify the title is correct before proceeding.',
         {
             title: z.string().describe( 'Exact page title to permanently delete — double-check this is correct' ),
             reason: z.string().describe( 'Detailed reason for deletion (visible in deletion log)' ),

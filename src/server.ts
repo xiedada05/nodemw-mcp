@@ -31,23 +31,7 @@ import pkg from '../package.json';
 
 export const USER_AGENT = 'nodemw-mcp-server/1.0';
 
-export interface SiteInfoSummary {
-    sitename: string;
-    base: string;
-    generator: string;
-}
-
-export function createServer(siteInfo?: SiteInfoSummary, authenticated = false): McpServer {
-    let description: string;
-    const authSuffix = authenticated
-        ? ' Write operations are available.'
-        : ' Running in guest mode — only read operations are available.';
-    if (siteInfo) {
-        description = `Connected to ${siteInfo.sitename} (${siteInfo.base}). Running ${siteInfo.generator}.${authSuffix} When connecting for the first time, call the get-site-info tool for full site details.`;
-    } else {
-        description = `When connecting to this server for the first time, call the get-site-info tool to understand the target MediaWiki site (version, namespaces, extensions, etc.) before using other tools.${authSuffix}`;
-    }
-
+export function createServer(description: string): McpServer {
     return new McpServer(
         {
             name: 'nodemw-mcp-server',
