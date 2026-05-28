@@ -4,12 +4,12 @@
   "description": "MCP server for nodemw - MediaWiki API client",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TimXiedada/nodemw-mcp.git"
+    "url": "git+https://github.com/xiedada05/nodemw-mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/TimXiedada/nodemw-mcp/issues"
+    "url": "https://github.com/xiedada05/nodemw-mcp/issues"
   },
-  "homepage": "https://github.com/TimXiedada/nodemw-mcp#readme",
+  "homepage": "https://github.com/xiedada05/nodemw-mcp#readme",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
