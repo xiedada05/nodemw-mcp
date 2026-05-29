@@ -67,8 +67,11 @@ export function editTool( server: McpServer ): RegisteredTool {
     );
     tool.update({ outputSchema: {
         result: z.string(),
+        pageid: z.number(),
         title: z.string(),
-        newrevid: z.number().optional(),
+        contentmodel: z.string().optional(),
+        newrevid: z.number(),
+        newtimestamp: z.string().optional(),
         oldrevid: z.number().optional()
     }});
     return tool;
