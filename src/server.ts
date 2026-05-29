@@ -36,8 +36,11 @@ export function createServer(description: string): McpServer {
         {
             name: 'nodemw-mcp-server',
             version: pkg.version,
-            description
+            description: 'MediaWiki API bridge for AI agents',
         },
-        { capabilities: { tools: {} } }
+        {
+            capabilities: { tools: {} },
+            instructions: description,
+        }
     );
 }
