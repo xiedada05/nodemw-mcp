@@ -304,6 +304,21 @@ async function main(): Promise<void> {
     const server = createServer(description);
     registerAllTools(server, auth);
 
+    // Register operating principles as a prompt for clients (e.g. Cherry Studio)
+    // that support prompts but don't auto-inject server instructions into context
+    server.prompt(
+        'operating-principles',
+        'Read these rules before using any write tools on this wiki. ' +
+        'Call this prompt when connecting for the first time if the server instructions were not auto-injected.',
+        {},
+        async () => ({
+            messages: [{
+                role: 'user',
+                content: { type: 'text', text: 'Read and follow these rules:\n\n' + description }
+            }]
+        })
+    );
+
     // Step 5: Connect stdio transport
     const transport = new StdioServerTransport();
     await server.connect(transport);
