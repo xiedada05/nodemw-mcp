@@ -29,8 +29,13 @@ nodemw-mcp-server [options] [server]
 | `[server]` | (positional) | Target MediaWiki server, e.g. `en.wikipedia.org` |
 | `--server` | `-s` | Same as positional, explicit form |
 | `--path` | | API script path (default: auto-detect; tries `/w` then root) |
+| `--endpoint` | | Alias for `--path` |
 | `--user` | `-u` | Login username |
 | `--pass` | `-p` | Login password |
+| `--token` | | Bot token (alternative to username/password) |
+| `--user-agent` | `-A` | Custom User-Agent string (replaces default) |
+| `--user-agent-append` | | Append custom User-Agent to default instead of replacing |
+| `--debug` | | Enable debug logging |
 | `--dry-run` | | Dry-run mode (no actual edits) |
 
 **Examples**:
@@ -47,6 +52,15 @@ nodemw-mcp-server -s https://en.wikipedia.org
 
 # Dry-run mode for safe testing
 nodemw-mcp-server --dry-run -u editor -p secret mywiki.example.com
+
+# Custom User-Agent (replace default)
+nodemw-mcp-server -A "MyBot/1.0" mywiki.example.com
+
+# Append to default User-Agent
+nodemw-mcp-server --user-agent-append -A "MyBot/1.0" mywiki.example.com
+
+# Debug mode
+nodemw-mcp-server --debug mywiki.example.com
 ```
 
 ## Environment Variables
@@ -59,6 +73,10 @@ All settings can be configured via environment variables. CLI arguments take pre
 | `NODEMW_MCP_ENDPOINT_PATH` | `--path` |
 | `NODEMW_MCP_MW_USER` | `--user` / `-u` |
 | `NODEMW_MCP_MW_PASS` | `--pass` / `-p` |
+| `NODEMW_MCP_MW_TOKEN` | `--token` |
+| `NODEMW_MCP_USER_AGENT` | `--user-agent` / `-A` |
+| `NODEMW_MCP_USER_AGENT_APPEND` | `--user-agent-append` (set to `1`) |
+| `NODEMW_MCP_DEBUG` | `--debug` (set to `1`) |
 
 ## Usage with config files
 
@@ -80,13 +98,13 @@ All settings can be configured via environment variables. CLI arguments take pre
 
 ## Available Tools
 
-### Read Operations (29 tools)
+### Read Operations (33 tools)
 
-`get-article`, `search`, `get-pages-in-category`, `get-categories`, `get-users`, `get-all-pages`, `get-pages-in-namespace`, `get-pages-by-prefix`, `get-pages-transcluding`, `get-article-revisions`, `get-article-categories`, `get-article-properties`, `get-article-info`, `get-user-contribs`, `whoami`, `whois`, `whoare`, `get-images`, `get-images-from-article`, `get-image-usage`, `get-image-info`, `get-log`, `expand-templates`, `parse`, `get-recent-changes`, `get-site-info`, `get-site-stats`, `get-mediawiki-version`, `get-external-links`, `get-backlinks`, `get-query-page`
+`get-article`, `get-article-with-lineno`, `get-article-by-revision`, `search`, `get-pages-in-category`, `get-categories`, `get-users`, `get-all-pages`, `get-pages-in-namespace`, `get-pages-by-prefix`, `get-pages-transcluding`, `get-article-revisions`, `get-article-categories`, `get-article-properties`, `get-article-info`, `get-user-contribs`, `whoami`, `whois`, `whoare`, `get-images`, `get-images-from-article`, `get-image-usage`, `get-image-info`, `get-log`, `expand-templates`, `parse`, `get-recent-changes`, `get-site-info`, `get-site-stats`, `get-mediawiki-version`, `get-external-links`, `get-backlinks`, `get-query-page`
 
-### Write Operations (12 tools, require authentication)
+### Write Operations (16 tools, require authentication)
 
-`edit`, `append`, `prepend`, `move`, `delete`, `protect`, `purge`, `send-email`, `upload`, `upload-by-url`, `add-flow-topic`, `create-account`
+`edit`, `write`, `append`, `prepend`, `move`, `delete`, `undelete`, `protect`, `block`, `unblock`, `purge`, `send-email`, `upload`, `upload-by-url`, `add-flow-topic`, `create-account`
 
 ## Development
 
@@ -155,8 +173,13 @@ nodemw-mcp-server [options] [server]
 | `[server]` | (位置参数) | 目标 MediaWiki 服务器，如 `en.wikipedia.org` |
 | `--server` | `-s` | 同上，显式形式 |
 | `--path` | | API 脚本路径（默认：自动检测；先尝试 `/w`，再尝试根路径） |
+| `--endpoint` | | `--path` 的别名 |
 | `--user` | `-u` | 登录用户名 |
 | `--pass` | `-p` | 登录密码 |
+| `--token` | | 机器人令牌（替代用户名/密码） |
+| `--user-agent` | `-A` | 自定义 User-Agent 字符串（替换默认值） |
+| `--user-agent-append` | | 将自定义 User-Agent 追加到默认值之后 |
+| `--debug` | | 启用调试日志 |
 | `--dry-run` | | 干运行模式（不执行实际编辑） |
 
 **示例**：
@@ -173,6 +196,15 @@ nodemw-mcp-server -s https://en.wikipedia.org
 
 # 干运行模式，安全测试
 nodemw-mcp-server --dry-run -u editor -p secret mywiki.example.com
+
+# 自定义 User-Agent（替换默认值）
+nodemw-mcp-server -A "MyBot/1.0" mywiki.example.com
+
+# 追加到默认 User-Agent
+nodemw-mcp-server --user-agent-append -A "MyBot/1.0" mywiki.example.com
+
+# 调试模式
+nodemw-mcp-server --debug mywiki.example.com
 ```
 
 ## 环境变量
@@ -185,6 +217,10 @@ nodemw-mcp-server --dry-run -u editor -p secret mywiki.example.com
 | `NODEMW_MCP_ENDPOINT_PATH` | `--path` |
 | `NODEMW_MCP_MW_USER` | `--user` / `-u` |
 | `NODEMW_MCP_MW_PASS` | `--pass` / `-p` |
+| `NODEMW_MCP_MW_TOKEN` | `--token` |
+| `NODEMW_MCP_USER_AGENT` | `--user-agent` / `-A` |
+| `NODEMW_MCP_USER_AGENT_APPEND` | `--user-agent-append`（设为 `1`） |
+| `NODEMW_MCP_DEBUG` | `--debug`（设为 `1`） |
 
 ## 配合配置文件使用
 
@@ -206,13 +242,13 @@ nodemw-mcp-server --dry-run -u editor -p secret mywiki.example.com
 
 ## 可用工具
 
-### 读取操作（29 个工具）
+### 读取操作（33 个工具）
 
-`get-article`、`search`、`get-pages-in-category`、`get-categories`、`get-users`、`get-all-pages`、`get-pages-in-namespace`、`get-pages-by-prefix`、`get-pages-transcluding`、`get-article-revisions`、`get-article-categories`、`get-article-properties`、`get-article-info`、`get-user-contribs`、`whoami`、`whois`、`whoare`、`get-images`、`get-images-from-article`、`get-image-usage`、`get-image-info`、`get-log`、`expand-templates`、`parse`、`get-recent-changes`、`get-site-info`、`get-site-stats`、`get-mediawiki-version`、`get-external-links`、`get-backlinks`、`get-query-page`
+`get-article`、`get-article-with-lineno`、`get-article-by-revision`、`search`、`get-pages-in-category`、`get-categories`、`get-users`、`get-all-pages`、`get-pages-in-namespace`、`get-pages-by-prefix`、`get-pages-transcluding`、`get-article-revisions`、`get-article-categories`、`get-article-properties`、`get-article-info`、`get-user-contribs`、`whoami`、`whois`、`whoare`、`get-images`、`get-images-from-article`、`get-image-usage`、`get-image-info`、`get-log`、`expand-templates`、`parse`、`get-recent-changes`、`get-site-info`、`get-site-stats`、`get-mediawiki-version`、`get-external-links`、`get-backlinks`、`get-query-page`
 
-### 写入操作（12 个工具，需要认证）
+### 写入操作（16 个工具，需要认证）
 
-`edit`、`append`、`prepend`、`move`、`delete`、`protect`、`purge`、`send-email`、`upload`、`upload-by-url`、`add-flow-topic`、`create-account`
+`edit`、`write`、`append`、`prepend`、`move`、`delete`、`undelete`、`protect`、`block`、`unblock`、`purge`、`send-email`、`upload`、`upload-by-url`、`add-flow-topic`、`create-account`
 
 ## 开发
 

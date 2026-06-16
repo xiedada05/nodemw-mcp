@@ -29,7 +29,11 @@ src/index.ts          CLI entry: parseArgs → autoDetectPath → initBot → fe
                       → stderr banner (version/site/stats/auth/tools)
 
 src/server.ts         createServer(description: string): McpServer — thin factory,
-                      just sets name/version/description, no longer site-aware
+                      just sets name/version/description, no longer site-aware.
+                      Uses createRequire() for external-JSON imports (nodemw/package.json,
+                      @modelcontextprotocol/sdk/package.json); esbuild drops
+                      `with { type: 'json' }` on external modules, so ESM import
+                      doesn't work for those in the built output.
 
 src/tools/index.ts    Central registry: exports readToolRegistrars[] and writeToolRegistrars[]
                       registerAllTools(server, includeWriteTools) picks which to register

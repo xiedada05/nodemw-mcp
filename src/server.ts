@@ -29,9 +29,9 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { createRequire } from 'module';
 import pkg from '../package.json' with { type: 'json' };
-import nodemwPkg from 'nodemw/package.json' with { type: 'json' };
 
 const require = createRequire(import.meta.url);
+const nodemwPkg = require('nodemw/package.json');
 const sdkVersion: string = require('@modelcontextprotocol/sdk/package.json').version;
 
 export const DEFAULT_USER_AGENT = `nodemw/${nodemwPkg.version} (node.js ${process.version}; ${process.platform} ${process.arch}) nodemw-mcp/${pkg.version} (${pkg.name}@${pkg.version}; @modelcontextprotocol/sdk@${sdkVersion})`;
