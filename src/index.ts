@@ -29,7 +29,7 @@
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { parseArgs } from 'util';
 import { createServer } from './server.js';
-import pkg from '../package.json';
+import pkg from '../package.json' with { type: 'json' };
 import { registerAllTools, readToolRegistrars, writeToolRegistrars } from './tools/index.js';
 import {
     initServerConfig,
@@ -54,6 +54,8 @@ function parseCliArgs(): { config: ServerConfig; pathExplicit: boolean; debug: b
             token: { type: 'string' },
             debug: { type: 'boolean' },
             'dry-run': { type: 'boolean' },
+            'user-agent': { type: 'string', short: 'A' },
+            'user-agent-append': { type: 'boolean' },
         },
         strict: false,
         allowPositionals: true,
@@ -98,6 +100,8 @@ function parseCliArgs(): { config: ServerConfig; pathExplicit: boolean; debug: b
             password: (values.pass as string) ?? process.env.NODEMW_MCP_MW_PASS,
             token: values.token as string | undefined,
             dryRun: values['dry-run'] as boolean | undefined,
+            userAgent: (values['user-agent'] as string) ?? process.env.NODEMW_MCP_USER_AGENT,
+            userAgentAppend: !!(values['user-agent-append'] as boolean) || process.env.NODEMW_MCP_USER_AGENT_APPEND === '1',
             debug,
         },
         pathExplicit,

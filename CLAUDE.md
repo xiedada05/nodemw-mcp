@@ -1,3 +1,4 @@
+
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
@@ -17,7 +18,7 @@ npm test         # vitest
 - Use `git push --follow-tags` to push tags alongside commits.
 - If SSH is blocked, fall back to HTTPS: `git push https://github.com/xiedada05/nodemw-mcp.git main`.
 
-TypeScript compilation (`tsc --noEmit`) has pre-existing errors (JSON import with NodeNext module, unused `await` on `getBot()`) — these are harmless because esbuild performs the actual build.
+TypeScript compilation (`tsc --noEmit`) is clean; esbuild performs the actual build.
 
 ## Architecture
 

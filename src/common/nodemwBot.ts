@@ -27,7 +27,7 @@
  */
 
 import Bot from 'nodemw';
-import { USER_AGENT } from '../server.js';
+import { DEFAULT_USER_AGENT } from '../server.js';
 
 export interface ServerConfig {
     server: string;
@@ -36,6 +36,7 @@ export interface ServerConfig {
     port?: number;
     proxy?: string;
     userAgent?: string;
+    userAgentAppend?: boolean;
     concurrency?: number;
     debug?: boolean;
     username?: string;
@@ -61,6 +62,7 @@ function createBotFromConfig(config: ServerConfig): Bot {
         port,
         proxy,
         userAgent,
+        userAgentAppend,
         concurrency,
         debug,
         username,
@@ -69,13 +71,22 @@ function createBotFromConfig(config: ServerConfig): Bot {
         dryRun
     } = config;
 
+    let resolvedUA: string;
+    if (userAgent && userAgentAppend) {
+        resolvedUA = DEFAULT_USER_AGENT + ' ' + userAgent;
+    } else if (userAgent) {
+        resolvedUA = userAgent;
+    } else {
+        resolvedUA = DEFAULT_USER_AGENT;
+    }
+
     return new Bot({
         server,
         protocol: protocol || 'https',
         port,
         path,
         proxy,
-        userAgent: userAgent || USER_AGENT,
+        userAgent: resolvedUA,
         concurrency,
         debug,
         username: username || undefined,
