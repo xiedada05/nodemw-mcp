@@ -29,45 +29,91 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { getBot } from '../../common/nodemwBot.js';
 
 export function parseTool( server: McpServer ): RegisteredTool {
     return server.tool(
         'parse',
-        'Parse wikitext to HTML',
+        'Parse wikitext and return either the XML parse tree or rendered HTML',
         {
             text: z.string().describe('Wikitext to parse'),
-            title: z.string().optional().describe('Context page title (for resolving {{PAGENAME}} and similar magic words)')
+            title: z.string().optional().describe('Context page title (for resolving {{PAGENAME}} and similar magic words)'),
+            format: z.enum(['xml', 'html']).optional().default('xml').describe('Output format: "xml" for parse tree, "html" for rendered HTML')
         },
         {
             title: 'Parse wikitext',
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( { text, title } ) => handleParseTool( text, title )
+        async ( { text, title, format } ) => handleParseTool( text, title, format )
     );
 }
 
 async function handleParseTool(
     text: string,
-    title?: string
+    title?: string,
+    format: 'xml' | 'html' = 'xml'
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
-        const callbackArgs = await promisifyBotMethod<[Error | null, string, string[]]>(
-            bot,
-            'parse',
+
+        // Use low-level API: nodemw's bot.parse() hardcodes generatexml=1 and
+        // its callback signature is incompatible with promisifyBotMethod
+        // (promisifyBotMethod only captures the first arg, dropping images).
+        const apiParams: Record<string, unknown> = {
+            action: 'parse',
             text,
-            title || ''
-        );
+            title: title || '',
+            contentmodel: 'wikitext',
+        };
 
-        const xml = callbackArgs[1] || '';
-        const images = Array.isArray(callbackArgs[2]) ? callbackArgs[2] : [];
+        if (format === 'html') {
+            apiParams.prop = 'text';
+        } else {
+            apiParams.generatexml = 1;
+        }
 
+        const raw = await new Promise<{
+            parse?: {
+                text?: Record<string, string>;
+                images?: string[];
+            };
+        }>((resolve, reject) => {
+            (bot as any).api.call(
+                apiParams,
+                (err: Error | null, data: Record<string, unknown>) => {
+                    if (err) reject(err);
+                    else resolve(data as any);
+                },
+                'POST'
+            );
+        });
+
+        if (!raw.parse) {
+            return {
+                content: [{ type: 'text', text: 'Parse returned no result.' }],
+                isError: true
+            };
+        }
+
+        const parsedText = raw.parse.text?.['*'] || '';
+        const images = raw.parse.images || [];
+
+        if (format === 'html') {
+            const parts = [parsedText];
+            if (images.length > 0) {
+                parts.push('', `Images found: ${images.join(', ')}`);
+            }
+            return {
+                content: [{ type: 'text', text: parts.join('\n') }]
+            };
+        }
+
+        // XML format (original behavior, now with working images)
         const output = [
             'Parsed XML structure:',
             '',
-            xml,
+            parsedText,
             '',
             `Images found: ${images.length > 0 ? images.join(', ') : 'none'}`
         ].join( '\n' );

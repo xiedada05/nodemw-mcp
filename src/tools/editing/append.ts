@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { requireRead } from '../../common/pageState.js';
+import { markAsWritten, requireRead } from '../../common/pageState.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function appendTool( server: McpServer ): RegisteredTool {
@@ -66,7 +66,12 @@ async function handleAppendTool(
         await requireRead(params.title);
         const prefixedSummary = `[nodemw-mcp.append] ${params.summary}`;
 
-        await promisifyBotMethod<void>(
+        const result = await promisifyBotMethod<{
+            title: string;
+            pageid?: number;
+            oldrevid?: number;
+            newrevid?: number;
+        }>(
             bot,
             'append',
             params.title,
@@ -74,7 +79,12 @@ async function handleAppendTool(
             prefixedSummary
         );
 
-        return jsonResult({ success: true, title: params.title });
+        // Cache the write so subsequent operations skip the read guard
+        if (result.pageid != null && result.newrevid != null) {
+            markAsWritten(params.title, result.pageid, result.newrevid);
+        }
+
+        return jsonResult({ success: true, title: params.title, pageid: result.pageid, newrevid: result.newrevid });
     } catch ( error ) {
         return errorResult('Failed to append to page', error as Error);
     }

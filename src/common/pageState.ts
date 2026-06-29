@@ -31,6 +31,12 @@ import { getBot, promisifyBotMethod } from './nodemwBot.js';
 /** Tracks (pageid, revid) pairs for pages whose content has been read. */
 const readState = new Map<number, number>();
 
+/**
+ * Write cache: tracks pages that were just written in this session.
+ * Keyed by title so requireRead() can skip the API call entirely.
+ */
+const writeCache = new Map<string, { pageid: number; revid: number }>();
+
 interface PageInfo {
     pageid?: number;
     ns?: number;
@@ -48,6 +54,16 @@ export function markAsRead(pageid: number, revid: number): void {
     readState.set(pageid, revid);
 }
 
+/**
+ * Mark a page as both written and read in this session.
+ * Call this after a successful write/edit/append/prepend so that
+ * subsequent requireRead() calls skip the API round-trip.
+ */
+export function markAsWritten(title: string, pageid: number, revid: number): void {
+    markAsRead(pageid, revid);
+    writeCache.set(title, { pageid, revid });
+}
+
 export function isRead(pageid: number): boolean {
     return readState.has(pageid);
 }
@@ -59,6 +75,13 @@ export function isRead(pageid: number): boolean {
  * fetch current content before making any edits.
  */
 export async function requireRead(title: string): Promise<number> {
+    // Check write cache first: pages just written in this session are
+    // already "read" and don't need an API round-trip.
+    const cached = writeCache.get(title);
+    if (cached) {
+        return cached.pageid;
+    }
+
     const bot = getBot();
     const pages = await promisifyBotMethod<PageInfo[]>(
         bot,
@@ -92,4 +115,5 @@ export async function requireRead(title: string): Promise<number> {
 
 export function clearReadState(): void {
     readState.clear();
+    writeCache.clear();
 }

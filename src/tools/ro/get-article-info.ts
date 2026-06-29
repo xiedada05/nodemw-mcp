@@ -115,6 +115,38 @@ async function handleGetArticleInfoTool(
             });
         }
 
+        if (Array.isArray(title)) {
+            // Use low-level API for array titles: nodemw's getArticleInfo
+            // iterates arrays with for..in (yielding indices, not values).
+            const titles = title.join('|');
+            const apiParams: Record<string, unknown> = {
+                action: 'query',
+                prop: 'info',
+                titles,
+                inprop: properties?.join('|') || 'protection|talkid|url'
+            };
+
+            const result = await new Promise<Record<string, unknown>>((resolve, reject) => {
+                (bot as any).api.call(
+                    apiParams,
+                    (err: Error | null, data: Record<string, unknown>) => {
+                        if (err) reject(err);
+                        else resolve(data);
+                    },
+                    'GET'
+                );
+            });
+
+            const pages = result.pages as Record<string, Record<string, unknown>> | undefined;
+            const results = pages ? Object.values(pages).filter(p => p.missing === undefined) : [];
+
+            return jsonResult({
+                identifier: title,
+                results,
+                count: results.length
+            });
+        }
+
         const info = await promisifyBotMethod<ArticleInfo>(
             bot,
             'getArticleInfo',

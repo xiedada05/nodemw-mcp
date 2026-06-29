@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { requireRead } from '../../common/pageState.js';
+import { markAsWritten, requireRead } from '../../common/pageState.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function editTool( server: McpServer ): RegisteredTool {
@@ -128,6 +128,7 @@ async function handleEditTool(
         const result = await promisifyBotMethod<{
             result: string;
             title: string;
+            pageid?: number;
             newrevid?: number;
             oldrevid?: number;
         }>(
@@ -138,6 +139,11 @@ async function handleEditTool(
             prefixedSummary,
             minor
         );
+
+        // Cache the write so subsequent operations skip the read guard
+        if (result.pageid != null && result.newrevid != null) {
+            markAsWritten(title, result.pageid, result.newrevid);
+        }
 
         return jsonResult(result);
     } catch ( error ) {

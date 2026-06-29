@@ -29,57 +29,112 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { getBot } from '../../common/nodemwBot.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
+
+const API_LIMIT = 5000;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface SearchResult extends Record<string, any> {
     title: string;
     snippet?: string;
-    url?: string;
-    pageId?: number;
+    timestamp?: string;
+    pageid: number;
+    ns: number;
 }
 
 export function searchTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'search',
-        'Search for wiki pages by keyword',
+        'Search for wiki pages by keyword. By default searches all namespaces.',
         {
             keyword: z.string().describe( 'Search keyword' ),
-            limit: z.number().optional().default( 10 ).describe( 'Maximum number of results' )
+            limit: z.number().optional().default( 10 ).describe( 'Maximum number of results' ),
+            namespace: z.union([
+                z.number(),
+                z.array(z.number())
+            ]).optional().describe(
+                'Namespace number(s) to filter by (e.g. 0 for main, 828 for Module, 10 for Template). ' +
+                'Omit to search all namespaces.'
+            )
         },
         {
             title: 'Search',
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( { keyword, limit } ) => handleSearchTool( keyword, limit )
+        async ( { keyword, limit, namespace } ) => handleSearchTool( keyword, limit, namespace )
     );
-    tool.update({ outputSchema: { total: z.number(), limit: z.number(), keyword: z.string(), results: z.array(z.record(z.unknown())) } });
+    tool.update({ outputSchema: {
+        total: z.number(),
+        limit: z.number(),
+        keyword: z.string(),
+        namespace: z.union([z.number(), z.array(z.number())]).optional(),
+        results: z.array(z.record(z.unknown()))
+    }});
     return tool;
 }
 
 async function handleSearchTool(
     keyword: string,
-    limit: number
+    limit: number,
+    namespace?: number | number[]
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
 
-        // nodemw search returns array of results directly
-        const results = await promisifyBotMethod<SearchResult[]>(
-            bot,
-            'search',
-            keyword
-        );
+        // Use low-level API: nodemw's bot.search() does not support srnamespace,
+        // which defaults to 0 (main namespace only). We bypass it to support
+        // namespace filtering and proper continuation-based pagination.
+        const baseParams: Record<string, unknown> = {
+            action: 'query',
+            list: 'search',
+            srsearch: keyword,
+            srprop: 'timestamp',
+            srlimit: API_LIMIT,
+        };
 
-        // Limit results
-        const limitedResults = results.slice( 0, limit );
+        if (namespace !== undefined) {
+            const ns = Array.isArray(namespace) ? namespace.join('|') : String(namespace);
+            baseParams.srnamespace = ns;
+        }
+
+        const allResults: SearchResult[] = [];
+        let continueParams: Record<string, unknown> | undefined;
+
+        do {
+            const params = { ...baseParams, ...(continueParams || {}) };
+
+            const raw = await new Promise<Record<string, unknown>>((resolve, reject) => {
+                (bot as any).api.call(
+                    params,
+                    (err: Error | null, data: Record<string, unknown>) => {
+                        if (err) reject(err);
+                        else resolve(data);
+                    },
+                    'GET'
+                );
+            });
+
+            const query = raw.query as { search?: SearchResult[] } | undefined;
+            if (query?.search) {
+                allResults.push(...query.search);
+            }
+
+            if (raw.continue) {
+                continueParams = raw.continue as Record<string, unknown>;
+            } else {
+                continueParams = undefined;
+            }
+        } while (continueParams && allResults.length < 10000);
+
+        const limitedResults = allResults.slice(0, limit);
 
         return jsonResult({
-            total: results.length,
+            total: allResults.length,
             limit,
             keyword,
+            namespace,
             results: limitedResults
         });
     } catch ( error ) {
