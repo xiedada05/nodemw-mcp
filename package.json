@@ -1,6 +1,6 @@
 {
   "name": "@xiedada/nodemw-mcp-server",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "MCP server for nodemw - MediaWiki API client",
   "repository": {
     "type": "git",
@@ -51,5 +51,9 @@
   ],
   "engines": {
     "node": ">=18.0.0"
+  },
+  "allowScripts": {
+    "esbuild@0.24.2": true,
+    "esbuild@0.21.5": true
   }
 }
