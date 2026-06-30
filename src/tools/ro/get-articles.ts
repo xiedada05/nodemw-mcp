@@ -30,8 +30,8 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot } from '../../common/nodemwBot.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 import { markAsRead } from '../../common/pageState.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
 
 interface BatchPage {
     pageid?: number;
@@ -95,21 +95,16 @@ async function handleGetArticlesTool(
             params.titles = titles.join('|');
         }
 
-        const apiResult = await new Promise<Record<string, unknown>>((resolve, reject) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (bot as any).api.call(params, (err: Error | null, data: Record<string, unknown>) => {
-                if (err) reject(err);
-                else resolve(data);
-            }, 'GET');
-        });
+        const apiResult = await callApi(bot, params, 'GET');
 
-        const pages = apiResult.pages as Record<string, BatchPage> | undefined;
+        const pages = (apiResult.query as Record<string, BatchPage> | undefined)?.pages;
         if (!pages) {
             return jsonResult({ pages: [] });
         }
 
         const results: BatchResult[] = [];
-        const normalizedPages = apiResult.normalized as Array<{ from: string; to: string }> | undefined;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const normalizedPages = ((apiResult as any).query?.normalized) as Array<{ from: string; to: string }> | undefined;
 
         for (const [, page] of Object.entries(pages)) {
             // Resolve normalized title if applicable

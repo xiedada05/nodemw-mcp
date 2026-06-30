@@ -31,7 +31,7 @@ import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { markAsWritten, requireRead } from '../../common/pageState.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
 export function revertTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
@@ -76,24 +76,19 @@ async function handleRevertTool(
         await requireRead(title);
 
         // Fetch the target revision content via the API
-        const apiResult = await new Promise<Record<string, unknown>>((resolve, reject) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (bot as any).api.call(
-                {
-                    action: 'query',
-                    prop: 'revisions',
-                    rvprop: 'content',
-                    revids: revid
-                },
-                (err: Error | null, data: Record<string, unknown>) => {
-                    if (err) reject(err);
-                    else resolve(data);
-                },
-                'GET'
-            );
-        });
+        const apiResult = await callApi(
+            bot,
+            {
+                action: 'query',
+                prop: 'revisions',
+                rvprop: 'content',
+                revids: revid
+            },
+            'GET'
+        );
 
-        const pages = apiResult.pages as Record<string, Record<string, unknown>> | undefined;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const pages = (apiResult.query as any)?.pages as Record<string, Record<string, any>> | undefined;
         if (!pages) {
             return errorResult(`Revision ${revid} not found.`);
         }

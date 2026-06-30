@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot } from '../../common/nodemwBot.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
 const API_LIMIT = 5000;
 
@@ -46,14 +46,22 @@ export function getPagesByPrefixTool( server: McpServer ): RegisteredTool {
         'get-pages-by-prefix',
         'Get pages whose titles start with a specific prefix. By default searches the main namespace (0).',
         {
-            prefix: z.string().describe('Prefix to match page titles (e.g. "Module:QR" for Scribunto modules)'),
+            prefix: z.string().describe(
+                'Prefix to match page titles. IMPORTANT: when namespace is specified, ' +
+                'omit the namespace prefix from this value — the prefix is matched against ' +
+                'page titles within that namespace only. ' +
+                'For example, use "Cite" (NOT "Template:Cite") with namespace=10, ' +
+                'or "MyBot/" (NOT "User:MyBot/") with namespace=2. ' +
+                'When namespace is omitted (defaults to main 0), use plain prefixes like "Fu" or "兽".'
+            ),
             namespace: z.union([
                 z.number(),
                 z.array(z.number())
             ]).optional().describe(
-                'Namespace number(s) to filter by (e.g. 828 for Module, 10 for Template). ' +
+                'Namespace number(s) to filter by (e.g. 10 for Template, 2 for User, 14 for Category). ' +
                 'If omitted, defaults to the main namespace (0). ' +
-                'Set to a specific namespace when searching for non-mainspace pages.'
+                'When set, the prefix is matched against titles WITHOUT the namespace prefix — ' +
+                'e.g. prefix="Cite" + namespace=10 finds Template:Cite web, not prefix="Template:Cite".'
             )
         },
         {
@@ -100,18 +108,16 @@ async function handleGetPagesByPrefixTool(
         do {
             const params = { ...baseParams, ...(continueParams || {}) };
 
-            const raw = await new Promise<Record<string, unknown>>((resolve, reject) => {
-                (bot as any).api.call(
-                    params,
-                    (err: Error | null, data: Record<string, unknown>) => {
-                        if (err) reject(err);
-                        else resolve(data);
-                    },
-                    'GET'
-                );
-            });
+            const raw = await callApi<{
+                error?: { code: string; info: string };
+                query?: { allpages?: PageByPrefix[] };
+                continue?: Record<string, unknown>;
+            }>(bot, params, 'GET');
 
-            const query = raw.query as { allpages?: PageByPrefix[] } | undefined;
+            if (raw.error) {
+                throw new Error(raw.error.info || raw.error.code);
+            }
+            const query = raw.query;
             if (query?.allpages) {
                 allResults.push(...query.allpages);
             }

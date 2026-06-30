@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface ArticleInfo extends Record<string, any> {
@@ -94,18 +94,13 @@ async function handleGetArticleInfoTool(
                 inprop: properties?.join('|') || 'protection|talkid|url'
             };
 
-            const result = await new Promise<Record<string, unknown>>((resolve, reject) => {
-                (bot as any).api.call(
-                    apiParams,
-                    (err: Error | null, data: Record<string, unknown>) => {
-                        if (err) reject(err);
-                        else resolve(data);
-                    },
-                    'GET'
-                );
-            });
+            const raw = await callApi(bot, apiParams, 'GET');
+            if (raw.error) {
+                throw new Error((raw.error as { code: string; info: string }).info || (raw.error as { code: string; info: string }).code);
+            }
 
-            const pages = result.pages as Record<string, Record<string, unknown>> | undefined;
+            const query = raw.query as { pages?: Record<string, Record<string, unknown>> } | undefined;
+            const pages = query?.pages;
             const results = pages ? Object.values(pages).filter(p => p.missing === undefined) : [];
 
             return jsonResult({
@@ -126,18 +121,13 @@ async function handleGetArticleInfoTool(
                 inprop: properties?.join('|') || 'protection|talkid|url'
             };
 
-            const result = await new Promise<Record<string, unknown>>((resolve, reject) => {
-                (bot as any).api.call(
-                    apiParams,
-                    (err: Error | null, data: Record<string, unknown>) => {
-                        if (err) reject(err);
-                        else resolve(data);
-                    },
-                    'GET'
-                );
-            });
+            const raw = await callApi(bot, apiParams, 'GET');
+            if (raw.error) {
+                throw new Error((raw.error as { code: string; info: string }).info || (raw.error as { code: string; info: string }).code);
+            }
 
-            const pages = result.pages as Record<string, Record<string, unknown>> | undefined;
+            const query = raw.query as { pages?: Record<string, Record<string, unknown>> } | undefined;
+            const pages = query?.pages;
             const results = pages ? Object.values(pages).filter(p => p.missing === undefined) : [];
 
             return jsonResult({

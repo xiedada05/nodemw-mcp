@@ -30,6 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot } from '../../common/nodemwBot.js';
+import { callApi, errorResult } from '../../common/utils.js';
 
 export function parseTool( server: McpServer ): RegisteredTool {
     return server.tool(
@@ -57,46 +58,40 @@ async function handleParseTool(
     try {
         const bot = await getBot();
 
-        // Use low-level API: nodemw's bot.parse() hardcodes generatexml=1 and
-        // its callback signature is incompatible with promisifyBotMethod
-        // (promisifyBotMethod only captures the first arg, dropping images).
+        // Use low-level API: nodemw's bot.parse() hardcodes generatexml=1
+        // (removed in MW 1.36, fails silently on 1.43) and its callback
+        // signature is incompatible with promisifyBotMethod (promisifyBotMethod
+        // only captures the first arg, dropping images).
         const apiParams: Record<string, unknown> = {
             action: 'parse',
             text,
-            title: title || '',
-            contentmodel: 'wikitext',
+            prop: format === 'html' ? 'text|images' : 'parsetree|images',
         };
 
-        if (format === 'html') {
-            apiParams.prop = 'text';
-        } else {
-            apiParams.generatexml = 1;
+        if (title) {
+            apiParams.title = title;
         }
 
-        const raw = await new Promise<{
+        const raw = await callApi<{
+            error?: { code: string; info: string };
             parse?: {
                 text?: Record<string, string>;
+                parsetree?: Record<string, string>;
                 images?: string[];
             };
-        }>((resolve, reject) => {
-            (bot as any).api.call(
-                apiParams,
-                (err: Error | null, data: Record<string, unknown>) => {
-                    if (err) reject(err);
-                    else resolve(data as any);
-                },
-                'POST'
-            );
-        });
+        }>(bot, apiParams, 'POST');
 
-        if (!raw.parse) {
-            return {
-                content: [{ type: 'text', text: 'Parse returned no result.' }],
-                isError: true
-            };
+        if (raw.error) {
+            throw new Error(raw.error.info || raw.error.code);
         }
 
-        const parsedText = raw.parse.text?.['*'] || '';
+        if (!raw.parse) {
+            return errorResult('Parse returned no result.');
+        }
+
+        const parsedText = format === 'html'
+            ? (raw.parse.text?.['*'] || '')
+            : (raw.parse.parsetree?.['*'] || '');
         const images = raw.parse.images || [];
 
         if (format === 'html') {
@@ -109,7 +104,7 @@ async function handleParseTool(
             };
         }
 
-        // XML format (original behavior, now with working images)
+        // XML parse tree (parsetree)
         const output = [
             'Parsed XML structure:',
             '',
@@ -122,9 +117,6 @@ async function handleParseTool(
             content: [ { type: 'text', text: output } ]
         };
     } catch ( error ) {
-        return {
-            content: [ { type: 'text', text: `Error: ${ ( error as Error ).message }` } ],
-            isError: true
-        };
+        return errorResult('Failed to parse wikitext', error as Error);
     }
 }

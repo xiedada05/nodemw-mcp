@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
 export function getArticleCategoriesTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
@@ -75,18 +75,14 @@ async function handleGetArticleCategoriesTool(
 
         if (id !== undefined) {
             // Use low-level API: the high-level Bot method may not support page IDs
-            const result = await new Promise<Record<string, unknown>>((resolve, reject) => {
-                (bot as any).api.call(
-                    { action: 'query', prop: 'categories', pageids: id, cllimit: 'max' },
-                    (err: Error | null, data: Record<string, unknown>) => {
-                        if (err) reject(err);
-                        else resolve(data);
-                    },
-                    'GET'
-                );
-            });
+            const result = await callApi(
+                bot,
+                { action: 'query', prop: 'categories', pageids: id, cllimit: 'max' },
+                'GET'
+            );
 
-            const pages = result.pages as Record<string, Record<string, unknown>> | undefined;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const pages = (result.query as any)?.pages as Record<string, Record<string, any>> | undefined;
             const page = getFirstItem(pages);
             if (!page || page.missing !== undefined) {
                 return errorResult(`Page with ID ${id} not found`);

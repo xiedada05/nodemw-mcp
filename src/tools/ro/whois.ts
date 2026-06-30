@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
 export function whoisTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
@@ -66,18 +66,14 @@ async function handleWhoisTool(
         const bot = await getBot();
 
         if (id !== undefined) {
-            const data = await new Promise<Record<string, any>>((resolve, reject) => {
-                (bot as any).api.call(
-                    { action: 'query', list: 'users', ususerids: id, usprop: 'blockinfo|groups|rights|editcount|registration' },
-                    (err: Error | null, result: Record<string, any>) => {
-                        if (err) reject(err);
-                        else resolve(result);
-                    },
-                    'GET'
-                );
-            });
+            const data = await callApi(
+                bot,
+                { action: 'query', list: 'users', ususerids: id, usprop: 'blockinfo|groups|rights|editcount|registration' },
+                'GET'
+            );
 
-            const users = data?.query?.users as any[] | undefined;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const users = ((data as any).query?.users) as any[] | undefined;
             if (!users || users.length === 0 || users[0].missing !== undefined) {
                 return errorResult(`User with ID ${id} not found.`);
             }

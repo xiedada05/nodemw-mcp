@@ -30,9 +30,11 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot } from '../../common/nodemwBot.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
-const API_LIMIT = 5000;
+// Maximum results per API request for list=search.
+// Bot users get 500, regular users get 50.
+const API_LIMIT = 500;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface SearchResult extends Record<string, any> {
@@ -54,8 +56,12 @@ export function searchTool( server: McpServer ): RegisteredTool {
                 z.number(),
                 z.array(z.number())
             ]).optional().describe(
-                'Namespace number(s) to filter by (e.g. 0 for main, 828 for Module, 10 for Template). ' +
-                'Omit to search all namespaces.'
+                'Namespace number(s) to filter by (e.g. 0 for main, 10 for Template, 2 for User, 14 for Category). ' +
+                'Omit to search all namespaces. ' +
+                'Note: search matches page titles within the specified namespace(s) — ' +
+                'you do NOT need to include the namespace prefix in the keyword. ' +
+                'For example, keyword="Cite" + namespace=10 finds "Template:Cite web", ' +
+                'not keyword="Template:Cite".'
             )
         },
         {
@@ -105,18 +111,16 @@ async function handleSearchTool(
         do {
             const params = { ...baseParams, ...(continueParams || {}) };
 
-            const raw = await new Promise<Record<string, unknown>>((resolve, reject) => {
-                (bot as any).api.call(
-                    params,
-                    (err: Error | null, data: Record<string, unknown>) => {
-                        if (err) reject(err);
-                        else resolve(data);
-                    },
-                    'GET'
-                );
-            });
+            const raw = await callApi<{
+                error?: { code: string; info: string };
+                query?: { search?: SearchResult[] };
+                continue?: Record<string, unknown>;
+            }>(bot, params, 'GET');
 
-            const query = raw.query as { search?: SearchResult[] } | undefined;
+            if (raw.error) {
+                throw new Error(raw.error.info || raw.error.code);
+            }
+            const query = raw.query;
             if (query?.search) {
                 allResults.push(...query.search);
             }

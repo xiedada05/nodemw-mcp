@@ -31,7 +31,7 @@ import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { markAsRead } from '../../common/pageState.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
 interface LineEntry {
     lineno: number;
@@ -95,18 +95,14 @@ async function fetchArticleContent(
     const bot = await getBot();
 
     if (id !== undefined) {
-        const info = await new Promise<Record<string, unknown>>((resolve, reject) => {
-            (bot as any).api.call(
-                { action: 'query', prop: 'revisions', rvprop: 'content', rvlimit: 1, pageids: id },
-                (err: Error | null, data: Record<string, unknown>) => {
-                    if (err) reject(err);
-                    else resolve(data);
-                },
-                'GET'
-            );
-        });
+        const info = await callApi(
+            bot,
+            { action: 'query', prop: 'revisions', rvprop: 'content', rvlimit: 1, pageids: id },
+            'GET'
+        );
 
-        const pages = info.pages as Record<string, Record<string, unknown>> | undefined;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const pages = (info.query as any)?.pages as Record<string, Record<string, any>> | undefined;
         const firstKey = Object.keys(pages || {})[0];
         const page = pages?.[firstKey];
         if (!page || page.missing !== undefined) {

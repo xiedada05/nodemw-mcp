@@ -29,6 +29,34 @@
 import type Bot from 'nodemw';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 
+/**
+ * Promisify nodemw's low-level api.call().
+ *
+ * nodemw's api.call callback is 4-arg: (err, info, next, data).
+ * - info  = data[actionName] or data.query (unwrapped)
+ * - data  = the full raw JSON response (has query, continue, error keys)
+ *
+ * This helper resolves with `data` (the 4th arg) so callers always
+ * get the raw response with correct query / continue / error topology.
+ */
+export function callApi<T = Record<string, unknown>>(
+    bot: Bot,
+    params: Record<string, unknown>,
+    method: 'GET' | 'POST' = 'GET'
+): Promise<T> {
+    return new Promise((resolve, reject) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (bot as any).api.call(
+            params,
+            (_err: Error | null, _info: unknown, _next: unknown, data: T) => {
+                if (_err) reject(_err);
+                else resolve(data);
+            },
+            method
+        );
+    });
+}
+
 export function promisifyBotMethod<T>(
     bot: Bot,
     method: string,

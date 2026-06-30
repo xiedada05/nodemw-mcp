@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, getMediaWikiVersion } from '../../common/nodemwBot.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
 export function unblockTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
@@ -93,24 +93,21 @@ async function handleUnblockTool(
             params.user = username!;
         }
 
-        const data = await new Promise<Record<string, any>>((resolve, reject) => {
-            (bot as any).api.call(params, (err: Error | null, result: Record<string, any>) => {
-                if (err) reject(err);
-                else resolve(result);
-            }, 'POST');
-        });
+        const raw = await callApi(bot, params, 'POST');
 
-        if (data.error) {
-            return errorResult(`Unblock failed: ${data.error.info || data.error.code}`, new Error(JSON.stringify(data.error)));
+        if (raw.error) {
+            throw new Error((raw.error as { code: string; info: string }).info || (raw.error as { code: string; info: string }).code);
         }
 
         const unblocked = id !== undefined ? `user ID ${id}` : username;
-        const result = data.unblock || { result: 'Success', unblocked };
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const unblockResult = raw.unblock as Record<string, any> | undefined;
+        const result = unblockResult || { result: 'Success', unblocked };
 
         return jsonResult({
             result: 'Success',
             unblocked: result.unblocked ?? unblocked,
-            id: result.id ?? data.unblock?.id
+            id: result.id
         });
     } catch ( error ) {
         return errorResult('Failed to unblock user', error as Error);

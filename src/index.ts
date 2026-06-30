@@ -168,8 +168,17 @@ async function main(): Promise<void> {
                 admins: stats.admins ?? 0,
             };
         }
-    } catch {
-        console.error('Warning: Could not fetch site info for server description.');
+    } catch (err) {
+        console.error(
+            'Could not reach the MediaWiki API — the server did not return a valid response.',
+            '\n  Cause:', (err as Error).message,
+            '\n  Common reasons:',
+            '\n    - WAF / CAPTCHA blocking API access (e.g. Alibaba Cloud WAF)',
+            '\n    - Wrong --path (try --path /w or --path "")',
+            '\n    - Server is not a MediaWiki site',
+            '\n    - Network / firewall issues',
+        );
+        process.exit(1);
     }
 
     // Step 3.5: Cache MW version for API compatibility decisions

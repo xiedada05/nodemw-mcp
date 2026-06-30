@@ -30,6 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { callApi } from '../../common/utils.js';
 import { markAsRead } from '../../common/pageState.js';
 
 interface PageInfo {
@@ -136,15 +137,10 @@ async function handleGetArticleTool(
                 ...(id === undefined && followRedirect && { redirects: '' })
             };
 
-            const info = await new Promise<Record<string, unknown>>((resolve, reject) => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (bot as any).api.call(params, (err: Error | null, info: Record<string, unknown>) => {
-                    if (err) reject(err);
-                    else resolve(info);
-                }, 'GET');
-            });
+            const raw = await callApi(bot, params, 'GET');
 
-            const pages = info.pages as Record<string, Record<string, unknown>> | undefined;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const pages = (raw.query as any)?.pages as Record<string, Record<string, any>> | undefined;
             const page = getFirstItem(pages);
             if (!page || page.missing !== undefined) {
                 const identifier = title ?? `id ${id}`;

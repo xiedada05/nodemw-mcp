@@ -30,8 +30,8 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot } from '../../common/nodemwBot.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 import { markAsRead } from '../../common/pageState.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
 
 interface ModuleRevision {
     revid?: number;
@@ -80,26 +80,21 @@ async function handleGetModuleSourceTool(
     try {
         const bot = await getBot();
 
-        const apiResult = await new Promise<Record<string, unknown>>((resolve, reject) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (bot as any).api.call(
-                {
-                    action: 'query',
-                    prop: 'revisions',
-                    titles: title,
-                    rvprop: 'ids|timestamp|content',
-                    rvslots: 'main',
-                    rvlimit: 1
-                },
-                (err: Error | null, data: Record<string, unknown>) => {
-                    if (err) reject(err);
-                    else resolve(data);
-                },
-                'GET'
-            );
-        });
+        const apiResult = await callApi(
+            bot,
+            {
+                action: 'query',
+                prop: 'revisions',
+                titles: title,
+                rvprop: 'ids|timestamp|content',
+                rvslots: 'main',
+                rvlimit: 1
+            },
+            'GET'
+        );
 
-        const pages = apiResult.pages as Record<string, ModulePage> | undefined;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const pages = (apiResult.query as any)?.pages as Record<string, ModulePage> | undefined;
         if (!pages) {
             return errorResult(`Module "${title}" not found.`);
         }

@@ -30,6 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot } from '../../common/nodemwBot.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
 export function getArticleByRevisionTool( server: McpServer ): RegisteredTool {
     return server.tool(
@@ -53,55 +54,38 @@ async function handleGetArticleByRevisionTool(
     try {
         const bot = await getBot();
 
-        const result = await new Promise<Record<string, unknown>>((resolve, reject) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (bot as any).api.call(
-                {
-                    action: 'query',
-                    prop: 'revisions',
-                    rvprop: 'content',
-                    revids: revision
-                },
-                (err: Error | null, data: Record<string, unknown>) => {
-                    if (err) reject(err);
-                    else resolve(data);
-                },
-                'GET'
-            );
-        });
+        const result = await callApi(
+            bot,
+            {
+                action: 'query',
+                prop: 'revisions',
+                rvprop: 'content',
+                revids: revision
+            },
+            'GET'
+        );
 
-        const pages = result.pages as Record<string, Record<string, unknown>> | undefined;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const pages = (result.query as any)?.pages as Record<string, Record<string, any>> | undefined;
         if (!pages) {
-            return {
-                content: [{ type: 'text', text: `Revision ${revision} not found.` }],
-                isError: true
-            };
+            return errorResult(`Revision ${revision} not found.`);
         }
 
         // revids response pages are keyed by page ID; get the first (and only) page
         const pageIds = Object.keys(pages);
         if (pageIds.length === 0) {
-            return {
-                content: [{ type: 'text', text: `Revision ${revision} not found.` }],
-                isError: true
-            };
+            return errorResult(`Revision ${revision} not found.`);
         }
 
         const page = pages[pageIds[0]];
         if (!page || page.missing !== undefined) {
-            return {
-                content: [{ type: 'text', text: `Revision ${revision} not found.` }],
-                isError: true
-            };
+            return errorResult(`Revision ${revision} not found.`);
         }
 
         const revisions = page.revisions as Array<{ '*': string }> | undefined;
         const rev = revisions?.[0];
         if (!rev || rev['*'] == null) {
-            return {
-                content: [{ type: 'text', text: `Revision ${revision} not found or has no content.` }],
-                isError: true
-            };
+            return errorResult(`Revision ${revision} not found or has no content.`);
         }
 
         return {

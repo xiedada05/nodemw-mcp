@@ -129,8 +129,8 @@ This avoids token overhead on large module uploads via MCP `write`.
 For small edits, `edit` and `write` tools work directly from the agent.
 
 > **Tip:** Use `search(keyword, namespace=828)` to find Lua modules, and
-> `get-pages-by-prefix(prefix="Module:QR", namespace=828)` to discover
-> modules by naming convention.
+> `get-pages-by-prefix(prefix="QR", namespace=828)` to discover
+> modules by naming convention (when namespace is set, the prefix omits the namespace prefix).
 
 ## Development
 

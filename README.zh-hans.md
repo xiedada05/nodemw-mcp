@@ -129,7 +129,7 @@ bot.logIn(username, password, () => {
 对于小改动，可以直接用 `edit` 和 `write` 工具操作。
 
 > **提示：** 使用 `search(keyword, namespace=828)` 查找 Lua 模块，
-> 使用 `get-pages-by-prefix(prefix="Module:QR", namespace=828)` 按命名规则发现模块。
+> 使用 `get-pages-by-prefix(prefix="QR", namespace=828)` 按命名规则发现模块（指定 namespace 后前缀不含命名空间前缀）。
 
 ## 开发
 

@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface Revision extends Record<string, any> {
@@ -58,19 +58,6 @@ export function getArticleRevisionsTool( server: McpServer ): RegisteredTool {
     );
     tool.update({ outputSchema: { identifier: z.union([z.string(), z.number()]), revisions: z.array(z.record(z.unknown())), count: z.number() } });
     return tool;
-}
-
-async function apiCall(bot: any, params: Record<string, unknown>): Promise<Record<string, unknown>> {
-    return new Promise<Record<string, unknown>>((resolve, reject) => {
-        (bot as any).api.call(
-            params,
-            (err: Error | null, data: Record<string, unknown>) => {
-                if (err) reject(err);
-                else resolve(data);
-            },
-            'GET'
-        );
-    });
 }
 
 async function handleGetArticleRevisionsTool(
@@ -105,8 +92,9 @@ async function handleGetArticleRevisionsTool(
                     params.rvcontinue = rvcontinue;
                 }
 
-                const result = await apiCall(bot, params);
-                const pages = result.pages as Record<string, Record<string, unknown>> | undefined;
+                const result = await callApi(bot, params, 'GET');
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const pages = (result.query as any)?.pages as Record<string, Record<string, any>> | undefined;
                 if (!pages) break;
 
                 const pageId = String(id);
