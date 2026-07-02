@@ -42,6 +42,13 @@ export function uploadByUrlTool( server: McpServer ): RegisteredTool {
             filename: z.string().describe( 'Destination filename on wiki (e.g., "Diagram.png") — existing file will be overwritten!' ),
             url: z.string().url().describe( 'Source URL to download the file from — must be publicly accessible' ),
             summary: z.string().optional().describe( 'Upload summary' ),
+            initial_description: z.string().optional().describe(
+                'OPTIONAL (not required for upload). Initial wikitext for the file description page (File:xxx). ' +
+                'Only used when the file page does NOT already exist — if the page already exists, this is silently ignored. ' +
+                'Without it, the upload may fail on some wikis when creating a new file page. ' +
+                'Do NOT treat this as required — only provide it when you have meaningful description content (e.g., ' +
+                '{{File info}}, license tags, categories).'
+            ),
         },
         {
             title: 'Upload file by URL',
@@ -59,11 +66,17 @@ async function handleUploadByUrlTool(
         filename: string;
         url: string;
         summary?: string;
+        initial_description?: string;
     }
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
         const prefixedSummary = params.summary ? `[nodemw-mcp.upload-by-url] ${params.summary}` : '[nodemw-mcp.upload-by-url] File upload from URL';
+
+        const extraParams: Record<string, string> = { comment: prefixedSummary };
+        if (params.initial_description !== undefined) {
+            extraParams.text = params.initial_description;
+        }
 
         const result = await promisifyBotMethod<{
             result: string;
@@ -74,7 +87,7 @@ async function handleUploadByUrlTool(
             'uploadByUrl',
             params.filename,
             params.url,
-            prefixedSummary
+            extraParams
         );
 
         return jsonResult(result);

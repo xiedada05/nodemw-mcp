@@ -42,6 +42,13 @@ export function uploadTool( server: McpServer ): RegisteredTool {
             filename: z.string().describe( 'Destination filename on wiki (e.g., "MyImage.png") — existing file will be overwritten!' ),
             content: z.string().describe( 'File content encoded as base64 string' ),
             comment: z.string().optional().describe( 'Upload comment describing the file' ),
+            initial_description: z.string().optional().describe(
+                'OPTIONAL (not required for upload). Initial wikitext for the file description page (File:xxx). ' +
+                'Only used when the file page does NOT already exist — if the page already exists, this is silently ignored. ' +
+                'Without it, the upload may fail on some wikis when creating a new file page. ' +
+                'Do NOT treat this as required — only provide it when you have meaningful description content (e.g., ' +
+                '{{File info}}, license tags, categories).'
+            ),
         },
         {
             title: 'Upload file',
@@ -59,12 +66,18 @@ async function handleUploadTool(
         filename: string;
         content: string;
         comment?: string;
+        initial_description?: string;
     }
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
         const fileContent = Buffer.from(params.content, 'base64');
         const comment = params.comment ? `[nodemw-mcp.upload] ${params.comment}` : '[nodemw-mcp.upload] File upload';
+
+        const extraParams: Record<string, string> = { comment };
+        if (params.initial_description !== undefined) {
+            extraParams.text = params.initial_description;
+        }
 
         const result = await promisifyBotMethod<{
             result: string;
@@ -75,7 +88,7 @@ async function handleUploadTool(
             'upload',
             params.filename,
             fileContent,
-            comment
+            extraParams
         );
 
         return jsonResult(result);
