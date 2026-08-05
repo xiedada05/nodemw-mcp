@@ -92,9 +92,6 @@ const pages = (result.query as any)?.pages as Record<string, Record<string, any>
             content: [{ type: 'text', text: rev['*'] }]
         };
     } catch ( error ) {
-        return {
-            content: [ { type: 'text', text: `Error: ${ ( error as Error ).message }` } ],
-            isError: true
-        };
+        return errorResult('Failed to get article by revision', error as Error);
     }
 }

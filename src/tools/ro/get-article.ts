@@ -79,22 +79,33 @@ export function getArticleTool( server: McpServer ): RegisteredTool {
                 'Maximum response length in characters. ' +
                 'If the article exceeds this length, it will be truncated with a "[truncated]" marker. ' +
                 'Useful when deploying behind HTTP proxies with response size limits (e.g. Alibaba Cloud FC). ' +
-                'Omit for full content.' )
+                'Omit for full content.' ),
+            offset: z.number().int().min( 0 ).optional().describe(
+                'Character offset into the article content to start from. ' +
+                'Combine with maxlen to paginate through long articles: first call with maxlen, ' +
+                'then continue with offset = maxlen to read the next chunk.' )
         },
         {
             title: 'Get article',
             readOnlyHint: true,
             destructiveHint: false
         } as ToolAnnotations,
-        async ( { title, id, followRedirect, redirectInfo, revision, maxlen } ) =>
-            handleGetArticleTool( title, id, followRedirect, redirectInfo, revision, maxlen )
+        async ( { title, id, followRedirect, redirectInfo, revision, maxlen, offset } ) =>
+            handleGetArticleTool( title, id, followRedirect, redirectInfo, revision, maxlen, offset )
     );
 }
 
-function applyMaxlen(content: string, maxlen?: number): string {
-    if (maxlen === undefined || maxlen <= 0) return content;
-    if (content.length <= maxlen) return content;
-    return content.slice(0, maxlen) + '\n\n[truncated — article exceeds maxlen, use a higher value or omit maxlen for full content]';
+function applyMaxlen(content: string, maxlen?: number, offset?: number): string {
+    let text = content;
+    if (offset !== undefined && offset > 0) {
+        if (offset >= text.length) {
+            return '(reached end of article)';
+        }
+        text = text.slice(offset);
+    }
+    if (maxlen === undefined || maxlen <= 0) return text;
+    if (text.length <= maxlen) return text;
+    return text.slice(0, maxlen) + '\n\n[truncated — article exceeds maxlen, call get-article again with offset=<n> to continue reading]';
 }
 
 async function handleGetArticleTool(
@@ -103,7 +114,8 @@ async function handleGetArticleTool(
     followRedirect: boolean,
     redirectInfo: boolean,
     revision?: number,
-    maxlen?: number
+    maxlen?: number,
+    offset?: number
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
@@ -162,7 +174,7 @@ const pages = (raw.query as any)?.pages as Record<string, Record<string, any>> |
                 }
                 await recordReadState(id ?? title!);
                 return {
-                    content: [{ type: 'text', text: applyMaxlen(rev['*'], maxlen) }]
+                    content: [{ type: 'text', text: applyMaxlen(rev['*'], maxlen, offset) }]
                 };
             }
 
@@ -177,7 +189,7 @@ const pages = (raw.query as any)?.pages as Record<string, Record<string, any>> |
             }
             await recordReadState(id ?? title!);
             return {
-                content: [{ type: 'text', text: applyMaxlen(content === '' ? '(empty page)' : content, maxlen) }]
+                content: [{ type: 'text', text: applyMaxlen(content === '' ? '(empty page)' : content, maxlen, offset) }]
             };
         }
 
@@ -203,8 +215,8 @@ const pages = (raw.query as any)?.pages as Record<string, Record<string, any>> |
                 };
             }
             const responseText = redirect
-                ? `Content:\n\n${applyMaxlen(content, maxlen)}\n\nRedirect Information:\n\n${JSON.stringify(redirect, null, 2)}`
-                : applyMaxlen(content === '' ? '(empty page)' : content, maxlen);
+                ? `Content:\n\n${applyMaxlen(content, maxlen, offset)}\n\nRedirect Information:\n\n${JSON.stringify(redirect, null, 2)}`
+                : applyMaxlen(content === '' ? '(empty page)' : content, maxlen, offset);
 
             await recordReadState(title!);
             return {
@@ -225,7 +237,7 @@ const pages = (raw.query as any)?.pages as Record<string, Record<string, any>> |
             }
             await recordReadState(title!);
             return {
-                content: [ { type: 'text', text: applyMaxlen(result === '' ? '(empty page)' : result, maxlen) } ]
+                content: [ { type: 'text', text: applyMaxlen(result === '' ? '(empty page)' : result, maxlen, offset) } ]
             };
         }
     } catch ( error ) {

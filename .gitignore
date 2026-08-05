@@ -149,3 +149,6 @@ config.json
 
 # Claude Code local settings (per-developer)
 .claude/settings.local.json
+
+# Local smoke-test script (contains production site/UA info — do not commit)
+scripts/smoke-test.mjs

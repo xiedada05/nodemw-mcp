@@ -92,13 +92,33 @@ export function jsonResult(data: unknown): CallToolResult {
     };
 }
 
+// Error messages MediaWiki returns when the session cookie has expired and
+// the request fell back to anonymous — often misread as a permission problem.
+const LOGIN_EXPIRED_PATTERNS = [
+    /You're not allowed to edit this wiki through the API/,
+    /not logged in/i,
+    /login required/i,
+    /assertuserfailed/i,
+];
+
+/** Append a hint when an error smells like a silently expired session. */
+function annotateLoginError(message: string, error?: Error): string {
+    const details = error?.message ?? '';
+    if (LOGIN_EXPIRED_PATTERNS.some((re) => re.test(message) || re.test(details))) {
+        return details
+            ? `${details} — your login session has likely expired. Reconnect via /mcp to log in again.`
+            : message;
+    }
+    return details;
+}
+
 export function errorResult(message: string, error?: Error): CallToolResult {
     return {
         content: [{
             type: 'text',
             text: JSON.stringify({
                 error: message,
-                details: error?.message
+                details: annotateLoginError(message, error)
             }, null, 2)
         }],
         isError: true

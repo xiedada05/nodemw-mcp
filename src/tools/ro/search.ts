@@ -48,16 +48,21 @@ interface SearchResult extends Record<string, any> {
 export function searchTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'search',
-        'Search for wiki pages by keyword. By default searches all namespaces.',
+        'Search wiki page TITLES by substring (NOT full-text search). ' +
+        'Case-insensitive: "anthrocon" matches "Anthrocon". ' +
+        'By default searches the main namespace only (ns 0); pass namespace ' +
+        'to search other namespaces (e.g. 10 for Template). ' +
+        'Complements get-pages-by-prefix (prefix match — use it when you know ' +
+        'the title starts with the search term).',
         {
-            keyword: z.string().describe( 'Search keyword' ),
+            keyword: z.string().describe( 'Search keyword (title substring)' ),
             limit: z.number().optional().default( 10 ).describe( 'Maximum number of results' ),
             namespace: z.union([
                 z.number(),
                 z.array(z.number())
             ]).optional().describe(
                 'Namespace number(s) to filter by (e.g. 0 for main, 10 for Template, 2 for User, 14 for Category). ' +
-                'Omit to search all namespaces. ' +
+                'Default: main namespace (0) only. ' +
                 'Note: search matches page titles within the specified namespace(s) — ' +
                 'you do NOT need to include the namespace prefix in the keyword. ' +
                 'For example, keyword="Cite" + namespace=10 finds "Template:Cite web", ' +

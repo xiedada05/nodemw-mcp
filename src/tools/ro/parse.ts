@@ -39,7 +39,7 @@ export function parseTool( server: McpServer ): RegisteredTool {
         {
             text: z.string().describe('Wikitext to parse'),
             title: z.string().optional().describe('Context page title (for resolving {{PAGENAME}} and similar magic words)'),
-            format: z.enum(['xml', 'html']).optional().default('xml').describe('Output format: "xml" for parse tree, "html" for rendered HTML')
+            format: z.enum(['html', 'xml']).optional().default('html').describe('Output format: "html" for rendered HTML (default), "xml" for parse tree')
         },
         {
             title: 'Parse wikitext',
@@ -53,7 +53,7 @@ export function parseTool( server: McpServer ): RegisteredTool {
 async function handleParseTool(
     text: string,
     title?: string,
-    format: 'xml' | 'html' = 'xml'
+    format: 'html' | 'xml' = 'html'
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();

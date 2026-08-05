@@ -29,8 +29,10 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
+import { getBot } from '../../common/nodemwBot.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
+
+const API_LIMIT = 500;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface TranscludingPage extends Record<string, any> {
@@ -42,9 +44,11 @@ interface TranscludingPage extends Record<string, any> {
 export function getPagesTranscludingTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'get-pages-transcluding',
-        'Get all pages that transclude (include) a specific template',
+        'Get all pages that transclude (include) a specific template. ' +
+        'Accepts a title with or without the "Template:" prefix — ' +
+        'the prefix is added automatically when the input has no namespace.',
         {
-            template: z.string().describe('Template title to find transclusions')
+            template: z.string().describe('Template title to find transclusions (with or without "Template:" prefix)')
         },
         {
             title: 'Get pages transcluding template',
@@ -62,22 +66,51 @@ async function handleGetPagesTranscludingTool(
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
-        const callbackArgs = await promisifyBotMethod<[Error | null, TranscludingPage[] | [undefined]]>(
-            bot,
-            'getPagesTranscluding',
-            template
-        );
 
-        // Extract results from callback args (ignore first arg if it's error, which promisifyBotMethod already handles)
-        const rawResults = callbackArgs[1];
-        const results = Array.isArray(rawResults) 
-            ? rawResults.filter((page): page is TranscludingPage => page != null && typeof page === 'object' && 'title' in page)
-            : [];
+        // Use low-level API: nodemw's getPagesTranscluding relies on a
+        // getAll() iterator that fails to terminate/fetch on older MediaWiki
+        // versions (returns empty). list=embeddedin is the canonical way to
+        // enumerate transclusions and works on all versions.
+        // Without an explicit namespace prefix, old MediaWiki treats the title
+        // as main-namespace — so default to the Template namespace.
+        const effectiveTitle = template.includes( ':' ) ? template : `Template:${template}`;
+
+        const baseParams: Record<string, unknown> = {
+            action: 'query',
+            list: 'embeddedin',
+            eititle: effectiveTitle,
+            eilimit: API_LIMIT
+        };
+
+        const allPages: TranscludingPage[] = [];
+        let continueParams: Record<string, unknown> | undefined;
+
+        do {
+            const params = { ...baseParams, ...(continueParams || {}) };
+            const raw = await callApi<{
+                error?: { code: string; info: string };
+                query?: { embeddedin?: TranscludingPage[] };
+                continue?: Record<string, unknown>;
+            }>(bot, params, 'GET');
+
+            if (raw.error) {
+                throw new Error(raw.error.info || raw.error.code);
+            }
+            if (raw.query?.embeddedin) {
+                allPages.push(...raw.query.embeddedin);
+            }
+
+            if (raw.continue) {
+                continueParams = raw.continue as Record<string, unknown>;
+            } else {
+                continueParams = undefined;
+            }
+        } while (continueParams && allPages.length < 10000);
 
         return jsonResult({
             template,
-            pages: results,
-            count: results.length
+            pages: allPages,
+            count: allPages.length
         });
     } catch ( error ) {
         return errorResult('Failed to get pages transcluding template', error as Error);

@@ -43,11 +43,15 @@ export function writeTool( server: McpServer ): RegisteredTool {
             title: z.string().describe( 'Page title to edit' ),
             content: z.string().describe( 'COMPLETE wikitext for the ENTIRE page — replaces everything on the page. ' +
                 'Fetch the current content with get-article first, modify as needed, then pass the full text here.' ),
-            intent: z.enum(['add', 'revise', 'delete']).describe(
+            intent: z.enum(['add', 'revise', 'rewrite', 'delete']).describe(
                 'Your editing intent: "add" = adding content (page should grow), ' +
                 '"revise" = modifying content (small net change, must keep ≥3/4 of existing bytes), ' +
+                '"rewrite" = substantial restructure that shrinks the page a lot ' +
+                '(e.g. converting hardcoded wikitext into a template/module call — ' +
+                'declared in the summary so the change is auditable), ' +
                 '"delete" = removing significant content (page should shrink significantly)' ),
-            summary: z.string().describe( 'Edit summary describing what was changed and why' ),
+            summary: z.string().describe( 'Edit summary describing what was changed and why. ' +
+                'For intent "rewrite", state that a major rewrite is being performed.' ),
             minor: z.boolean().optional().default( false ).describe( 'Mark as minor edit' )
         },
         {
@@ -65,7 +69,7 @@ async function handleWriteTool(
     params: {
         title: string;
         content: string;
-        intent: 'add' | 'revise' | 'delete';
+        intent: 'add' | 'revise' | 'rewrite' | 'delete';
         summary: string;
         minor?: boolean;
     }
@@ -96,7 +100,17 @@ async function handleWriteTool(
                         if (proposedBytes < currentBytes * 3 / 4) {
                             return errorResult(
                                 `Size mismatch: intent is "revise" but proposed (${proposedBytes} B) < 3/4 of current (${currentBytes} B, threshold ${Math.floor(currentBytes * 3 / 4)} B). ` +
-                                `Revise should keep most content intact. For larger removals, use intent "delete".`
+                                `Revise should keep most content intact. For larger restructures, use intent "rewrite" (with a summary declaring it), or "delete" for removals.`
+                            );
+                        }
+                        break;
+                    case 'rewrite':
+                        // Intentional large restructure — only guard against an
+                        // accidental near-total wipe.
+                        if (proposedBytes < currentBytes * 1 / 10) {
+                            return errorResult(
+                                `Size mismatch: intent is "rewrite" but proposed (${proposedBytes} B) < 1/10 of current (${currentBytes} B, threshold ${Math.floor(currentBytes / 10)} B). ` +
+                                `This looks like an accidental page wipe. If intentional, verify the content is correct and retry.`
                             );
                         }
                         break;

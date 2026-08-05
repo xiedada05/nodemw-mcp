@@ -50,8 +50,84 @@ let botInstance: Bot | null = null;
 let serverConfig: ServerConfig | null = null;
 let authenticated = false;
 
+export interface WhoamiUser {
+    id?: number;
+    name?: string;
+    anon?: boolean;
+    groups?: string[];
+    rights?: string[];
+}
+
+export interface WhoamiResult {
+    userinfo?: WhoamiUser;
+}
+
+/**
+ * Query the wiki for the current session's user info.
+ * An anonymous (logged-out) session returns an anonymous userinfo,
+ * and an expired/invalid session returns an error.
+ */
+export function fetchWhoami(bot: Bot): Promise<WhoamiResult> {
+    return new Promise((resolve, reject) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (bot as any).api.call(
+            { action: 'query', meta: 'userinfo', uiprop: 'groups|rights' },
+            (err: Error | null, _info: unknown, _next: unknown, data: WhoamiResult) => {
+                if (err) reject(err);
+                else resolve(data);
+            },
+            'GET'
+        );
+    });
+}
+
+/**
+ * Detect whether the current session is logged in.
+ * Anonymous sessions report anon=true with id 0; a session that silently
+ * dropped to anonymous (e.g. expired cookie) shows the same shape.
+ */
+export function isWhoamiAuthenticated(whoami: WhoamiResult): boolean {
+    const u = whoami?.userinfo;
+    return !!u && u.id != null && u.id > 0 && !u.anon;
+}
+
+let heartbeatTimer: NodeJS.Timeout | null = null;
+
+/** Start a periodic login-alive check. On drop, `onDisconnect` fires once. */
+export function startLoginHeartbeat(onDisconnect: () => void): void {
+    stopLoginHeartbeat();
+    heartbeatTimer = setInterval(() => {
+        const bot = botInstance;
+        if (!bot) return;
+        fetchWhoami(bot)
+            .then((whoami) => {
+                if (authenticated && !isWhoamiAuthenticated(whoami)) {
+                    authenticated = false;
+                    onDisconnect();
+                }
+            })
+            .catch(() => {
+                // Transient network/API errors are NOT login loss — keep the
+                // session state as-is and let the next beat re-check.
+            });
+    }, 60_000);
+    // Do not block process exit
+    heartbeatTimer.unref();
+}
+
+export function stopLoginHeartbeat(): void {
+    if (heartbeatTimer) {
+        clearInterval(heartbeatTimer);
+        heartbeatTimer = null;
+    }
+}
+
 export function initServerConfig(config: ServerConfig): void {
     serverConfig = config;
+}
+
+export function getServerConfig(): ServerConfig | null {
+    return serverConfig;
 }
 
 function createBotFromConfig(config: ServerConfig): Bot {

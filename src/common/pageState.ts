@@ -45,11 +45,6 @@ interface PageInfo {
     missing?: boolean;
 }
 
-interface ArticleInfoResult {
-    title?: string;
-    results?: PageInfo[];
-}
-
 export function markAsRead(pageid: number, revid: number): void {
     readState.set(pageid, revid);
 }

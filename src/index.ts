@@ -40,6 +40,7 @@ import {
     isAuthenticated,
     setMediaWikiVersion,
     getMediaWikiVersion,
+    startLoginHeartbeat,
     type ServerConfig
 } from './common/nodemwBot.js';
 
@@ -262,6 +263,12 @@ async function main(): Promise<void> {
         'target page with get-article or get-article-with-lineno. This prevents',
         'accidental data loss from editing stale content.',
         '',
+        'SESSION NOTE: This server process is started fresh for every client',
+        'connection (including /mcp reconnects). The read-before-write state',
+        'is per-connection only — after any reconnect, re-read the target page',
+        'before editing. If a write fails with a "not allowed / login required"',
+        'error, the login session has likely expired: reconnect via /mcp.',
+        '',
         'PREFER PRECISION: Use edit (line-based exact match) for targeted changes.',
         'Use write (full-page overwrite) only when replacing most of the page.',
         'Use append/prepend only for truly additive changes (categories, notices).',
@@ -335,6 +342,22 @@ async function main(): Promise<void> {
     // Step 5: Connect stdio transport
     const transport = new StdioServerTransport();
     await server.connect(transport);
+
+    // Step 5.5: Watch for silently expired logins (every 60s). On drop, print
+    // a one-shot banner on stderr — visible to the client when launched in a
+    // terminal (e.g. --debug), informing the operator to reconnect via /mcp.
+    if (auth) {
+        let droppedLogged = false;
+        startLoginHeartbeat(() => {
+            if (droppedLogged) return;
+            droppedLogged = true;
+            console.error(
+                '\n⚠ LOGIN SESSION EXPIRED — the wiki no longer accepts this session as logged in.\n' +
+                '  Write tools may fail with "not allowed to edit" errors.\n' +
+                '  Reconnect the MCP server via /mcp to log in again.\n'
+            );
+        });
+    }
 
     // Startup banner
     const authStr = auth ? `authenticated as ${config.username}` : 'guest (read-only)';

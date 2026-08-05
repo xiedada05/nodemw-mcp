@@ -36,13 +36,9 @@ import { markAsRead } from '../../common/pageState.js';
 interface ModuleRevision {
     revid?: number;
     timestamp?: string;
-    slots?: {
-        main?: {
-            contentmodel?: string;
-            contentformat?: string;
-            '*': string;
-        };
-    };
+    contentmodel?: string;
+    contentformat?: string;
+    '*': string;
 }
 
 interface ModulePage {
@@ -57,11 +53,12 @@ export function getModuleSourceTool( server: McpServer ): RegisteredTool {
     return server.tool(
         'get-module-source',
         'Get the RAW source code of a Scribunto module (e.g. Module:XXX). ' +
-        'Unlike get-article, this uses prop=revisions&rvslots=main to return ' +
+        'Unlike get-article, this uses prop=revisions&rvprop=content to return ' +
         'the exact source code as stored, bypassing any pre-save transformation ' +
         '(strip markers, etc.) that the normal page fetch may apply. ' +
         'Essential for downloading modules for local editing where byte-for-byte ' +
-        'accuracy is required.',
+        'accuracy is required. Works on all MediaWiki versions (rvslots is 1.32+, ' +
+        'so this falls back to the legacy slot-less revisions format).',
         {
             title: z.string().describe( 'Module title with Module: prefix (e.g., "Module:QRCode")' )
         },
@@ -87,7 +84,6 @@ async function handleGetModuleSourceTool(
                 prop: 'revisions',
                 titles: title,
                 rvprop: 'ids|timestamp|content',
-                rvslots: 'main',
                 rvlimit: 1
             },
             'GET'
@@ -114,8 +110,15 @@ const pages = (apiResult.query as any)?.pages as Record<string, ModulePage> | un
             return errorResult(`Module "${title}" has no revisions.`);
         }
 
-        const slotContent = rev.slots?.main?.['*'];
-        if (slotContent == null) {
+        // Slots API is MW 1.32+; on older wikis the content sits directly on the
+        // revision object. Accept both shapes.
+        const legacyContent = rev['*'];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const slotContent = (rev as any).slots?.main?.['*'];
+        const content = slotContent ?? legacyContent;
+        const contentmodel = (rev as any).slots?.main?.contentmodel ?? rev.contentmodel;
+        const contentformat = (rev as any).slots?.main?.contentformat ?? rev.contentformat;
+        if (content == null) {
             return errorResult(`Module "${title}" has no main slot content.`);
         }
 
@@ -130,9 +133,9 @@ const pages = (apiResult.query as any)?.pages as Record<string, ModulePage> | un
             ns: page.ns,
             revid: rev.revid,
             timestamp: rev.timestamp,
-            contentmodel: rev.slots?.main?.contentmodel,
-            contentformat: rev.slots?.main?.contentformat,
-            content: slotContent
+            contentmodel,
+            contentformat,
+            content
         });
     } catch ( error ) {
         return errorResult('Failed to get module source', error as Error);
