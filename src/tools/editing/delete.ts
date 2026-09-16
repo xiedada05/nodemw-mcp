@@ -47,7 +47,9 @@ export function deleteTool( server: McpServer ): RegisteredTool {
         {
             title: 'Delete page',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( params ) => handleDeleteTool( params )
     );

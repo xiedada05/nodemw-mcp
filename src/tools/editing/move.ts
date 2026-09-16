@@ -47,7 +47,9 @@ export function moveTool( server: McpServer ): RegisteredTool {
         {
             title: 'Move page',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( params ) => handleMoveTool( params )
     );

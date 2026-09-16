@@ -54,7 +54,9 @@ export function getImageInfoTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get image info',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { filename } ) => handleGetImageInfoTool( filename )
     );

@@ -152,3 +152,5 @@ config.json
 
 # Local smoke-test script (contains production site/UA info — do not commit)
 scripts/smoke-test.mjs
+# ZCode workspace config (contains MCP server credentials)
+.zcode/

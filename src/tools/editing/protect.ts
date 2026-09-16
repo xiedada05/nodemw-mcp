@@ -57,7 +57,9 @@ export function protectTool( server: McpServer ): RegisteredTool {
         {
             title: 'Protect page',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( params ) => handleProtectTool( params )
     );

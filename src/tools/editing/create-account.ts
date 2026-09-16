@@ -45,7 +45,9 @@ export function createAccountTool( server: McpServer ): RegisteredTool {
         {
             title: 'Create user account',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( params ) => handleCreateAccountTool( params )
     );

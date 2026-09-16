@@ -56,7 +56,9 @@ export function blockTool( server: McpServer ): RegisteredTool {
         {
             title: 'Block user',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { username, id, reason, expiry, anononly, nocreate, autoblock, noemail, allowusertalk, reblock } ) =>
             handleBlockTool( username, id, reason, expiry, anononly, nocreate, autoblock, noemail, allowusertalk, reblock )

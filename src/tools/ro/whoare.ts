@@ -43,7 +43,9 @@ export function whoareTool( server: McpServer ): RegisteredTool {
         {
             title: 'Who are',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { usernames, ids } ) => handleWhoareTool( usernames, ids )
     );

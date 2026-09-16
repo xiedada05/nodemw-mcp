@@ -48,38 +48,42 @@ interface SearchResult extends Record<string, any> {
 export function searchTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'search',
-        'Search wiki page TITLES by substring (NOT full-text search). ' +
-        'Case-insensitive: "anthrocon" matches "Anthrocon". ' +
-        'By default searches the main namespace only (ns 0); pass namespace ' +
-        'to search other namespaces (e.g. 10 for Template). ' +
-        'Complements get-pages-by-prefix (prefix match — use it when you know ' +
-        'the title starts with the search term).',
+        'Full-text wiki search (MediaWiki list=search) over page content and titles. ' +
+        'The keyword is passed to the search backend VERBATIM — on CirrusSearch wikis ' +
+        '(most modern MediaWiki) you can use its query syntax, e.g. insource:"{{#widget:Bilibili" ' +
+        'to find pages invoking a widget, intitle:"..." for title matches, ' +
+        'incategory:"..." to scope to a category. ' +
+        'Use mode="title" for title-only matching. ' +
+        'Default namespace: main (0); pass namespace to search others (e.g. 10 Template, 828 Module).',
         {
-            keyword: z.string().describe( 'Search keyword (title substring)' ),
+            keyword: z.string().describe( 'Search expression, passed to the backend verbatim (CirrusSearch syntax allowed)' ),
             limit: z.number().optional().default( 10 ).describe( 'Maximum number of results' ),
+            mode: z.enum(['text', 'title']).optional().default('text').describe(
+                '"text" (default) = full-text search with backend query syntax; ' +
+                '"title" = match page titles only (srwhat=title)' ),
             namespace: z.union([
                 z.number(),
                 z.array(z.number())
             ]).optional().describe(
                 'Namespace number(s) to filter by (e.g. 0 for main, 10 for Template, 2 for User, 14 for Category). ' +
                 'Default: main namespace (0) only. ' +
-                'Note: search matches page titles within the specified namespace(s) — ' +
-                'you do NOT need to include the namespace prefix in the keyword. ' +
-                'For example, keyword="Cite" + namespace=10 finds "Template:Cite web", ' +
-                'not keyword="Template:Cite".'
+                'You do NOT need to include the namespace prefix in the keyword.'
             )
         },
         {
             title: 'Search',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
-        async ( { keyword, limit, namespace } ) => handleSearchTool( keyword, limit, namespace )
+        async ( { keyword, limit, mode, namespace } ) => handleSearchTool( keyword, limit, mode, namespace )
     );
     tool.update({ outputSchema: {
         total: z.number(),
         limit: z.number(),
         keyword: z.string(),
+        mode: z.enum(['text', 'title']).optional(),
         namespace: z.union([z.number(), z.array(z.number())]).optional(),
         results: z.array(z.record(z.unknown()))
     }});
@@ -89,6 +93,7 @@ export function searchTool( server: McpServer ): RegisteredTool {
 async function handleSearchTool(
     keyword: string,
     limit: number,
+    mode: 'text' | 'title',
     namespace?: number | number[]
 ): Promise<CallToolResult> {
     try {
@@ -101,9 +106,12 @@ async function handleSearchTool(
             action: 'query',
             list: 'search',
             srsearch: keyword,
-            srprop: 'timestamp',
+            srprop: 'timestamp|snippet',
             srlimit: API_LIMIT,
         };
+        if (mode === 'title') {
+            baseParams.srwhat = 'title';
+        }
 
         if (namespace !== undefined) {
             const ns = Array.isArray(namespace) ? namespace.join('|') : String(namespace);
@@ -143,6 +151,7 @@ async function handleSearchTool(
             total: allResults.length,
             limit,
             keyword,
+            mode,
             namespace,
             results: limitedResults
         });

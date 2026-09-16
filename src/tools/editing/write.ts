@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { markAsWritten, requireRead } from '../../common/pageState.js';
+import { conflictGuardParams, findStaleWrite, markAsWritten, requireRead } from '../../common/pageState.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function writeTool( server: McpServer ): RegisteredTool {
@@ -38,7 +38,9 @@ export function writeTool( server: McpServer ): RegisteredTool {
         'write',
         'Replace the ENTIRE content of a wiki page at once (requires authentication). ' +
         'MEDIUM RISK: Full-page overwrite — any content you omit is lost. ' +
-        'Prefer edit (line-based) for small changes. Always get-article first, modify, then write.',
+        'Prefer edit (line-based) for small changes. Always get-article first, modify, then write. ' +
+        'Read state is per session — after reconnecting you must get-article again. ' +
+        'The save fails with an edit-conflict error if the page changed after you read it; re-read and retry in that case.',
         {
             title: z.string().describe( 'Page title to edit' ),
             content: z.string().describe( 'COMPLETE wikitext for the ENTIRE page — replaces everything on the page. ' +
@@ -57,7 +59,9 @@ export function writeTool( server: McpServer ): RegisteredTool {
         {
             title: 'Write page',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( params ) => handleWriteTool( params )
     );
@@ -76,7 +80,7 @@ async function handleWriteTool(
 ): Promise<CallToolResult> {
     try {
         const bot = getBot();
-        await requireRead(params.title);
+        const pageid = await requireRead(params.title);
 
         // Fetch current page content for size validation
         const currentContent = await promisifyBotMethod<string>(bot, 'getArticle', params.title, false);
@@ -126,25 +130,41 @@ async function handleWriteTool(
             }
         }
 
+        // Full-page overwrites are exactly the case MediaWiki's native
+        // basetimestamp check can't protect (a total replacement always
+        // 3-way-merges cleanly), so compare revids ourselves first.
+        const stale = await findStaleWrite(params.title, pageid);
+        if (stale) {
+            return errorResult(stale);
+        }
+
         const prefixedSummary = `[nodemw-mcp.write] ${params.summary}`;
 
+        // doEdit (public nodemw API) keeps version-aware token fetching and
+        // dry-run enforcement, and merges our params into action=edit —
+        // bot.edit() can't pass starttimestamp, so conflict protection needs it.
         const result = await promisifyBotMethod<{
             title: string;
             pageid?: number;
             oldrevid?: number;
             newrevid?: number;
+            newtimestamp?: string;
         }>(
             bot,
+            'doEdit',
             'edit',
             params.title,
-            params.content,
             prefixedSummary,
-            params.minor || false
+            {
+                text: params.content,
+                ...(params.minor ? { minor: '' } : { notminor: '' }),
+                ...conflictGuardParams(pageid),
+            }
         );
 
         // Cache the write so subsequent operations skip the read guard
         if (result.pageid != null && result.newrevid != null) {
-            markAsWritten(params.title, result.pageid, result.newrevid);
+            markAsWritten(params.title, result.pageid, result.newrevid, result.newtimestamp);
         }
 
         return jsonResult(result);

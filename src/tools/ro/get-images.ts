@@ -50,7 +50,9 @@ export function getImagesTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get images',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { startFrom, limit } ) => handleGetImagesTool( startFrom, limit )
     );

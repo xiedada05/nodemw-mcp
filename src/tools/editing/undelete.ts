@@ -48,7 +48,9 @@ export function undeleteTool( server: McpServer ): RegisteredTool {
         {
             title: 'Undelete page',
             readOnlyHint: false,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: false,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { title, reason, timestamps } ) => handleUndeleteTool( title, reason, timestamps )
     );

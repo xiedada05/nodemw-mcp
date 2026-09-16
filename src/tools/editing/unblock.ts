@@ -46,7 +46,9 @@ export function unblockTool( server: McpServer ): RegisteredTool {
         {
             title: 'Unblock user',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { username, id, reason } ) => handleUnblockTool( username, id, reason )
     );

@@ -38,7 +38,7 @@ interface BatchPage {
     ns?: number;
     title?: string;
     missing?: boolean | string;
-    revisions?: Array<{ '*': string; revid?: number }>;
+    revisions?: Array<{ '*': string; revid?: number; timestamp?: string }>;
 }
 
 interface BatchResult {
@@ -69,7 +69,9 @@ export function getArticlesTool( server: McpServer ): RegisteredTool {
         {
             title: 'Batch read articles',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { titles, ids } ) => handleGetArticlesTool( titles, ids )
     );
@@ -86,7 +88,7 @@ async function handleGetArticlesTool(
         const params: Record<string, unknown> = {
             action: 'query',
             prop: 'revisions',
-            rvprop: 'ids|content'
+            rvprop: 'ids|timestamp|content'
         };
 
         if (ids && ids.length > 0) {
@@ -135,7 +137,7 @@ async function handleGetArticlesTool(
 
             // Record read state for each page
             if (page.pageid != null && rev?.revid != null) {
-                markAsRead(page.pageid, rev.revid);
+                markAsRead(page.pageid, rev.revid, rev?.timestamp);
             }
 
             results.push(entry);

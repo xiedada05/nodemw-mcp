@@ -45,7 +45,9 @@ export function addFlowTopicTool( server: McpServer ): RegisteredTool {
         {
             title: 'Add Flow topic',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( params ) => handleAddFlowTopicTool( params )
     );

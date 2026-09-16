@@ -30,14 +30,16 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { markAsWritten, requireRead } from '../../common/pageState.js';
+import { conflictGuardParams, markAsWritten, requireRead } from '../../common/pageState.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function prependTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'prepend',
         'Prepend content to the TOP of a wiki page without changing existing content (requires authentication). ' +
-        'LOW RISK: Additive only, easy to revert. Useful for adding notices, templates, or cleanup tags.',
+        'LOW RISK: Additive only, easy to revert. Useful for adding notices, templates, or cleanup tags. ' +
+        'Read state is per session — after reconnecting you must get-article again. ' +
+        'The save fails with an edit-conflict error if the page changed after you read it; re-read and retry in that case.',
         {
             title: z.string().describe( 'Page title to prepend to' ),
             content: z.string().describe( 'Content to prepend to the top of the page (e.g., "{{Cleanup}}\\n")' ),
@@ -46,7 +48,9 @@ export function prependTool( server: McpServer ): RegisteredTool {
         {
             title: 'Prepend to page',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( params ) => handlePrependTool( params )
     );
@@ -63,25 +67,34 @@ async function handlePrependTool(
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
-        await requireRead(params.title);
+        const pageid = await requireRead(params.title);
         const prefixedSummary = `[nodemw-mcp.prepend] ${params.summary}`;
 
+        // doEdit (public nodemw API) keeps version-aware token fetching and
+        // dry-run enforcement, and merges our params into action=edit —
+        // bot.prepend() can't pass starttimestamp, so conflict protection needs it.
         const result = await promisifyBotMethod<{
             title: string;
             pageid?: number;
             oldrevid?: number;
             newrevid?: number;
+            newtimestamp?: string;
         }>(
             bot,
+            'doEdit',
             'prepend',
             params.title,
-            params.content,
-            prefixedSummary
+            prefixedSummary,
+            {
+                prependtext: params.content,
+                notminor: '',
+                ...conflictGuardParams(pageid),
+            }
         );
 
         // Cache the write so subsequent operations skip the read guard
         if (result.pageid != null && result.newrevid != null) {
-            markAsWritten(params.title, result.pageid, result.newrevid);
+            markAsWritten(params.title, result.pageid, result.newrevid, result.newtimestamp);
         }
 
         return jsonResult(result);

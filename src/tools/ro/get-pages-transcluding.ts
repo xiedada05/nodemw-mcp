@@ -53,7 +53,9 @@ export function getPagesTranscludingTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get pages transcluding template',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { template } ) => handleGetPagesTranscludingTool( template )
     );

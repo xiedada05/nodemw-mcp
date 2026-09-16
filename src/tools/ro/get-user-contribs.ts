@@ -71,7 +71,9 @@ export function getUserContribsTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get user contributions',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { username, id, namespace, limit, start } ) => handleGetUserContribsTool( username, id, namespace, limit, start )
     );

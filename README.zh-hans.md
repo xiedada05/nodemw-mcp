@@ -100,13 +100,32 @@ nodemw-mcp-server --debug mywiki.example.com
 
 ## 可用工具
 
-### 读取操作（33 个工具）
+### 读取操作（37 个工具）
 
-`get-article`、`get-article-with-lineno`、`get-article-by-revision`、`search`、`get-pages-in-category`、`get-categories`、`get-users`、`get-all-pages`、`get-pages-in-namespace`、`get-pages-by-prefix`、`get-pages-transcluding`、`get-article-revisions`、`get-article-categories`、`get-article-properties`、`get-article-info`、`get-user-contribs`、`whoami`、`whois`、`whoare`、`get-images`、`get-images-from-article`、`get-image-usage`、`get-image-info`、`get-log`、`expand-templates`、`parse`、`get-recent-changes`、`get-site-info`、`get-site-stats`、`get-mediawiki-version`、`get-external-links`、`get-backlinks`、`get-query-page`
+`get-article`、`get-article-with-lineno`、`get-article-by-revision`、`search`、`diff-revisions`、`diff-preview`、`get-pages-in-category`、`get-categories`、`get-users`、`get-all-pages`、`get-pages-in-namespace`、`get-pages-by-prefix`、`get-pages-transcluding`、`get-article-revisions`、`get-article-categories`、`get-article-properties`、`get-article-info`、`get-user-contribs`、`whoami`、`whois`、`whoare`、`get-images`、`get-images-from-article`、`get-image-usage`、`get-image-info`、`get-log`、`expand-templates`、`parse`、`get-recent-changes`、`get-site-info`、`get-site-stats`、`get-mediawiki-version`、`get-external-links`、`get-backlinks`、`get-query-page`、`get-module-source`、`get-articles`
 
-### 写入操作（16 个工具，需要认证）
+### 写入操作（17 个工具，需要认证）
 
-`edit`、`write`、`append`、`prepend`、`move`、`delete`、`undelete`、`protect`、`block`、`unblock`、`purge`、`send-email`、`upload`、`upload-by-url`、`add-flow-topic`、`create-account`
+`edit`、`write`、`revert`、`append`、`prepend`、`move`、`delete`、`undelete`、`protect`、`block`、`unblock`、`purge`、`send-email`、`upload`、`upload-by-url`、`add-flow-topic`、`create-account`
+
+### 预览与验证渲染 HTML（parse）
+
+`parse` 工具是 WikiText 与渲染 HTML 之间的桥梁：
+
+- **写前预览**：`parse(text="...", title="目标页面")` 在页面上下文中渲染未保存的 wikitext，`pst=true` 可展开 `~~~~` 签名等预保存转换。
+- **写后验证**：`parse(page="目标页面")` 直接渲染页面当前已保存的内容——推荐作为任何编辑工作流的收尾步骤。
+- **损坏输出会被标记而非静默**：HTML 中内嵌的错误元素（如渲染失败的 `{{#widget:...}}` 或模板）会被检测并以警告形式报告，因为 API 调用本身仍是成功的。
+- **复杂 HTML 的渲染上下文**：`include=["modules","jsconfigvars","headhtml"]` 返回渲染页面所需的 ResourceLoader 模块、JS 配置变量和 `<head>` HTML——把 HTML 交给浏览器做视觉检查或开发 Widget 时必不可少。`limit_report=true` 额外返回结构化解析器性能报告。带 `include`/`limit_report` 时返回结构化 JSON，否则保持纯 HTML 输出格式。
+
+### 编辑冲突防护
+
+`write`、`edit`、`append`、`prepend` 会跟踪当前会话读取过的页面（读状态按会话隔离——重连后必须重新 `get-article`）。保存请求携带 `basetimestamp`/`starttimestamp`；此外 `write` 会拒绝覆盖在你读取之后被他人修改过的页面——保存失败时会给出「重读、重改、再保存」的指引。
+
+两个 diff 工具帮你提前看到变化：`diff-revisions` 对比任意两个版本（缺省为「本会话上次读取 → 当前最新」），`diff-preview` 展示拟保存内容会改动什么——两者都走服务端 diff 引擎，不会写入任何内容。
+
+### 搜索
+
+`search` 是全文搜索（MediaWiki `list=search`）：关键字原样传给搜索后端，CirrusSearch 站点支持查询语法，如 `insource:"{{#widget:Bilibili"`（查找调用某 Widget 的页面）、`intitle:"..."`。使用默认 MySQL/MariaDB 后端的站点不支持这些语法——可用 `mode="title"` 做仅标题匹配。
 
 ### 编辑 Lua 模块（推荐工作流）
 
@@ -128,7 +147,8 @@ bot.logIn(username, password, () => {
 
 对于小改动，可以直接用 `edit` 和 `write` 工具操作。
 
-> **提示：** 使用 `search(keyword, namespace=828)` 查找 Lua 模块，
+> **提示：** 使用 `search(keyword, namespace=828, mode="title")` 按名称查找 Lua 模块
+> （仅匹配标题；默认 `mode="text"` 为全文搜索页面内容，支持 CirrusSearch 语法如 `intitle:"..."`），
 > 使用 `get-pages-by-prefix(prefix="QR", namespace=828)` 按命名规则发现模块（指定 namespace 后前缀不含命名空间前缀）。
 
 ## 开发

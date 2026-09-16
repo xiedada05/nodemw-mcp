@@ -245,6 +245,62 @@ export function getMediaWikiVersion(): number | null {
     return parseFloat(m[1] + '.' + m[2]);
 }
 
+// Namespace cache: lowercase name (localized, canonical, alias) → namespace id.
+// Populated at startup from meta=siteinfo siprop=namespaces|namespacealiases;
+// tools use it to accept namespace-qualified titles without hardcoding
+// namespace numbers.
+let namespaceCache: Map<string, number> | null = null;
+
+export interface NamespaceAliasEntry {
+    id: number;
+    '*': string;
+}
+
+export function setNamespaceCache(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    namespaces: Record<string, any>,
+    namespaceAliases?: NamespaceAliasEntry[]
+): void {
+    const map = new Map<string, number>();
+    const register = (name: unknown, id: number): void => {
+        if (typeof name === 'string' && name) {
+            map.set(name.toLowerCase(), id);
+        }
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    for (const ns of Object.values(namespaces ?? {}) as any[]) {
+        const id = ns?.id;
+        if (typeof id !== 'number' || id < 0) continue; // Special:-1, Media:-2
+        register(ns['*'], id);
+        register(ns.canonical, id);
+        // Most wikis deliver aliases via siprop=namespacealiases instead of an
+        // inline field, but accept string | string[] when one is present.
+        if (Array.isArray(ns.alias)) {
+            for (const alias of ns.alias) register(alias, id);
+        } else {
+            register(ns.alias, id);
+        }
+    }
+    // siprop=namespacealiases: flat [{ id, '*': alias }] list — on typical wikis
+    // this is the only place localized aliases (文件:, 模板:, Image:) exist.
+    for (const entry of namespaceAliases ?? []) {
+        if (typeof entry?.id !== 'number' || entry.id < 0) continue; // Special:-1, Media:-2
+        register(entry['*'], entry.id);
+    }
+    namespaceCache = map;
+}
+
+/**
+ * Resolve a namespace name (canonical, localized, or alias; case-insensitive)
+ * to its id. Returns null when unknown or when the cache was never populated —
+ * callers must treat null as "cannot decide" and keep legacy behavior.
+ */
+export function lookupNamespaceId(name: string): number | null {
+    if (!namespaceCache) return null;
+    const id = namespaceCache.get(name.toLowerCase());
+    return id === undefined ? null : id;
+}
+
 export function isAuthenticated(): boolean {
     return authenticated;
 }

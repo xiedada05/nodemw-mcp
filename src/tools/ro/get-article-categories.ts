@@ -43,7 +43,9 @@ export function getArticleCategoriesTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get article categories',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { title, id } ) => handleGetArticleCategoriesTool( title, id )
     );

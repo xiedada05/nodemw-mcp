@@ -46,7 +46,9 @@ export function sendEmailTool( server: McpServer ): RegisteredTool {
         {
             title: 'Send email',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( params ) => handleSendEmailTool( params )
     );

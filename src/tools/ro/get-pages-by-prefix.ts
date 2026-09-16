@@ -29,7 +29,7 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { getBot } from '../../common/nodemwBot.js';
+import { getBot, lookupNamespaceId } from '../../common/nodemwBot.js';
 import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
 const API_LIMIT = 5000;
@@ -44,15 +44,14 @@ interface PageByPrefix extends Record<string, any> {
 export function getPagesByPrefixTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'get-pages-by-prefix',
-        'Get pages whose titles start with a specific prefix. By default searches the main namespace (0).',
+        'Get pages whose titles start with a specific prefix. By default searches the main namespace (0). ' +
+        'A namespace-qualified prefix like "Widget:" or "User:X/" is detected and searched in that namespace automatically.',
         {
             prefix: z.string().describe(
-                'Prefix to match page titles. IMPORTANT: when namespace is specified, ' +
-                'omit the namespace prefix from this value — the prefix is matched against ' +
-                'page titles within that namespace only. ' +
-                'For example, use "Cite" (NOT "Template:Cite") with namespace=10, ' +
-                'or "MyBot/" (NOT "User:MyBot/") with namespace=2. ' +
-                'When namespace is omitted (defaults to main 0), use plain prefixes like "Fu" or "兽".'
+                'Prefix to match page titles. When namespace is specified, omit the namespace prefix ' +
+                '(use "Cite", NOT "Template:Cite", with namespace=10). ' +
+                'When namespace is omitted, a leading known namespace like "Widget:" or "Template:Cite" ' +
+                'is split automatically (falls back to main-namespace matching for unknown prefixes).'
             ),
             namespace: z.union([
                 z.number(),
@@ -67,7 +66,9 @@ export function getPagesByPrefixTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get pages by prefix',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { prefix, namespace } ) => handleGetPagesByPrefixTool( prefix, namespace )
     );
@@ -87,18 +88,34 @@ async function handleGetPagesByPrefixTool(
     try {
         const bot = await getBot();
 
+        // Namespace-qualified prefixes like "Widget:Foo" are split
+        // automatically when the namespace is known (from the siteinfo cache).
+        // list=allpages matches apprefix against one namespace only, so the
+        // raw prefix would otherwise be matched against the main namespace
+        // and API-error on wikis where it collides with a real namespace.
+        let effectivePrefix = prefix;
+        let effectiveNamespace = namespace;
+        if (namespace === undefined && prefix.includes(':')) {
+            const colon = prefix.indexOf(':');
+            const nsId = lookupNamespaceId(prefix.slice(0, colon));
+            if (nsId !== null && nsId >= 0) {
+                effectiveNamespace = nsId;
+                effectivePrefix = prefix.slice(colon + 1);
+            }
+        }
+
         // Use low-level API: nodemw's bot.getPagesByPrefix() does not support
         // apnamespace (defaults to 0 = main namespace) and uses api.call
         // without continuation, truncating results at API_LIMIT.
         const baseParams: Record<string, unknown> = {
             action: 'query',
             list: 'allpages',
-            apprefix: prefix,
+            apprefix: effectivePrefix,
             aplimit: API_LIMIT,
         };
 
-        if (namespace !== undefined) {
-            const ns = Array.isArray(namespace) ? namespace.join('|') : String(namespace);
+        if (effectiveNamespace !== undefined) {
+            const ns = Array.isArray(effectiveNamespace) ? effectiveNamespace.join('|') : String(effectiveNamespace);
             baseParams.apnamespace = ns;
         }
 
@@ -130,8 +147,8 @@ async function handleGetPagesByPrefixTool(
         } while (continueParams && allResults.length < 10000);
 
         return jsonResult({
-            prefix,
-            namespace,
+            prefix: effectivePrefix,
+            namespace: effectiveNamespace,
             pages: allResults,
             count: allResults.length
         });

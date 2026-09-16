@@ -30,14 +30,16 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { markAsWritten, requireRead } from '../../common/pageState.js';
+import { conflictGuardParams, markAsWritten, requireRead } from '../../common/pageState.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function appendTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'append',
         'Append content to the END of a wiki page without changing existing content (requires authentication). ' +
-        'LOW RISK: Additive only, easy to revert. Safe for adding categories, interwiki links, or bottom-of-page content.',
+        'LOW RISK: Additive only, easy to revert. Safe for adding categories, interwiki links, or bottom-of-page content. ' +
+        'Read state is per session — after reconnecting you must get-article again. ' +
+        'The save fails with an edit-conflict error if the page changed after you read it; re-read and retry in that case.',
         {
             title: z.string().describe( 'Page title' ),
             content: z.string().describe( 'Content to append to the end of the page (e.g., "\\n[[Category:MyCategory]]")' ),
@@ -46,11 +48,15 @@ export function appendTool( server: McpServer ): RegisteredTool {
         {
             title: 'Append to page',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( params ) => handleAppendTool( params )
     );
-    tool.update({ outputSchema: { success: z.boolean(), title: z.string() } });
+    // Handler also reports pageid/newrevid — the schema must cover them or
+    // strict MCP clients reject the structured content.
+    tool.update({ outputSchema: { success: z.boolean(), title: z.string(), pageid: z.number().optional(), newrevid: z.number().optional() } });
     return tool;
 }
 
@@ -63,25 +69,34 @@ async function handleAppendTool(
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
-        await requireRead(params.title);
+        const pageid = await requireRead(params.title);
         const prefixedSummary = `[nodemw-mcp.append] ${params.summary}`;
 
+        // doEdit (public nodemw API) keeps version-aware token fetching and
+        // dry-run enforcement, and merges our params into action=edit —
+        // bot.append() can't pass starttimestamp, so conflict protection needs it.
         const result = await promisifyBotMethod<{
             title: string;
             pageid?: number;
             oldrevid?: number;
             newrevid?: number;
+            newtimestamp?: string;
         }>(
             bot,
+            'doEdit',
             'append',
             params.title,
-            params.content,
-            prefixedSummary
+            prefixedSummary,
+            {
+                appendtext: params.content,
+                notminor: '',
+                ...conflictGuardParams(pageid),
+            }
         );
 
         // Cache the write so subsequent operations skip the read guard
         if (result.pageid != null && result.newrevid != null) {
-            markAsWritten(params.title, result.pageid, result.newrevid);
+            markAsWritten(params.title, result.pageid, result.newrevid, result.newtimestamp);
         }
 
         return jsonResult({ success: true, title: params.title, pageid: result.pageid, newrevid: result.newrevid });

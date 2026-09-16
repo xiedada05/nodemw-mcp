@@ -18,12 +18,12 @@ Build uses **esbuild** (not tsc). `tsc --noEmit` is clean; esbuild performs the 
 src/index.ts        CLI entry → parse args → init Bot → create Server → stdio transport
 src/server.ts       McpServer factory (thin)
 src/tools/index.ts  Central registry: readToolRegistrars + writeToolRegistrars
-src/tools/ro/       ~33 read-only tools
-src/tools/editing/  ~15 write tools (all gated by read-before-write guard)
+src/tools/ro/       37 read-only tools
+src/tools/editing/  17 write tools (all gated by read-before-write guard)
 src/common/         Bot singleton, pageState guard, result helpers
 ```
 
-Tool pattern: each file exports `(server: McpServer) => RegisteredTool`, registers with Zod schema + `outputSchema.update()`, and returns `jsonResult()` or `errorResult()`.
+Tool pattern: each file exports `(server: McpServer) => RegisteredTool`, registers with Zod schema + annotations + `outputSchema.update()`, and returns `jsonResult()` or `errorResult()`.
 
 ## Key Conventions
 
@@ -39,5 +39,7 @@ Tool pattern: each file exports `(server: McpServer) => RegisteredTool`, registe
 2. Export a `(server: McpServer) => RegisteredTool` function
 3. Register in `src/tools/index.ts` import + array
 4. Write tools: add `requireRead(title)` before any edit action
+5. Declare all four MCP hints (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`) as explicit booleans — strict hosts reject tools missing any of them, and `src/tools/__tests__/annotations.test.ts` enforces this
+6. Add minimal arguments for the new tool to `TOOL_ARGUMENTS` in `src/tools/__tests__/smoke.test.ts` so it stays covered end-to-end
 
 For detailed architecture, Bot API usage, and tool patterns, see [CLAUDE.md](./CLAUDE.md). For usage and configuration, see [README.md](./README.md).

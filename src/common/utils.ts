@@ -101,24 +101,46 @@ const LOGIN_EXPIRED_PATTERNS = [
     /assertuserfailed/i,
 ];
 
+// MediaWiki editconflict errors. The error CODE is lost by nodemw's api.call
+// (it only keeps data.error.info in the message), so match the localized text.
+const EDIT_CONFLICT_PATTERNS = [
+    /editconflict/i,
+    /edit conflict/i,
+    /编辑冲突/,
+];
+
 /** Append a hint when an error smells like a silently expired session. */
-function annotateLoginError(message: string, error?: Error): string {
+function annotateLoginError(message: string, error?: Error): string | null {
     const details = error?.message ?? '';
     if (LOGIN_EXPIRED_PATTERNS.some((re) => re.test(message) || re.test(details))) {
         return details
             ? `${details} — your login session has likely expired. Reconnect via /mcp to log in again.`
             : message;
     }
-    return details;
+    return null;
+}
+
+/** Append a recovery hint when a save failed due to an edit conflict. */
+function annotateEditConflict(message: string, error?: Error): string | null {
+    const details = error?.message ?? '';
+    if (EDIT_CONFLICT_PATTERNS.some((re) => re.test(message) || re.test(details))) {
+        return (
+            details +
+            ' — Edit conflict: the page was modified by someone else after it was read in this session. ' +
+            'Re-read it with get-article (or get-article-with-lineno), re-apply your change, then save again.'
+        );
+    }
+    return null;
 }
 
 export function errorResult(message: string, error?: Error): CallToolResult {
+    const details = annotateLoginError(message, error) ?? annotateEditConflict(message, error) ?? error?.message ?? '';
     return {
         content: [{
             type: 'text',
             text: JSON.stringify({
                 error: message,
-                details: annotateLoginError(message, error)
+                details
             }, null, 2)
         }],
         isError: true

@@ -56,7 +56,9 @@ export function getArticleWithLinenoTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get article with line numbers',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { title, id, offset, limit, maxlen } ) =>
             handleGetArticleWithLinenoTool( title, id, offset, limit, maxlen )
@@ -91,13 +93,13 @@ function truncateLines(lines: LineEntry[], maxlen?: number): { lines: LineEntry[
 async function fetchArticleContent(
     title: string | undefined,
     id: number | undefined
-): Promise<{ content: string; pageTitle: string; pageid: number; lastrevid: number }> {
+): Promise<{ content: string; pageTitle: string; pageid: number; lastrevid: number; revTimestamp?: string }> {
     const bot = await getBot();
 
     if (id !== undefined) {
         const info = await callApi(
             bot,
-            { action: 'query', prop: 'revisions', rvprop: 'content', rvlimit: 1, pageids: id },
+            { action: 'query', prop: 'revisions', rvprop: 'content|ids|timestamp', rvlimit: 1, pageids: id },
             'GET'
         );
 
@@ -108,12 +110,15 @@ const pages = (info.query as any)?.pages as Record<string, Record<string, any>> 
         if (!page || page.missing !== undefined) {
             throw new Error(`Page with ID ${id} not found.`);
         }
-        const revisions = page.revisions as Array<{ '*': string }> | undefined;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const revisions = page.revisions as Array<Record<string, any>> | undefined;
+        const rev = revisions?.[0];
         return {
-            content: revisions?.[0]?.['*'] || '',
+            content: rev?.['*'] || '',
             pageTitle: (page.title as string) || `id:${id}`,
             pageid: page.pageid as number,
-            lastrevid: page.lastrevid as number
+            lastrevid: rev?.revid as number,
+            revTimestamp: rev?.timestamp as string | undefined
         };
     }
 
@@ -122,16 +127,28 @@ const pages = (info.query as any)?.pages as Record<string, Record<string, any>> 
         throw new Error(`Page "${title}" not found.`);
     }
 
-    const pageInfos = await promisifyBotMethod<Array<{ pageid: number; lastrevid: number }>>(
-        bot, 'getArticleInfo', title, { prop: 'info' }
+    // Latest revision (id + timestamp) for the read guard — the bot's
+    // getArticleInfo doesn't expose the revision timestamp needed for
+    // basetimestamp conflict protection.
+    const raw = await callApi<{
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        query?: { pages?: Record<string, any> };
+    }>(
+        bot,
+        { action: 'query', prop: 'revisions', rvprop: 'ids|timestamp', rvlimit: 1, titles: title },
+        'GET'
     );
-    const pageInfo = Array.isArray(pageInfos) ? pageInfos[0] : null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const pages = Object.values(raw.query?.pages ?? {}) as Array<Record<string, any>>;
+    const page = pages.find(p => p.missing === undefined);
+    const rev = page?.revisions?.[0];
 
     return {
         content,
         pageTitle: title!,
-        pageid: pageInfo?.pageid ?? 0,
-        lastrevid: pageInfo?.lastrevid ?? 0
+        pageid: page?.pageid ?? 0,
+        lastrevid: rev?.revid ?? 0,
+        revTimestamp: rev?.timestamp
     };
 }
 
@@ -150,11 +167,11 @@ async function handleGetArticleWithLinenoTool(
             return errorResult('Provide either "title" or "id", not both.');
         }
 
-        const { content, pageTitle, pageid, lastrevid } = await fetchArticleContent(title, id);
+        const { content, pageTitle, pageid, lastrevid, revTimestamp } = await fetchArticleContent(title, id);
 
         // Record read state for write-before-read guard
         if (pageid && lastrevid) {
-            markAsRead(pageid, lastrevid);
+            markAsRead(pageid, lastrevid, revTimestamp);
         }
 
         const allLines: LineEntry[] = content.split('\n').map((text, i) => ({

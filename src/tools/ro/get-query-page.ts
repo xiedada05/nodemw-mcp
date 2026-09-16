@@ -48,7 +48,9 @@ export function getQueryPageTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get query page results',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { name } ) => handleGetQueryPageTool( name )
     );

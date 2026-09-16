@@ -39,6 +39,7 @@ import {
     promisifyBotMethod,
     isAuthenticated,
     setMediaWikiVersion,
+    setNamespaceCache,
     getMediaWikiVersion,
     startLoginHeartbeat,
     type ServerConfig
@@ -139,11 +140,20 @@ async function main(): Promise<void> {
     let siteInfo: { sitename: string; base: string; generator: string; mainpage: string; lang: string; langName: string } | undefined;
     let siteStats: { pages: number; articles: number; edits: number; users: number; activeusers: number; admins: number } | undefined;
     try {
+        // 'namespaces' + 'namespacealiases' populate the namespace cache used
+        // by tools that accept namespace-qualified titles (e.g.
+        // get-pages-by-prefix "Widget:" or localized aliases like 文件:).
         const info = await promisifyBotMethod<{
             general?: { sitename?: string; base?: string; generator?: string; mainpage?: string; lang?: string };
             languages?: Array<{ code: string; name: string }>;
-        }>(bot, 'getSiteInfo', ['general', 'languages']);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            namespaces?: Record<string, any>;
+            namespacealiases?: Array<{ id: number; '*': string }>;
+        }>(bot, 'getSiteInfo', ['general', 'languages', 'namespaces', 'namespacealiases']);
         if (debug) { console.error(`[DEBUG] getSiteInfo response: ${JSON.stringify(info)}`); }
+        if (info?.namespaces) {
+            setNamespaceCache(info.namespaces, info.namespacealiases);
+        }
         const general = info?.general;
         if (general) {
             const langCode = general.lang || 'en';

@@ -42,7 +42,9 @@ export function getCategoriesTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get categories',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { prefix } ) => handleGetCategoriesTool( prefix )
     );

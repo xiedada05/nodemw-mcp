@@ -42,7 +42,9 @@ export function getArticleByRevisionTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get article by revision',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { revision } ) => handleGetArticleByRevisionTool( revision )
     );

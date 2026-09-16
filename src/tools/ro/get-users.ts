@@ -50,7 +50,9 @@ export function getUsersTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get users',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { prefix, onlyWithEdits, limit } ) => handleGetUsersTool( prefix, onlyWithEdits, limit )
     );

@@ -29,20 +29,15 @@
 import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
-import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { getBot } from '../../common/nodemwBot.js';
 import { callApi, jsonResult, errorResult } from '../../common/utils.js';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface ArticleInfo extends Record<string, any> {
-    title: string;
-    pageid: number;
-    ns: number;
-}
 
 export function getArticleInfoTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
         'get-article-info',
-        'Get detailed information about one or more articles',
+        'Get detailed information about one or more articles. ' +
+        'With templates=true, also lists every template transcluded on the page(s) — ' +
+        'use it to trace the template chain before editing complex pages (e.g. a homepage that is just {{首页}}).',
         {
             title: z.union([
                 z.string(),
@@ -52,14 +47,17 @@ export function getArticleInfoTool( server: McpServer ): RegisteredTool {
                 z.number(),
                 z.array(z.number())
             ]).optional().describe('Page ID or array of page IDs (required if "title" is not provided)'),
-            properties: z.array(z.string()).optional().describe('Specific properties to retrieve (e.g. protection, talkid, url)')
+            properties: z.array(z.string()).optional().describe('Extra info properties to retrieve (inprop), e.g. protection, talkid, url. Default: protection|talkid|url'),
+            templates: z.boolean().optional().default(false).describe('Also return the list of templates transcluded on the page(s)')
         },
         {
             title: 'Get article info',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
-        async ( { title, id, properties } ) => handleGetArticleInfoTool( title, id, properties )
+        async ( { title, id, properties, templates } ) => handleGetArticleInfoTool( title, id, properties, templates )
     );
     tool.update({ outputSchema: { identifier: z.union([z.string(), z.number(), z.array(z.unknown())]), results: z.array(z.record(z.unknown())), count: z.number() } });
     return tool;
@@ -68,7 +66,8 @@ export function getArticleInfoTool( server: McpServer ): RegisteredTool {
 async function handleGetArticleInfoTool(
     title: string | string[] | undefined,
     id: number | number[] | undefined,
-    properties?: string[]
+    properties?: string[],
+    templates: boolean = false
 ): Promise<CallToolResult> {
     try {
         const hasTitle = typeof title === 'string' ? title.length > 0 : Array.isArray(title) ? title.length > 0 : false;
@@ -83,71 +82,39 @@ async function handleGetArticleInfoTool(
 
         const bot = await getBot();
 
-        if (hasId) {
-            // Use low-level API: the high-level Bot method may not support page IDs
-            const ids = Array.isArray(id) ? id : [id];
-            const pageids = ids.join('|');
-            const apiParams: Record<string, unknown> = {
-                action: 'query',
-                prop: 'info',
-                pageids,
-                inprop: properties?.join('|') || 'protection|talkid|url'
-            };
+        // Low-level API for every shape: one request path, one response
+        // shaping. nodemw's getArticleInfo can't take page IDs, iterates
+        // arrays with for..in (yielding indices), and doesn't support
+        // prop=templates.
+        const prop = templates ? 'info|templates' : 'info';
+        const inprop = properties?.join('|') || 'protection|talkid|url';
+        const apiParams: Record<string, unknown> = hasId
+            ? { action: 'query', prop, pageids: (Array.isArray(id) ? id : [id]).join('|'), inprop }
+            : { action: 'query', prop, titles: Array.isArray(title) ? title.join('|') : title, inprop };
 
-            const raw = await callApi(bot, apiParams, 'GET');
-            if (raw.error) {
-                throw new Error((raw.error as { code: string; info: string }).info || (raw.error as { code: string; info: string }).code);
-            }
-
-            const query = raw.query as { pages?: Record<string, Record<string, unknown>> } | undefined;
-            const pages = query?.pages;
-            const results = pages ? Object.values(pages).filter(p => p.missing === undefined) : [];
-
-            return jsonResult({
-                identifier: Array.isArray(id) ? id : id,
-                results,
-                count: results.length
-            });
+        const raw = await callApi<{
+            error?: { code: string; info: string };
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            query?: { pages?: Record<string, Record<string, any>> };
+        }>(bot, apiParams, 'GET');
+        if (raw.error) {
+            throw new Error(raw.error.info || raw.error.code);
         }
 
-        if (Array.isArray(title)) {
-            // Use low-level API for array titles: nodemw's getArticleInfo
-            // iterates arrays with for..in (yielding indices, not values).
-            const titles = title.join('|');
-            const apiParams: Record<string, unknown> = {
-                action: 'query',
-                prop: 'info',
-                titles,
-                inprop: properties?.join('|') || 'protection|talkid|url'
-            };
-
-            const raw = await callApi(bot, apiParams, 'GET');
-            if (raw.error) {
-                throw new Error((raw.error as { code: string; info: string }).info || (raw.error as { code: string; info: string }).code);
-            }
-
-            const query = raw.query as { pages?: Record<string, Record<string, unknown>> } | undefined;
-            const pages = query?.pages;
-            const results = pages ? Object.values(pages).filter(p => p.missing === undefined) : [];
-
-            return jsonResult({
-                identifier: title,
-                results,
-                count: results.length
-            });
-        }
-
-        const info = await promisifyBotMethod<ArticleInfo>(
-            bot,
-            'getArticleInfo',
-            title,
-            {}
-        );
-
-        const results = Array.isArray(info) ? info : [info];
+        const pages = raw.query?.pages;
+        const rawResults = pages ? Object.values(pages).filter(p => p.missing === undefined) : [];
+        const results = templates
+            ? rawResults.map((page) => ({
+                ...page,
+                templates: Array.isArray(page.templates)
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    ? (page.templates as any[]).map(t => t.title)
+                    : []
+            }))
+            : rawResults;
 
         return jsonResult({
-            identifier: title,
+            identifier: hasId ? id : title,
             results,
             count: results.length
         });

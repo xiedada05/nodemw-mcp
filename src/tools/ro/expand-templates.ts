@@ -45,7 +45,9 @@ export function expandTemplatesTool( server: McpServer ): RegisteredTool {
         {
             title: 'Expand templates',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { text, title } ) => handleExpandTemplatesTool( text, title )
     );

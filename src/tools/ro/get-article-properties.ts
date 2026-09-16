@@ -48,7 +48,9 @@ export function getArticlePropertiesTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get article properties',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { title, id } ) => handleGetArticlePropertiesTool( title, id )
     );

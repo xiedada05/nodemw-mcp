@@ -31,30 +31,12 @@ import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { callApi } from '../../common/utils.js';
-import { markAsRead } from '../../common/pageState.js';
-
-interface PageInfo {
-    pageid?: number;
-    lastrevid?: number;
-    missing?: boolean;
-}
+import { recordReadFromApi } from '../../common/pageState.js';
 
 async function recordReadState(identifier: string | number): Promise<void> {
-    try {
-        const bot = await getBot();
-        const pages = await promisifyBotMethod<PageInfo[]>(
-            bot,
-            'getArticleInfo',
-            identifier,
-            { prop: 'info' }
-        );
-        const page = Array.isArray(pages) ? pages[0] : null;
-        if (page?.pageid != null && page?.lastrevid != null) {
-            markAsRead(page.pageid, page.lastrevid);
-        }
-    } catch {
-        // Non-critical: read-state recording failure should not break the tool
-    }
+    // Best-effort; recordReadFromApi resolves the current revision (id +
+    // timestamp) so edit-conflict protection has a basetimestamp to compare.
+    await recordReadFromApi(identifier);
 }
 
 function getFirstItem<T>(obj: Record<string, T> | null | undefined): T | null {
@@ -88,7 +70,9 @@ export function getArticleTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get article',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { title, id, followRedirect, redirectInfo, revision, maxlen, offset } ) =>
             handleGetArticleTool( title, id, followRedirect, redirectInfo, revision, maxlen, offset )

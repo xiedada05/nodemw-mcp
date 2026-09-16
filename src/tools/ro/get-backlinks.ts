@@ -48,7 +48,9 @@ export function getBacklinksTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get backlinks',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { title } ) => handleGetBacklinksTool( title )
     );

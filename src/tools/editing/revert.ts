@@ -49,7 +49,9 @@ export function revertTool( server: McpServer ): RegisteredTool {
         {
             title: 'Revert page',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { title, revid, summary } ) =>
             handleRevertTool( title, revid, summary )
@@ -124,6 +126,7 @@ const pages = (apiResult.query as any)?.pages as Record<string, Record<string, a
             pageid?: number;
             newrevid?: number;
             oldrevid?: number;
+            newtimestamp?: string;
         }>(
             bot,
             'edit',
@@ -135,7 +138,7 @@ const pages = (apiResult.query as any)?.pages as Record<string, Record<string, a
 
         // Cache the write so subsequent operations skip the read guard
         if (result.pageid != null && result.newrevid != null) {
-            markAsWritten(title, result.pageid, result.newrevid);
+            markAsWritten(title, result.pageid, result.newrevid, result.newtimestamp);
         }
 
         return jsonResult(result);

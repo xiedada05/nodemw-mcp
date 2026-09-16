@@ -43,7 +43,9 @@ export function purgeTool( server: McpServer ): RegisteredTool {
         {
             title: 'Purge pages',
             readOnlyHint: false,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( params ) => handlePurgeTool( params )
     );

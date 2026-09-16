@@ -40,7 +40,9 @@ export function getMediaWikiVersionTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get MediaWiki version',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async () => handleGetMediaWikiVersionTool()
     );

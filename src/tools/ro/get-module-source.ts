@@ -65,7 +65,9 @@ export function getModuleSourceTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get module source',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { title } ) => handleGetModuleSourceTool( title )
     );
@@ -124,7 +126,7 @@ const pages = (apiResult.query as any)?.pages as Record<string, ModulePage> | un
 
         // Record read state for the read-before-write guard
         if (page.pageid != null && rev.revid != null) {
-            markAsRead(page.pageid, rev.revid);
+            markAsRead(page.pageid, rev.revid, rev.timestamp);
         }
 
         return jsonResult({

@@ -52,7 +52,9 @@ export function getArticleRevisionsTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get article revisions',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { title, id } ) => handleGetArticleRevisionsTool( title, id )
     );

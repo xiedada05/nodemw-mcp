@@ -43,7 +43,9 @@ export function whoisTool( server: McpServer ): RegisteredTool {
         {
             title: 'Whois',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { username, id } ) => handleWhoisTool( username, id )
     );

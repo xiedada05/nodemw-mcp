@@ -53,7 +53,9 @@ export function uploadByUrlTool( server: McpServer ): RegisteredTool {
         {
             title: 'Upload file by URL',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( params ) => handleUploadByUrlTool( params )
     );
