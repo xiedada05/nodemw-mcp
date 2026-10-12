@@ -1,0 +1,239 @@
+diff --git a/node_modules/nodemw/lib/api.js b/node_modules/nodemw/lib/api.js
+index 5440338..9104132 100644
+--- a/node_modules/nodemw/lib/api.js
++++ b/node_modules/nodemw/lib/api.js
+@@ -18,6 +18,10 @@ function doRequest(params, callback, method, done) {
+   // "request" options
+   const options = {
+     method: method || "GET",
++    // bound every API request (connect + inter-byte); without it a stalled
++    // server holds the request open forever, permanently occupying a slot
++    // in the shared request queue
++    timeout: 30000,
+     proxy: this.proxy || false,
+     jar: this.jar,
+     headers: {
+@@ -162,11 +166,18 @@ function doRequest(params, callback, method, done) {
+       }
+ 
+       callback(null, info, next, data);
+-    } else if (data.error) {
++    } else if (data && data.error) {
+       this.logger.error("Error returned by API: %s", data.error.info);
+       this.logger.error("Raw error", data.error);
+ 
+       callback(new Error(`Error returned by API: ${data.error.info}`));
++    } else {
++      // falsy body (null / false / 0 / "") — surface as an error instead of
++      // dereferencing null (which throws inside the request callback, an
++      // uncaughtException for the host) or never calling back (the caller's
++      // promise would never settle)
++      this.logger.error("Empty response returned by API");
++      callback(new Error("MediaWiki API returned an empty response"));
+     }
+     done();
+   });
+@@ -236,7 +247,7 @@ function Api(options) {
+   this.version = VERSION;
+ 
+   // debug info
+-  this.info(process.argv.join(" "));
++  // never log process.argv: it carries CLI credentials (-p/--pass, --token)
+   this.info(this.userAgent);
+   this.info(this.referer);
+ 
+@@ -281,11 +292,37 @@ Api.prototype = {
+     this.queue.push((done) => {
+       this.info("Fetching <%s> (as %s)...", url, encoding);
+ 
++      // Security: the shared jar carries the bot's authenticated MediaWiki
++      // session cookies. Cookie scoping ignores ports and matches sibling
++      // subdomains of Domain= cookies, so attaching the session jar to an
++      // arbitrary fetch URL replays the session cookie to any same-hostname
++      // service and lets the fetch target overwrite it. Only the wiki's own
++      // origin may use the session jar; everything else gets an isolated,
++      // throwaway jar. (A stalled target is also bounded by the timeout.)
++      let jar = request.jar();
++      try {
++        const target = require("url").parse(url);
++        const defaultPort = target.protocol === "https:" ? "443" : "80";
++        if (
++          target.protocol === `${this.protocol}:` &&
++          target.hostname === this.server &&
++          (target.port || defaultPort) === String(this.port || defaultPort)
++        ) {
++          jar = this.jar;
++        }
++      } catch (e) {
++        // keep the isolated jar
++      }
++
+       const options = {
+         url,
+         method: "GET",
++        // bound the external fetch (connect + inter-byte): without it a
++        // stalled source server holds the request (and its queue slot) open
++        // forever
++        timeout: 30000,
+         proxy: this.proxy || false,
+-        jar: this.jar,
++        jar,
+         encoding: encoding === "binary" ? null : encoding,
+         headers: {
+           "User-Agent": this.userAgent,
+diff --git a/node_modules/nodemw/lib/bot.js b/node_modules/nodemw/lib/bot.js
+index 08e57a8..35444fa 100644
+--- a/node_modules/nodemw/lib/bot.js
++++ b/node_modules/nodemw/lib/bot.js
+@@ -17,6 +17,9 @@ const Api = require("./api"),
+ 
+ // get the object being the first key/value entry of a given object
+ function getFirstItem(obj) {
++  if (!obj) {
++    return undefined;
++  }
+   const key = Object.keys(obj).shift();
+   return obj[key];
+ }
+@@ -235,7 +238,12 @@ class Bot {
+           return;
+         }
+ 
+-        if (data.result === "NeedToken") {
++        if (data === null || typeof data === "undefined") {
++          // Odd-shaped 200 (no login/error payload): route through the
++          // null-safe logInCallback so the login promise rejects instead of
++          // crashing the host process.
++          logInCallback(err, data);
++        } else if (data.result === "NeedToken") {
+           const token = data.token;
+ 
+           this.log(`Got token ${token}`);
+@@ -592,6 +600,11 @@ class Bot {
+     this.log(`Getting ${action} token (for ${title})...`);
+ 
+     this.getMediaWikiVersion((err, version) => {
++      if (err) {
++        callback(err);
++        return;
++      }
++
+       let compare = require("node-version-compare"),
+         params,
+         useTokenApi = compare(version, "1.24.0") > -1;
+@@ -621,13 +634,18 @@ class Bot {
+         }
+ 
+         if (useTokenApi) {
+-          token = data.tokens.csrftoken.toString(); // MW 1.24+
++          token = data && data.tokens ? data.tokens.csrftoken : undefined; // MW 1.24+
++          token = token ? token.toString() : token;
+         } else {
+-          token = getFirstItem(data.pages)[action + "token"]; // older MW version
++          const page = data && data.pages ? getFirstItem(data.pages) : undefined;
++          token = page ? page[action + "token"] : undefined; // older MW version
+         }
+ 
+         if (!token) {
+-          const msg = raw.warnings.info["*"];
++          const msg =
++            raw && raw.warnings && raw.warnings.info
++              ? raw.warnings.info["*"]
++              : "no token in the API response";
+           this.log(`getToken: ${msg}`);
+           err = new Error(
+             `Can't get "${action}" token for "${title}" page - ${msg}`,
+@@ -670,7 +688,7 @@ class Bot {
+       this.api.call(
+         editParams,
+         (_err, data) => {
+-          if (!_err && data.result && data.result === "Success") {
++          if (!_err && data && data.result && data.result === "Success") {
+             this.log("Rev #%d created for '%s'", data.newrevid, data.title);
+             callback(null, data);
+           } else {
+@@ -750,6 +768,7 @@ class Bot {
+         (_err, data) => {
+           if (
+             !_err &&
++            data &&
+             data["new-topic"] &&
+             data["new-topic"].status &&
+             data["new-topic"].status === "ok"
+@@ -792,7 +811,7 @@ class Bot {
+           token,
+         },
+         (_err, data) => {
+-          if (!_err && data.title && data.reason) {
++          if (!_err && data && data.title && data.reason) {
+             callback(null, data);
+           } else {
+             callback(_err);
+@@ -938,7 +957,7 @@ class Bot {
+     this.api.call(
+       params,
+       (err, data) => {
+-        if (!err) {
++        if (!err && data) {
+           data.forEach((page) => {
+             if (typeof page.purged !== "undefined") {
+               this.log('Purged "%s"', page.title);
+@@ -981,7 +1000,7 @@ class Bot {
+           token,
+         },
+         (_err, data) => {
+-          if (!_err && data.result && data.result === "Success") {
++          if (!_err && data && data.result && data.result === "Success") {
+             this.log("Email sent");
+             callback(null, data);
+           } else {
+@@ -1088,6 +1107,14 @@ class Bot {
+         type: "createaccount",
+       },
+       (err, data) => {
++        if (err) {
++          callback(err);
++          return;
++        }
++        if (!data || !data.tokens || !data.tokens.createaccounttoken) {
++          callback(new Error("Can't get the createaccount token"));
++          return;
++        }
+         this.api.call(
+           {
+             action: "createaccount",
+@@ -1135,7 +1162,7 @@ class Bot {
+           token,
+         },
+         (_err, data) => {
+-          if (!_err && data.from && data.to && data.reason) {
++          if (!_err && data && data.from && data.to && data.reason) {
+             callback(null, data);
+           } else {
+             callback(_err);
+@@ -1368,7 +1395,12 @@ class Bot {
+       }
+ 
+       version = info && info.general && info.general.generator; // e.g. "MediaWiki 1.27.0-wmf.19"
+-      version = version.match(/[\d.]+/)[0]; // 1.27.0
++      const m = typeof version === "string" ? version.match(/[\d.]+/) : null;
++      if (!m) {
++        callback(new Error(`Can't parse MediaWiki version from: ${version}`));
++        return;
++      }
++      version = m[0]; // 1.27.0
+ 
+       this.log("Detected MediaWiki v%s", version);
+ 
+@@ -1442,7 +1474,10 @@ class Bot {
+         params,
+         (_err, data) => {
+           if (data && data.result && data.result === "Success") {
+-            this.log("Uploaded as <%s>", data.imageinfo.descriptionurl);
++            this.log(
++              "Uploaded as <%s>",
++              data.imageinfo && data.imageinfo.descriptionurl,
++            );
+             callback(null, data);
+           } else {
+             callback(_err);

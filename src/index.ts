@@ -114,6 +114,20 @@ function parseCliArgs(): { config: ServerConfig; pathExplicit: boolean; debug: b
 async function main(): Promise<void> {
     const { config, pathExplicit, debug } = parseCliArgs();
 
+    // Guard the session process against uncaught exceptions thrown inside
+    // nodemw's response callbacks (they run on @cypress/request's 'complete'
+    // EventEmitter listener, i.e. the socket I/O stack — outside every
+    // promise chain and tool-handler try/catch). A hostile, compromised, or
+    // merely misbehaving wiki could otherwise kill the whole
+    // one-process-one-session MCP channel with a single 200-JSON response of
+    // an unexpected shape. The affected tool call will hang (the MCP client's
+    // own timeout applies), but the session survives. The proper fix —
+    // response-shape validation — is applied to the bundled nodemw via
+    // patches/nodemw+0.26.0.patch and belongs upstream.
+    process.on('uncaughtException', (err: Error) => {
+        console.error(`[nodemw-mcp] Suppressed uncaught exception in wiki response handling: ${err.message}`);
+    });
+
     // Step 1: Auto-detect API path if not explicitly specified
     if (!pathExplicit) {
         try {

@@ -64,8 +64,14 @@ export function markAsRead(pageid: number, revid: number, revTimestamp?: string)
  * Record read state straight from the API: resolves the page's current
  * revision (id + timestamp) and marks it as read. Best-effort — failures are
  * swallowed because the read guard then just falls back to its strict mode.
+ *
+ * followRedirect must match how the caller fetched the CONTENT: a read tool
+ * that resolved a redirect delivers the target page's text, so the recorded
+ * pageid/revid must belong to that target page, not the redirect itself.
+ * Returns the page title the read state was recorded for (may differ from
+ * the requested title when a redirect was followed), or undefined.
  */
-export async function recordReadFromApi(identifier: string | number): Promise<void> {
+export async function recordReadFromApi(identifier: string | number, followRedirect = false): Promise<string | undefined> {
     try {
         const bot = getBot();
         const raw = await callApi<{
@@ -77,6 +83,9 @@ export async function recordReadFromApi(identifier: string | number): Promise<vo
             rvprop: 'ids|timestamp',
             rvlimit: 1,
             ...(typeof identifier === 'number' ? { pageids: identifier } : { titles: identifier }),
+            // Bind read state to the page whose content the caller actually
+            // received: resolve the redirect the same way the content fetch did.
+            ...(typeof identifier === 'string' && followRedirect ? { redirects: '' } : {}),
         }, 'GET');
 
         const pages = Object.values(raw.query?.pages ?? {});
@@ -86,10 +95,12 @@ export async function recordReadFromApi(identifier: string | number): Promise<vo
         const rev = page?.revisions?.[0];
         if (page?.pageid != null && rev?.revid != null) {
             markAsRead(page.pageid, rev.revid, rev.timestamp);
+            return page.title;
         }
     } catch {
         // Best-effort only — see doc comment.
     }
+    return undefined;
 }
 
 /** When this page's content was last read/written in this session, for edit-conflict detection. */
@@ -171,6 +182,14 @@ export function markAsWritten(title: string, pageid: number, revid: number, revT
     writeCache.set(title, { pageid, revid });
 }
 
+/**
+ * Drop the cached title→pageid binding for a title that was moved, deleted
+ * or otherwise rebound, so later edits re-resolve it via the API.
+ */
+export function invalidateTitle(title: string): void {
+    writeCache.delete(title);
+}
+
 export function isRead(pageid: number): boolean {
     return readState.has(pageid);
 }
@@ -180,15 +199,15 @@ export function isRead(pageid: number): boolean {
  * has been read (via get-article or another content-reading tool).
  * Throws if the page exists but has NOT been read, forcing the agent to
  * fetch current content before making any edits.
+ *
+ * The title is ALWAYS re-resolved through the API: a cached write only
+ * short-circuits the read guard when the title still points at the same
+ * page. MediaWiki titles are not stable identities — a move leaves a fresh
+ * redirect page at the old title, and delete+recreate binds the title to a
+ * new pageid — so a stale cache entry would otherwise authorize edits to a
+ * page whose content the agent never saw, with foreign conflict timestamps.
  */
 export async function requireRead(title: string): Promise<number> {
-    // Check write cache first: pages just written in this session are
-    // already "read" and don't need an API round-trip.
-    const cached = writeCache.get(title);
-    if (cached) {
-        return cached.pageid;
-    }
-
     const bot = getBot();
     const pages = await promisifyBotMethod<PageInfo[]>(
         bot,
@@ -202,9 +221,36 @@ export async function requireRead(title: string): Promise<number> {
     }
 
     const page = pages[0];
-    if (!page || page.missing) {
-        // Page does not exist — allow creation
+    // MediaWiki reports missing titles with "missing": "" — check presence
+    // of the key, not its truthiness.
+    if (!page || page.missing !== undefined) {
+        // Page does not exist — allow creation, unless this session wrote
+        // it before: then it was deleted out-of-session and recreating it
+        // must be a conscious decision preceded by a fresh read.
+        if (writeCache.has(title)) {
+            writeCache.delete(title);
+            throw new Error(
+                `Page "${title}" was written in this session but no longer exists (deleted by someone else?). ` +
+                `Call get-article to confirm the page state, then write again to deliberately recreate it.`
+            );
+        }
         return 0;
+    }
+
+    // A cached write only counts as "read" if the title still resolves to
+    // the same page: the page may have been moved (leaving a redirect) or
+    // deleted+recreated since our write, which would make the cached pageid
+    // and its conflict-guard timestamps describe a different page than the
+    // one being edited. This check costs no extra API round-trip — the info
+    // query above already resolved the title.
+    const cached = writeCache.get(title);
+    if (cached && page.pageid != null && page.pageid !== cached.pageid) {
+        writeCache.delete(title);
+        throw new Error(
+            `Page "${title}" (pageid ${page.pageid}) is not the page written in this session ` +
+            `(cached pageid ${cached.pageid}): the title was moved or recreated in the meantime. ` +
+            `Call get-article again before editing.`
+        );
     }
 
     if (page.pageid != null && page.lastrevid != null) {

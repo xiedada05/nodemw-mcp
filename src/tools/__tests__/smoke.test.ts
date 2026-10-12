@@ -39,6 +39,17 @@ vi.mock('../../common/nodemwBot.js', async () => {
     return createNodemwBotMock();
 });
 
+// upload-by-url fetches its source through src/common/safeFetch.ts (global
+// fetch + node:dns/promises lookup). Keep the smoke test offline: resolve
+// every hostname to a public address and serve a fake PNG body.
+vi.mock('node:dns/promises', () => ({
+    lookup: async () => [{ address: '93.184.216.34', family: 4 }],
+}));
+vi.stubGlobal('fetch', async () => ({
+    status: 200,
+    body: (function* () { yield new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]); })(),
+}));
+
 /** Minimal valid arguments for every declared tool. Extra keys are stripped by zod. */
 const TOOL_ARGUMENTS: Record<string, Record<string, unknown>> = {
     // Read tools
@@ -80,10 +91,13 @@ const TOOL_ARGUMENTS: Record<string, Record<string, unknown>> = {
     'diff-revisions': { title: 'Test Page' },
     'diff-preview': { title: 'Test Page', content: 'New full page content' },
 
-    // Write tools (read guard is satisfied by seeding read state below)
+    // Write tools (read guard is satisfied by seeding read state below).
+    // revert runs BEFORE write/edit: it no longer re-seeds the read record
+    // with its own revision, so tools that run after a markAsWritten write
+    // would see a CAS mismatch against the fake page's static lastrevid.
+    revert: { title: 'Test Page', revid: 99, summary: 'test revert' },
     write: { title: 'Test Page', content: 'Full replacement content', intent: 'revise', summary: 'test write' },
     edit: { title: 'Test Page', old_lines: CONTENT.trimEnd(), new_lines: 'Replaced content', summary: 'test edit' },
-    revert: { title: 'Test Page', revid: 99, summary: 'test revert' },
     append: { title: 'Test Page', content: 'Appended', summary: 'test append' },
     prepend: { title: 'Test Page', content: 'Prepended', summary: 'test prepend' },
     move: { from: 'Test Page', to: 'Moved Page', summary: 'test move' },
@@ -152,8 +166,6 @@ describe('tool smoke tests (offline fake bot)', () => {
         const cases: Array<[string, Record<string, unknown>, string]> = [
             ['get-module-source', { title: 'Module:Test' }, '2026-09-01T00:00:00Z'],
             ['get-articles', { titles: ['Test Page'] }, '2026-09-01T00:00:00Z'],
-            // revert records the WRITE result's newtimestamp
-            ['revert', { title: 'Test Page', revid: 99, summary: 'test revert' }, '2026-09-02T00:00:00Z'],
         ];
 
         for (const [name, args, expectedTimestamp] of cases) {
@@ -164,5 +176,16 @@ describe('tool smoke tests (offline fake bot)', () => {
                 expect(params.basetimestamp, `${name} must record the revision timestamp`).toBe(expectedTimestamp);
             });
         }
+
+        // A revert is a WRITE, not a read: it must not re-seed the session's
+        // read evidence with its own output revision (that would let a
+        // follow-up write skip the staleness CAS on never-re-read content).
+        it('revert does not re-certify the read record with its own revision', async () => {
+            markAsRead(PAGE_ID, REVID, '2026-09-01T00:00:00Z');
+            await client.callTool({ name: 'revert', arguments: { title: 'Test Page', revid: 99, summary: 'test revert' } });
+            const params = conflictGuardParams(PAGE_ID);
+            expect(params.basetimestamp, 'revert must leave the pre-revert read record untouched')
+                .toBe('2026-09-01T00:00:00Z');
+        });
     });
 });

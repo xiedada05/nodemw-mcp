@@ -41,6 +41,31 @@ export const PAGE_ID = 1;
 export const CONTENT = 'Test content\n';
 export const REVID = 100;
 
+// Mutable page state for guard tests (readGuard.test.ts): content, missing
+// flag and lastrevid can be switched between tool calls. The historical
+// revision content (served for revids= queries, e.g. the revert target) is
+// independent from the current page content.
+let pageContent = CONTENT;
+let pageMissing = false;
+let pageLastrevid = REVID;
+let historicalRevisionContent = CONTENT;
+
+export function setFakePageContent(content: string): void {
+    pageContent = content;
+}
+
+export function setFakePageMissing(missing: boolean): void {
+    pageMissing = missing;
+}
+
+export function setFakeLastrevid(revid: number): void {
+    pageLastrevid = revid;
+}
+
+export function setFakeHistoricalContent(content: string): void {
+    historicalRevisionContent = content;
+}
+
 const PAGE = {
     pageid: PAGE_ID,
     ns: 0,
@@ -49,16 +74,32 @@ const PAGE = {
     touch: '2026-09-01T00:00:00Z',
 };
 
-const REVISION = {
-    revid: REVID,
-    parentid: 99,
-    minor: '',
-    user: 'TestUser',
-    userid: 10,
-    timestamp: '2026-09-01T00:00:00Z',
-    comment: 'test',
-    '*': CONTENT,
-};
+function currentPage(): Record<string, unknown> {
+    const base: Record<string, unknown> = {
+        pageid: PAGE_ID,
+        ns: 0,
+        title: 'Test Page',
+        lastrevid: pageLastrevid,
+        touch: '2026-09-01T00:00:00Z',
+    };
+    if (pageMissing) {
+        base.missing = '';
+    }
+    return base;
+}
+
+function currentRevision(): Record<string, unknown> {
+    return {
+        revid: pageLastrevid,
+        parentid: 99,
+        minor: '',
+        user: 'TestUser',
+        userid: 10,
+        timestamp: '2026-09-01T00:00:00Z',
+        comment: 'test',
+        '*': pageContent,
+    };
+}
 
 const LIST_ITEM = {
     ...PAGE,
@@ -130,7 +171,17 @@ function fakeApiCall(
         case 'query':
             data = {
                 query: {
-                    pages: { [String(PAGE_ID)]: { ...PAGE, revisions: [REVISION] } },
+                    pages: {
+                        [String(PAGE_ID)]: {
+                            ...currentPage(),
+                            // revids= queries (revert target) serve the
+                            // historical content; plain title/pageid queries
+                            // serve the current revision.
+                            revisions: [params.revids != null
+                                ? { ...currentRevision(), '*': historicalRevisionContent }
+                                : currentRevision()],
+                        },
+                    },
                     userinfo: OBJECT_FIELDS.userinfo,
                     tokens: OBJECT_FIELDS.tokens,
                     users: [{ userid: 10, name: 'TestUser', groups: ['bot'], editcount: 42 }],
@@ -264,8 +315,8 @@ function createFakeBot(): Record<string, unknown> {
         newtimestamp: '2026-09-02T00:00:00Z',
     };
     const METHOD_RETURNS: Record<string, unknown> = {
-        getArticle: CONTENT,
-        getArticleInfo: [{ ...PAGE, revisions: [REVISION] }],
+        getArticle: () => pageContent,
+        getArticleInfo: () => [{ ...currentPage(), revisions: [currentRevision()] }],
         getCategories: ['Test Category'],
         getArticleCategories: ['Test Category'],
         getExternalLinks: [{ '*': 'https://example.org/link' }],
@@ -303,7 +354,8 @@ function createFakeBot(): Record<string, unknown> {
                 | ((err: Error | null, data: unknown) => void)
                 | undefined;
             if (cb) {
-                process.nextTick(() => cb(null, result === undefined ? hybridResult() : result));
+                const value = typeof result === 'function' ? (result as () => unknown)() : result;
+                process.nextTick(() => cb(null, value === undefined ? hybridResult() : value));
             }
             return result;
         };

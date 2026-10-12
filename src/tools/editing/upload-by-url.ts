@@ -30,6 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { fetchSourceSafely } from '../../common/safeFetch.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function uploadByUrlTool( server: McpServer ): RegisteredTool {
@@ -37,10 +38,12 @@ export function uploadByUrlTool( server: McpServer ): RegisteredTool {
         'upload-by-url',
         'Upload a file to the wiki by downloading it from a URL (requires authentication). ' +
         'MEDIUM RISK: Source URLs may be untrusted. Existing files WILL BE OVERWRITTEN silently. ' +
-        'You must have rights to the content. Only use when explicitly requested.',
+        'You must have rights to the content. Only use when explicitly requested. ' +
+        'Only public http(s) sources are allowed — localhost, private/intranet addresses and ' +
+        'non-http schemes are refused; downloads are capped at 50 MB and 30 seconds.',
         {
             filename: z.string().describe( 'Destination filename on wiki (e.g., "Diagram.png") — existing file will be overwritten!' ),
-            url: z.string().url().describe( 'Source URL to download the file from — must be publicly accessible' ),
+            url: z.string().url().describe( 'Source URL to download the file from — must be publicly accessible (public http/https only; private/loopback addresses are refused)' ),
             summary: z.string().optional().describe( 'Upload summary' ),
             initial_description: z.string().optional().describe(
                 'OPTIONAL (not required for upload). Initial wikitext for the file description page (File:xxx). ' +
@@ -80,15 +83,21 @@ async function handleUploadByUrlTool(
             extraParams.text = params.initial_description;
         }
 
+        // Fetch the source with hard SSRF/resource bounds instead of nodemw's
+        // uploadByUrl (whose @cypress/request fetch runs from this process
+        // with no timeout, no size cap, the wiki session cookie jar attached,
+        // and support for the http://unix:<socket>:<path> pseudo-host).
+        const content = await fetchSourceSafely(params.url);
+
         const result = await promisifyBotMethod<{
             result: string;
             filename: string;
             imageinfo?: any;
         }>(
             bot,
-            'uploadByUrl',
+            'upload',
             params.filename,
-            params.url,
+            content,
             extraParams
         );
 

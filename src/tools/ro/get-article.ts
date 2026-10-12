@@ -33,10 +33,24 @@ import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { callApi } from '../../common/utils.js';
 import { recordReadFromApi } from '../../common/pageState.js';
 
-async function recordReadState(identifier: string | number): Promise<void> {
+async function recordReadState(identifier: string | number, followRedirect = false): Promise<string | undefined> {
     // Best-effort; recordReadFromApi resolves the current revision (id +
     // timestamp) so edit-conflict protection has a basetimestamp to compare.
-    await recordReadFromApi(identifier);
+    // followRedirect must match the content fetch so the recorded pageid
+    // belongs to the page whose content was delivered to the agent.
+    return recordReadFromApi(identifier, followRedirect);
+}
+
+/**
+ * Whether the view returned to the agent covers the WHOLE page. Sliced or
+ * truncated views (offset > 0, or maxlen cutting the text) must NOT establish
+ * read-before-write evidence: the guard exists so destructive edits are based
+ * on content the agent actually saw.
+ */
+function isFullView(content: string, maxlen?: number, offset?: number): boolean {
+    if (offset !== undefined && offset > 0) return false;
+    if (maxlen !== undefined && maxlen > 0 && content.length > maxlen) return false;
+    return true;
 }
 
 function getFirstItem<T>(obj: Record<string, T> | null | undefined): T | null {
@@ -156,7 +170,12 @@ const pages = (raw.query as any)?.pages as Record<string, Record<string, any>> |
                         isError: true
                     };
                 }
-                await recordReadState(id ?? title!);
+                // Old-revision views must NOT satisfy the read-before-write
+                // guard: the read state would certify the page's CURRENT
+                // revision, which green-lights writes that clobber content
+                // the agent never saw. Record nothing here — same policy as
+                // get-article-by-revision; a writer must re-read the page
+                // without the revision parameter.
                 return {
                     content: [{ type: 'text', text: applyMaxlen(rev['*'], maxlen, offset) }]
                 };
@@ -171,7 +190,9 @@ const pages = (raw.query as any)?.pages as Record<string, Record<string, any>> |
                     isError: false
                 };
             }
-            await recordReadState(id ?? title!);
+            if (isFullView(content, maxlen, offset)) {
+                await recordReadState(id ?? title!);
+            }
             return {
                 content: [{ type: 'text', text: applyMaxlen(content === '' ? '(empty page)' : content, maxlen, offset) }]
             };
@@ -202,7 +223,9 @@ const pages = (raw.query as any)?.pages as Record<string, Record<string, any>> |
                 ? `Content:\n\n${applyMaxlen(content, maxlen, offset)}\n\nRedirect Information:\n\n${JSON.stringify(redirect, null, 2)}`
                 : applyMaxlen(content === '' ? '(empty page)' : content, maxlen, offset);
 
-            await recordReadState(title!);
+            if (isFullView(content, maxlen, offset)) {
+                await recordReadState(title!, followRedirect);
+            }
             return {
                 content: [ { type: 'text', text: responseText } ]
             };
@@ -219,9 +242,23 @@ const pages = (raw.query as any)?.pages as Record<string, Record<string, any>> |
                     isError: true
                 };
             }
-            await recordReadState(title!);
+            let responseText = applyMaxlen(result === '' ? '(empty page)' : result, maxlen, offset);
+            if (isFullView(result, maxlen, offset)) {
+                const resolvedTitle = await recordReadState(title!, followRedirect);
+                // When the fetch followed a redirect, the delivered content
+                // belongs to the resolved page — tell the agent explicitly so
+                // it passes the right title to edit/write (action=edit does
+                // NOT follow redirects; writing the requested title would
+                // destroy the redirect page itself).
+                if (followRedirect && resolvedTitle && resolvedTitle !== title) {
+                    responseText +=
+                        `\n\n[Note: "${title}" is a redirect; the content above is from "${resolvedTitle}". ` +
+                        `Read state was recorded for "${resolvedTitle}" — pass that title to edit/write, ` +
+                        `or re-read with followRedirect=false to edit the redirect itself.]`;
+                }
+            }
             return {
-                content: [ { type: 'text', text: applyMaxlen(result === '' ? '(empty page)' : result, maxlen, offset) } ]
+                content: [ { type: 'text', text: responseText } ]
             };
         }
     } catch ( error ) {

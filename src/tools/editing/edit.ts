@@ -92,12 +92,16 @@ async function handleEditTool(
         const bot = getBot();
         const pageid = await requireRead(title);
 
-        // Fetch current content
+        // Fetch the content of the page that action=edit will actually
+        // write (it never follows redirects), so old_lines matching is bound
+        // to the write target's own content, not a redirect target's text —
+        // otherwise an edit against a redirect title would match old_lines
+        // against the target page's content and destroy the redirect.
         const currentContent = await promisifyBotMethod<string>(
             bot,
             'getArticle',
             title,
-            true
+            false
         );
 
         if (currentContent == null) {
@@ -126,6 +130,23 @@ async function handleEditTool(
         }
 
         const newContent = currentContent.slice(0, firstIdx) + new_lines + currentContent.slice(firstIdx + old_lines.length);
+
+        // Same near-total-wipe floor as the write tool's size heuristics
+        // (write.ts intents "rewrite"/"delete"): an edit whose result collapses
+        // the page below 1/10 of its current size looks like an accidental
+        // page wipe and must be refused — edit must not be a lower-friction
+        // path around write's guards. The >200 B dead band keeps small
+        // legitimate deletions working, mirroring write.ts.
+        const currentBytes = Buffer.byteLength(currentContent, 'utf8');
+        const newBytes = Buffer.byteLength(newContent, 'utf8');
+        if (currentBytes - newBytes > 200 && newBytes < currentBytes / 10) {
+            return errorResult(
+                `Size mismatch: this edit would collapse the page from ${currentBytes} B to ${newBytes} B ` +
+                `(< 1/10 of current, threshold ${Math.floor(currentBytes / 10)} B). ` +
+                'This looks like an accidental page wipe. Verify old_lines and new_lines; if a near-total ' +
+                'replacement is truly intended, use the write tool with a declared intent and verified content.'
+            );
+        }
 
         const prefixedSummary = `[nodemw-mcp.edit] ${summary}`;
 

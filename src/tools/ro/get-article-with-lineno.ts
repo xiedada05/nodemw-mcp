@@ -135,7 +135,10 @@ const pages = (info.query as any)?.pages as Record<string, Record<string, any>> 
         query?: { pages?: Record<string, any> };
     }>(
         bot,
-        { action: 'query', prop: 'revisions', rvprop: 'ids|timestamp', rvlimit: 1, titles: title },
+        // Resolve redirects exactly like getArticle(title, true) above, so
+        // the recorded pageid/revid and the reported title belong to the page
+        // whose content is delivered (the redirect target), not the redirect.
+        { action: 'query', prop: 'revisions', rvprop: 'ids|timestamp', rvlimit: 1, redirects: '', titles: title },
         'GET'
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -145,7 +148,7 @@ const pages = (info.query as any)?.pages as Record<string, Record<string, any>> 
 
     return {
         content,
-        pageTitle: title!,
+        pageTitle: (page?.title as string) || title!,
         pageid: page?.pageid ?? 0,
         lastrevid: rev?.revid ?? 0,
         revTimestamp: rev?.timestamp
@@ -169,11 +172,6 @@ async function handleGetArticleWithLinenoTool(
 
         const { content, pageTitle, pageid, lastrevid, revTimestamp } = await fetchArticleContent(title, id);
 
-        // Record read state for write-before-read guard
-        if (pageid && lastrevid) {
-            markAsRead(pageid, lastrevid, revTimestamp);
-        }
-
         const allLines: LineEntry[] = content.split('\n').map((text, i) => ({
             lineno: i + 1,
             content: text
@@ -187,6 +185,15 @@ async function handleGetArticleWithLinenoTool(
 
         // Apply maxlen (character-level truncation)
         const { lines, truncated } = truncateLines(limited, maxlen);
+
+        // Record read state for the write-before-read guard — only when the
+        // agent's view covers the whole page. Sliced views (offset > 0,
+        // limit, or a truncating maxlen) must not establish read evidence
+        // for destructive tools.
+        const fullView = offset === 0 && limit === undefined && !truncated;
+        if (pageid && lastrevid && fullView) {
+            markAsRead(pageid, lastrevid, revTimestamp);
+        }
 
         let resultLines = lines;
         if (truncated) {

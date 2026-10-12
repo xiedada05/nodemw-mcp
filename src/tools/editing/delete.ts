@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { requireRead } from '../../common/pageState.js';
+import { invalidateTitle, requireRead } from '../../common/pageState.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function deleteTool( server: McpServer ): RegisteredTool {
@@ -77,6 +77,10 @@ async function handleDeleteTool(
             params.title,
             prefixedReason
         );
+
+        // Page gone — later writes to this title are new-page creations and
+        // must go through the fresh-read path, not the stale cache.
+        invalidateTitle(params.title);
 
         return jsonResult(result);
     } catch ( error ) {

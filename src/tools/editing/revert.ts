@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { markAsWritten, requireRead } from '../../common/pageState.js';
+import { conflictGuardParams, findStaleWrite, requireRead } from '../../common/pageState.js';
 import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
 export function revertTool( server: McpServer ): RegisteredTool {
@@ -40,7 +40,9 @@ export function revertTool( server: McpServer ): RegisteredTool {
         'MEDIUM RISK: Overwrites current page content with an old version — subsequent edits since that revision will be lost. ' +
         'The revert is itself a new revision, so it can be reverted if needed. ' +
         'Use get-article-revisions first to find the target revid. ' +
-        'Combines get-article-by-revision + write into one atomic step.',
+        'Combines get-article-by-revision + write into one atomic step. ' +
+        'Reverting does NOT count as reading: to edit or write the page afterwards, call get-article again first. ' +
+        'A revert whose target content is < 1/10 of the current page is refused as a suspected accidental wipe.',
         {
             title: z.string().describe( 'Page title to revert' ),
             revid: z.number().describe( 'Target revision ID to restore — use get-article-revisions to find the revision to revert to' ),
@@ -61,7 +63,7 @@ export function revertTool( server: McpServer ): RegisteredTool {
         pageid: z.number(),
         title: z.string(),
         contentmodel: z.string().optional(),
-        newrevid: z.number(),
+        newrevid: z.number().optional(),
         newtimestamp: z.string().optional(),
         oldrevid: z.number().optional()
     }});
@@ -75,7 +77,16 @@ async function handleRevertTool(
 ): Promise<CallToolResult> {
     try {
         const bot = getBot();
-        await requireRead(title);
+        const pageid = await requireRead(title);
+
+        // Same staleness CAS as the write tool: a revert is a full-page
+        // overwrite that silently discards everything after the restored
+        // revision — including concurrent edits the agent never saw. Refuse
+        // when the page changed since it was last read in this session.
+        const stale = await findStaleWrite(title, pageid);
+        if (stale) {
+            return errorResult(stale);
+        }
 
         // Fetch the target revision content via the API
         const apiResult = await callApi(
@@ -118,8 +129,33 @@ const pages = (apiResult.query as any)?.pages as Record<string, Record<string, a
             );
         }
 
+        // Same near-total-wipe floor as the write tool (write.ts intents
+        // "rewrite"/"delete"): restoring a revision far smaller than the
+        // current page looks like an accidental page wipe and must be
+        // refused — revert must not be a lower-friction path around
+        // write's size heuristics. Also catches the blanked-revision edge
+        // (empty restored content) for any non-trivial current page.
+        const currentContent = await promisifyBotMethod<string>(bot, 'getArticle', title, false);
+        if (currentContent != null) {
+            const currentBytes = Buffer.byteLength(currentContent, 'utf8');
+            const restoreBytes = Buffer.byteLength(oldContent, 'utf8');
+            if (currentBytes - restoreBytes > 200 && restoreBytes < currentBytes / 10) {
+                return errorResult(
+                    `Size mismatch: revision ${revid} (${restoreBytes} B) is < 1/10 of the current page ` +
+                    `(${currentBytes} B, threshold ${Math.floor(currentBytes / 10)} B). ` +
+                    'This looks like an accidental page wipe. Verify the revision ID, re-read the page, ' +
+                    'and use write with verified content if a near-total replacement is truly intended.'
+                );
+            }
+        }
+
         const prefixedSummary = `[nodemw-mcp.revert] ${summary}`;
 
+        // doEdit (public nodemw API) keeps version-aware token fetching and
+        // dry-run enforcement, and merges our params into action=edit —
+        // bot.edit() can't pass starttimestamp, so conflict protection
+        // (MediaWiki's native check against edits landing mid-revert) needs
+        // these params, same as the write tool.
         const result = await promisifyBotMethod<{
             result: string;
             title: string;
@@ -129,17 +165,22 @@ const pages = (apiResult.query as any)?.pages as Record<string, Record<string, a
             newtimestamp?: string;
         }>(
             bot,
+            'doEdit',
             'edit',
             title,
-            oldContent,
             prefixedSummary,
-            false
+            {
+                text: oldContent,
+                notminor: '',
+                ...conflictGuardParams(pageid),
+            }
         );
 
-        // Cache the write so subsequent operations skip the read guard
-        if (result.pageid != null && result.newrevid != null) {
-            markAsWritten(title, result.pageid, result.newrevid, result.newtimestamp);
-        }
+        // Deliberately NO markAsWritten() here: a revert must not re-seed the
+        // session's read evidence with its own write output. Leaving the read
+        // record pointing at the pre-revert revision makes findStaleWrite in
+        // a subsequent write/edit refuse until the agent genuinely re-reads
+        // the page (get-article), preserving the read-before-write contract.
 
         return jsonResult(result);
     } catch ( error ) {
