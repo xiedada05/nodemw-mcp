@@ -103,3 +103,11 @@ Every write tool description is prefixed with a risk level, matching the system 
 ## License header
 
 Every source file must carry the BSD-2-Clause license header. Copy it verbatim from any existing `.ts` file.
+
+<!-- OPENWIKI:START -->
+
+## OpenWiki
+
+@AGENTS.md
+
+<!-- OPENWIKI:END -->
