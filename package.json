@@ -1,6 +1,6 @@
 {
   "name": "@xiedada/nodemw-mcp-server",
-  "version": "0.2.4",
+  "version": "0.3.1",
   "description": "MCP server for nodemw - MediaWiki API client",
   "repository": {
     "type": "git",
@@ -19,8 +19,9 @@
     "build": "node scripts/build.js",
     "dev": "node scripts/build.js --watch",
     "lint": "eslint src/**/*.ts",
-    "test": "vitest",
+    "test": "vitest run",
     "prepare": "npm run build",
+    "postinstall": "patch-package",
     "clean": "rimraf dist"
   },
   "keywords": [
@@ -40,16 +41,20 @@
     "@types/node": "^22.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
-    "esbuild": "^0.24.0",
+    "esbuild": "^0.28.2",
     "eslint": "^9.0.0",
+    "patch-package": "^8.0.1",
     "rimraf": "^5.0.5",
     "typescript": "^5.5.0",
-    "vitest": "^2.0.0"
+    "vitest": "^3.2.7"
   },
   "files": [
     "dist"
   ],
   "engines": {
     "node": ">=18.0.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
   }
 }

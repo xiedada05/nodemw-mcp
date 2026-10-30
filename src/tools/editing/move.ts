@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { requireRead } from '../../common/pageState.js';
+import { invalidateTitle, requireRead } from '../../common/pageState.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function moveTool( server: McpServer ): RegisteredTool {
@@ -47,7 +47,9 @@ export function moveTool( server: McpServer ): RegisteredTool {
         {
             title: 'Move page',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( params ) => handleMoveTool( params )
     );
@@ -78,6 +80,10 @@ async function handleMoveTool(
             params.to,
             prefixedSummary
         );
+
+        // The old title is now a redirect to a different page — drop any
+        // cached binding so later edits of the old title re-resolve it.
+        invalidateTitle(params.from);
 
         return jsonResult(result);
     } catch ( error ) {

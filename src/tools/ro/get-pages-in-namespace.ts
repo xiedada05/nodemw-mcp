@@ -49,7 +49,9 @@ export function getPagesInNamespaceTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get pages in namespace',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { namespace } ) => handleGetPagesInNamespaceTool( namespace )
     );

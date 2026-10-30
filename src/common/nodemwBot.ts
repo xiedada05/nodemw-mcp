@@ -50,8 +50,84 @@ let botInstance: Bot | null = null;
 let serverConfig: ServerConfig | null = null;
 let authenticated = false;
 
+export interface WhoamiUser {
+    id?: number;
+    name?: string;
+    anon?: boolean;
+    groups?: string[];
+    rights?: string[];
+}
+
+export interface WhoamiResult {
+    userinfo?: WhoamiUser;
+}
+
+/**
+ * Query the wiki for the current session's user info.
+ * An anonymous (logged-out) session returns an anonymous userinfo,
+ * and an expired/invalid session returns an error.
+ */
+export function fetchWhoami(bot: Bot): Promise<WhoamiResult> {
+    return new Promise((resolve, reject) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (bot as any).api.call(
+            { action: 'query', meta: 'userinfo', uiprop: 'groups|rights' },
+            (err: Error | null, _info: unknown, _next: unknown, data: WhoamiResult) => {
+                if (err) reject(err);
+                else resolve(data);
+            },
+            'GET'
+        );
+    });
+}
+
+/**
+ * Detect whether the current session is logged in.
+ * Anonymous sessions report anon=true with id 0; a session that silently
+ * dropped to anonymous (e.g. expired cookie) shows the same shape.
+ */
+export function isWhoamiAuthenticated(whoami: WhoamiResult): boolean {
+    const u = whoami?.userinfo;
+    return !!u && u.id != null && u.id > 0 && !u.anon;
+}
+
+let heartbeatTimer: NodeJS.Timeout | null = null;
+
+/** Start a periodic login-alive check. On drop, `onDisconnect` fires once. */
+export function startLoginHeartbeat(onDisconnect: () => void): void {
+    stopLoginHeartbeat();
+    heartbeatTimer = setInterval(() => {
+        const bot = botInstance;
+        if (!bot) return;
+        fetchWhoami(bot)
+            .then((whoami) => {
+                if (authenticated && !isWhoamiAuthenticated(whoami)) {
+                    authenticated = false;
+                    onDisconnect();
+                }
+            })
+            .catch(() => {
+                // Transient network/API errors are NOT login loss — keep the
+                // session state as-is and let the next beat re-check.
+            });
+    }, 60_000);
+    // Do not block process exit
+    heartbeatTimer.unref();
+}
+
+export function stopLoginHeartbeat(): void {
+    if (heartbeatTimer) {
+        clearInterval(heartbeatTimer);
+        heartbeatTimer = null;
+    }
+}
+
 export function initServerConfig(config: ServerConfig): void {
     serverConfig = config;
+}
+
+export function getServerConfig(): ServerConfig | null {
+    return serverConfig;
 }
 
 function createBotFromConfig(config: ServerConfig): Bot {
@@ -167,6 +243,62 @@ export function getMediaWikiVersion(): number | null {
     const m = mediaWikiVersion.match(/^(\d+)\.(\d+)/);
     if (!m) return null;
     return parseFloat(m[1] + '.' + m[2]);
+}
+
+// Namespace cache: lowercase name (localized, canonical, alias) → namespace id.
+// Populated at startup from meta=siteinfo siprop=namespaces|namespacealiases;
+// tools use it to accept namespace-qualified titles without hardcoding
+// namespace numbers.
+let namespaceCache: Map<string, number> | null = null;
+
+export interface NamespaceAliasEntry {
+    id: number;
+    '*': string;
+}
+
+export function setNamespaceCache(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    namespaces: Record<string, any>,
+    namespaceAliases?: NamespaceAliasEntry[]
+): void {
+    const map = new Map<string, number>();
+    const register = (name: unknown, id: number): void => {
+        if (typeof name === 'string' && name) {
+            map.set(name.toLowerCase(), id);
+        }
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    for (const ns of Object.values(namespaces ?? {}) as any[]) {
+        const id = ns?.id;
+        if (typeof id !== 'number' || id < 0) continue; // Special:-1, Media:-2
+        register(ns['*'], id);
+        register(ns.canonical, id);
+        // Most wikis deliver aliases via siprop=namespacealiases instead of an
+        // inline field, but accept string | string[] when one is present.
+        if (Array.isArray(ns.alias)) {
+            for (const alias of ns.alias) register(alias, id);
+        } else {
+            register(ns.alias, id);
+        }
+    }
+    // siprop=namespacealiases: flat [{ id, '*': alias }] list — on typical wikis
+    // this is the only place localized aliases (文件:, 模板:, Image:) exist.
+    for (const entry of namespaceAliases ?? []) {
+        if (typeof entry?.id !== 'number' || entry.id < 0) continue; // Special:-1, Media:-2
+        register(entry['*'], entry.id);
+    }
+    namespaceCache = map;
+}
+
+/**
+ * Resolve a namespace name (canonical, localized, or alias; case-insensitive)
+ * to its id. Returns null when unknown or when the cache was never populated —
+ * callers must treat null as "cannot decide" and keep legacy behavior.
+ */
+export function lookupNamespaceId(name: string): number | null {
+    if (!namespaceCache) return null;
+    const id = namespaceCache.get(name.toLowerCase());
+    return id === undefined ? null : id;
 }
 
 export function isAuthenticated(): boolean {

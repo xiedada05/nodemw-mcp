@@ -48,7 +48,9 @@ export function whoamiTool( server: McpServer ): RegisteredTool {
         {
             title: 'Who am I',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async () => handleWhoamiTool()
     );

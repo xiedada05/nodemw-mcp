@@ -59,7 +59,9 @@ export function getLogTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get log entries',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { type, start, limit } ) => handleGetLogTool( type, start, limit )
     );

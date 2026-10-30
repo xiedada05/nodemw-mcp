@@ -57,7 +57,9 @@ export function getRecentChangesTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get recent changes',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { start, limit } ) => handleGetRecentChangesTool( start, limit )
     );

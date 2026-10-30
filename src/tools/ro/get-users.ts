@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot } from '../../common/nodemwBot.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface UserInfo extends Record<string, any> {
@@ -50,7 +50,9 @@ export function getUsersTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get users',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { prefix, onlyWithEdits, limit } ) => handleGetUsersTool( prefix, onlyWithEdits, limit )
     );
@@ -79,15 +81,8 @@ async function handleGetUsersTool(
             params.auwitheditsonly = 1;
         }
 
-        const results = await new Promise<UserInfo[]>((resolve, reject) => {
-            (bot as any).api.call(params, (err: Error | null, data: any) => {
-                if ( err ) {
-                    reject(err);
-                } else {
-                    resolve((data && data.allusers) || []);
-                }
-            }, 'GET');
-        });
+        const raw = await callApi(bot, params, 'GET');
+        const results = ((raw.query as { allusers?: UserInfo[] } | undefined)?.allusers) || [];
 
         return jsonResult({
             prefix,

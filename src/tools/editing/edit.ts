@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { requireRead } from '../../common/pageState.js';
+import { conflictGuardParams, markAsWritten, requireRead } from '../../common/pageState.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function editTool( server: McpServer ): RegisteredTool {
@@ -42,7 +42,9 @@ export function editTool( server: McpServer ): RegisteredTool {
         'Use get-article-with-lineno first to see the current content with line numbers, ' +
         'then copy the exact text you want to replace into old_lines. ' +
         'Only ONE occurrence will be replaced. If the text appears multiple times, the match will fail. ' +
-        'For full-page replacement, use the write tool instead.',
+        'For full-page replacement, use the write tool instead. ' +
+        'Read state is per session — after reconnecting you must get-article again. ' +
+        'The save fails with an edit-conflict error if the page changed after you read it; re-read and retry in that case.',
         {
             title: z.string().describe( 'Page title to edit' ),
             old_lines: z.string().describe(
@@ -60,7 +62,9 @@ export function editTool( server: McpServer ): RegisteredTool {
         {
             title: 'Edit page (line-based)',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { title, old_lines, new_lines, summary, minor } ) =>
             handleEditTool( title, old_lines, new_lines, summary, minor )
@@ -86,14 +90,18 @@ async function handleEditTool(
 ): Promise<CallToolResult> {
     try {
         const bot = getBot();
-        await requireRead(title);
+        const pageid = await requireRead(title);
 
-        // Fetch current content
+        // Fetch the content of the page that action=edit will actually
+        // write (it never follows redirects), so old_lines matching is bound
+        // to the write target's own content, not a redirect target's text —
+        // otherwise an edit against a redirect title would match old_lines
+        // against the target page's content and destroy the redirect.
         const currentContent = await promisifyBotMethod<string>(
             bot,
             'getArticle',
             title,
-            true
+            false
         );
 
         if (currentContent == null) {
@@ -123,21 +131,52 @@ async function handleEditTool(
 
         const newContent = currentContent.slice(0, firstIdx) + new_lines + currentContent.slice(firstIdx + old_lines.length);
 
+        // Same near-total-wipe floor as the write tool's size heuristics
+        // (write.ts intents "rewrite"/"delete"): an edit whose result collapses
+        // the page below 1/10 of its current size looks like an accidental
+        // page wipe and must be refused — edit must not be a lower-friction
+        // path around write's guards. The >200 B dead band keeps small
+        // legitimate deletions working, mirroring write.ts.
+        const currentBytes = Buffer.byteLength(currentContent, 'utf8');
+        const newBytes = Buffer.byteLength(newContent, 'utf8');
+        if (currentBytes - newBytes > 200 && newBytes < currentBytes / 10) {
+            return errorResult(
+                `Size mismatch: this edit would collapse the page from ${currentBytes} B to ${newBytes} B ` +
+                `(< 1/10 of current, threshold ${Math.floor(currentBytes / 10)} B). ` +
+                'This looks like an accidental page wipe. Verify old_lines and new_lines; if a near-total ' +
+                'replacement is truly intended, use the write tool with a declared intent and verified content.'
+            );
+        }
+
         const prefixedSummary = `[nodemw-mcp.edit] ${summary}`;
 
+        // doEdit (public nodemw API) keeps version-aware token fetching and
+        // dry-run enforcement, and merges our params into action=edit —
+        // bot.edit() can't pass starttimestamp, so conflict protection needs it.
         const result = await promisifyBotMethod<{
             result: string;
             title: string;
+            pageid?: number;
             newrevid?: number;
             oldrevid?: number;
+            newtimestamp?: string;
         }>(
             bot,
+            'doEdit',
             'edit',
             title,
-            newContent,
             prefixedSummary,
-            minor
+            {
+                text: newContent,
+                ...(minor ? { minor: '' } : { notminor: '' }),
+                ...conflictGuardParams(pageid),
+            }
         );
+
+        // Cache the write so subsequent operations skip the read guard
+        if (result.pageid != null && result.newrevid != null) {
+            markAsWritten(title, result.pageid, result.newrevid, result.newtimestamp);
+        }
 
         return jsonResult(result);
     } catch ( error ) {

@@ -30,8 +30,8 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, getMediaWikiVersion } from '../../common/nodemwBot.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 import { requireRead } from '../../common/pageState.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function protectTool( server: McpServer ): RegisteredTool {
     const tool = server.tool(
@@ -57,7 +57,9 @@ export function protectTool( server: McpServer ): RegisteredTool {
         {
             title: 'Protect page',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( params ) => handleProtectTool( params )
     );
@@ -111,18 +113,13 @@ async function handleProtectTool(
             apiParams.cascade = true;
         }
 
-        const data = await new Promise<Record<string, any>>((resolve, reject) => {
-            (bot as any).api.call(apiParams, (err: Error | null, result: Record<string, any>) => {
-                if (err) reject(err);
-                else resolve(result);
-            }, 'POST');
-        });
+        const raw = await callApi(bot, apiParams, 'POST');
 
-        if (data.error) {
-            return errorResult(`Protect failed: ${data.error.info || data.error.code}`, new Error(JSON.stringify(data.error)));
+        if (raw.error) {
+            throw new Error((raw.error as { code: string; info: string }).info || (raw.error as { code: string; info: string }).code);
         }
 
-        return jsonResult(data.protect || data);
+        return jsonResult(raw.protect || raw);
     } catch ( error ) {
         return errorResult('Failed to protect page', error as Error);
     }

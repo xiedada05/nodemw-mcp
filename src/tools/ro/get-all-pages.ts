@@ -49,7 +49,9 @@ export function getAllPagesTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get all pages',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { limit } ) => handleGetAllPagesTool( limit )
     );

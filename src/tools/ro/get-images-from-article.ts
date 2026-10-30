@@ -48,7 +48,9 @@ export function getImagesFromArticleTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get images from article',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { title } ) => handleGetImagesFromArticleTool( title )
     );

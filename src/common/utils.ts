@@ -29,6 +29,34 @@
 import type Bot from 'nodemw';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 
+/**
+ * Promisify nodemw's low-level api.call().
+ *
+ * nodemw's api.call callback is 4-arg: (err, info, next, data).
+ * - info  = data[actionName] or data.query (unwrapped)
+ * - data  = the full raw JSON response (has query, continue, error keys)
+ *
+ * This helper resolves with `data` (the 4th arg) so callers always
+ * get the raw response with correct query / continue / error topology.
+ */
+export function callApi<T = Record<string, unknown>>(
+    bot: Bot,
+    params: Record<string, unknown>,
+    method: 'GET' | 'POST' = 'GET'
+): Promise<T> {
+    return new Promise((resolve, reject) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (bot as any).api.call(
+            params,
+            (_err: Error | null, _info: unknown, _next: unknown, data: T) => {
+                if (_err) reject(_err);
+                else resolve(data);
+            },
+            method
+        );
+    });
+}
+
 export function promisifyBotMethod<T>(
     bot: Bot,
     method: string,
@@ -64,13 +92,55 @@ export function jsonResult(data: unknown): CallToolResult {
     };
 }
 
+// Error messages MediaWiki returns when the session cookie has expired and
+// the request fell back to anonymous — often misread as a permission problem.
+const LOGIN_EXPIRED_PATTERNS = [
+    /You're not allowed to edit this wiki through the API/,
+    /not logged in/i,
+    /login required/i,
+    /assertuserfailed/i,
+];
+
+// MediaWiki editconflict errors. The error CODE is lost by nodemw's api.call
+// (it only keeps data.error.info in the message), so match the localized text.
+const EDIT_CONFLICT_PATTERNS = [
+    /editconflict/i,
+    /edit conflict/i,
+    /编辑冲突/,
+];
+
+/** Append a hint when an error smells like a silently expired session. */
+function annotateLoginError(message: string, error?: Error): string | null {
+    const details = error?.message ?? '';
+    if (LOGIN_EXPIRED_PATTERNS.some((re) => re.test(message) || re.test(details))) {
+        return details
+            ? `${details} — your login session has likely expired. Reconnect via /mcp to log in again.`
+            : message;
+    }
+    return null;
+}
+
+/** Append a recovery hint when a save failed due to an edit conflict. */
+function annotateEditConflict(message: string, error?: Error): string | null {
+    const details = error?.message ?? '';
+    if (EDIT_CONFLICT_PATTERNS.some((re) => re.test(message) || re.test(details))) {
+        return (
+            details +
+            ' — Edit conflict: the page was modified by someone else after it was read in this session. ' +
+            'Re-read it with get-article (or get-article-with-lineno), re-apply your change, then save again.'
+        );
+    }
+    return null;
+}
+
 export function errorResult(message: string, error?: Error): CallToolResult {
+    const details = annotateLoginError(message, error) ?? annotateEditConflict(message, error) ?? error?.message ?? '';
     return {
         content: [{
             type: 'text',
             text: JSON.stringify({
                 error: message,
-                details: error?.message
+                details
             }, null, 2)
         }],
         isError: true

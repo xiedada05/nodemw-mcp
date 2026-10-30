@@ -49,7 +49,9 @@ export function getImageUsageTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get image usage',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { filename } ) => handleGetImageUsageTool( filename )
     );

@@ -30,7 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface UserContrib extends Record<string, any> {
@@ -71,7 +71,9 @@ export function getUserContribsTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get user contributions',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { username, id, namespace, limit, start } ) => handleGetUserContribsTool( username, id, namespace, limit, start )
     );
@@ -130,13 +132,7 @@ async function handleGetUserContribsTool(
 
         do {
             const params = { ...baseParams, ...(continueParams || {}) };
-            const rawData = await new Promise<ApiResponse>((resolve, reject) => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (bot as any).api.call(params, (_err: Error | null, _info: unknown, _next: unknown, raw: ApiResponse) => {
-                    if (_err) reject(_err);
-                    else resolve(raw);
-                });
-            });
+            const rawData = await callApi<ApiResponse>(bot, params, 'GET');
 
             const usercontribs = rawData.query?.usercontribs;
             if (usercontribs) {

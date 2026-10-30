@@ -52,7 +52,9 @@ export function getSiteStatsTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get site stats',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async () => handleGetSiteStatsTool()
     );

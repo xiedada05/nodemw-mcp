@@ -39,7 +39,9 @@ import {
     promisifyBotMethod,
     isAuthenticated,
     setMediaWikiVersion,
+    setNamespaceCache,
     getMediaWikiVersion,
+    startLoginHeartbeat,
     type ServerConfig
 } from './common/nodemwBot.js';
 
@@ -112,6 +114,20 @@ function parseCliArgs(): { config: ServerConfig; pathExplicit: boolean; debug: b
 async function main(): Promise<void> {
     const { config, pathExplicit, debug } = parseCliArgs();
 
+    // Guard the session process against uncaught exceptions thrown inside
+    // nodemw's response callbacks (they run on @cypress/request's 'complete'
+    // EventEmitter listener, i.e. the socket I/O stack — outside every
+    // promise chain and tool-handler try/catch). A hostile, compromised, or
+    // merely misbehaving wiki could otherwise kill the whole
+    // one-process-one-session MCP channel with a single 200-JSON response of
+    // an unexpected shape. The affected tool call will hang (the MCP client's
+    // own timeout applies), but the session survives. The proper fix —
+    // response-shape validation — is applied to the bundled nodemw via
+    // patches/nodemw+0.26.0.patch and belongs upstream.
+    process.on('uncaughtException', (err: Error) => {
+        console.error(`[nodemw-mcp] Suppressed uncaught exception in wiki response handling: ${err.message}`);
+    });
+
     // Step 1: Auto-detect API path if not explicitly specified
     if (!pathExplicit) {
         try {
@@ -138,11 +154,20 @@ async function main(): Promise<void> {
     let siteInfo: { sitename: string; base: string; generator: string; mainpage: string; lang: string; langName: string } | undefined;
     let siteStats: { pages: number; articles: number; edits: number; users: number; activeusers: number; admins: number } | undefined;
     try {
+        // 'namespaces' + 'namespacealiases' populate the namespace cache used
+        // by tools that accept namespace-qualified titles (e.g.
+        // get-pages-by-prefix "Widget:" or localized aliases like 文件:).
         const info = await promisifyBotMethod<{
             general?: { sitename?: string; base?: string; generator?: string; mainpage?: string; lang?: string };
             languages?: Array<{ code: string; name: string }>;
-        }>(bot, 'getSiteInfo', ['general', 'languages']);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            namespaces?: Record<string, any>;
+            namespacealiases?: Array<{ id: number; '*': string }>;
+        }>(bot, 'getSiteInfo', ['general', 'languages', 'namespaces', 'namespacealiases']);
         if (debug) { console.error(`[DEBUG] getSiteInfo response: ${JSON.stringify(info)}`); }
+        if (info?.namespaces) {
+            setNamespaceCache(info.namespaces, info.namespacealiases);
+        }
         const general = info?.general;
         if (general) {
             const langCode = general.lang || 'en';
@@ -168,8 +193,17 @@ async function main(): Promise<void> {
                 admins: stats.admins ?? 0,
             };
         }
-    } catch {
-        console.error('Warning: Could not fetch site info for server description.');
+    } catch (err) {
+        console.error(
+            'Could not reach the MediaWiki API — the server did not return a valid response.',
+            '\n  Cause:', (err as Error).message,
+            '\n  Common reasons:',
+            '\n    - WAF / CAPTCHA blocking API access (e.g. Alibaba Cloud WAF)',
+            '\n    - Wrong --path (try --path /w or --path "")',
+            '\n    - Server is not a MediaWiki site',
+            '\n    - Network / firewall issues',
+        );
+        process.exit(1);
     }
 
     // Step 3.5: Cache MW version for API compatibility decisions
@@ -253,6 +287,12 @@ async function main(): Promise<void> {
         'target page with get-article or get-article-with-lineno. This prevents',
         'accidental data loss from editing stale content.',
         '',
+        'SESSION NOTE: This server process is started fresh for every client',
+        'connection (including /mcp reconnects). The read-before-write state',
+        'is per-connection only — after any reconnect, re-read the target page',
+        'before editing. If a write fails with a "not allowed / login required"',
+        'error, the login session has likely expired: reconnect via /mcp.',
+        '',
         'PREFER PRECISION: Use edit (line-based exact match) for targeted changes.',
         'Use write (full-page overwrite) only when replacing most of the page.',
         'Use append/prepend only for truly additive changes (categories, notices).',
@@ -326,6 +366,22 @@ async function main(): Promise<void> {
     // Step 5: Connect stdio transport
     const transport = new StdioServerTransport();
     await server.connect(transport);
+
+    // Step 5.5: Watch for silently expired logins (every 60s). On drop, print
+    // a one-shot banner on stderr — visible to the client when launched in a
+    // terminal (e.g. --debug), informing the operator to reconnect via /mcp.
+    if (auth) {
+        let droppedLogged = false;
+        startLoginHeartbeat(() => {
+            if (droppedLogged) return;
+            droppedLogged = true;
+            console.error(
+                '\n⚠ LOGIN SESSION EXPIRED — the wiki no longer accepts this session as logged in.\n' +
+                '  Write tools may fail with "not allowed to edit" errors.\n' +
+                '  Reconnect the MCP server via /mcp to log in again.\n'
+            );
+        });
+    }
 
     // Startup banner
     const authStr = auth ? `authenticated as ${config.username}` : 'guest (read-only)';

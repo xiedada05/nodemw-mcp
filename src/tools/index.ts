@@ -31,6 +31,8 @@ import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server
 // Read tools
 import { getArticleTool } from './ro/get-article.js';
 import { searchTool } from './ro/search.js';
+import { diffRevisionsTool } from './ro/diff-revisions.js';
+import { diffPreviewTool } from './ro/diff-preview.js';
 import { getPagesInCategoryTool } from './ro/get-pages-in-category.js';
 import { getCategoriesTool } from './ro/get-categories.js';
 import { getUsersTool } from './ro/get-users.js';
@@ -62,6 +64,8 @@ import { getExternalLinksTool } from './ro/get-external-links.js';
 import { getBacklinksTool } from './ro/get-backlinks.js';
 import { getArticleByRevisionTool } from './ro/get-article-by-revision.js';
 import { getArticleWithLinenoTool } from './ro/get-article-with-lineno.js';
+import { getModuleSourceTool } from './ro/get-module-source.js';
+import { getArticlesTool } from './ro/get-articles.js';
 
 // Write tools
 import { editTool } from './editing/edit.js';
@@ -80,10 +84,13 @@ import { createAccountTool } from './editing/create-account.js';
 import { blockTool } from './editing/block.js';
 import { unblockTool } from './editing/unblock.js';
 import { undeleteTool } from './editing/undelete.js';
+import { revertTool } from './editing/revert.js';
 
 export const readToolRegistrars = [
     getArticleTool,
     searchTool,
+    diffRevisionsTool,
+    diffPreviewTool,
     getPagesInCategoryTool,
     getCategoriesTool,
     getUsersTool,
@@ -115,11 +122,14 @@ export const readToolRegistrars = [
     getBacklinksTool,
     getArticleByRevisionTool,
     getArticleWithLinenoTool,
+    getModuleSourceTool,
+    getArticlesTool,
 ];
 
 export const writeToolRegistrars = [
     writeTool,
     editTool,
+    revertTool,
     appendTool,
     prependTool,
     moveTool,

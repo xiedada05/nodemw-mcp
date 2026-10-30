@@ -44,8 +44,8 @@ src/common/
   utils.ts            jsonResult() (sets content + structuredContent), errorResult()
   pageState.ts        Read-before-write guard: markAsRead() / requireRead()
 
-src/tools/ro/         Read-only tools (~33)
-src/tools/editing/    Write tools (~15), all call requireRead() before any edit
+src/tools/ro/         Read-only tools (37)
+src/tools/editing/    Write tools (17), all call requireRead() before any edit
 ```
 
 **Key: the Agent description is generated in `index.ts`** (not server.ts). It contains site info, stats, user rights, safety principles, language — everything the LLM needs to know upfront.

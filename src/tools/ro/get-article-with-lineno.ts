@@ -31,7 +31,7 @@ import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
 import { markAsRead } from '../../common/pageState.js';
-import { jsonResult, errorResult } from '../../common/utils.js';
+import { callApi, jsonResult, errorResult } from '../../common/utils.js';
 
 interface LineEntry {
     lineno: number;
@@ -56,7 +56,9 @@ export function getArticleWithLinenoTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get article with line numbers',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { title, id, offset, limit, maxlen } ) =>
             handleGetArticleWithLinenoTool( title, id, offset, limit, maxlen )
@@ -91,33 +93,32 @@ function truncateLines(lines: LineEntry[], maxlen?: number): { lines: LineEntry[
 async function fetchArticleContent(
     title: string | undefined,
     id: number | undefined
-): Promise<{ content: string; pageTitle: string; pageid: number; lastrevid: number }> {
+): Promise<{ content: string; pageTitle: string; pageid: number; lastrevid: number; revTimestamp?: string }> {
     const bot = await getBot();
 
     if (id !== undefined) {
-        const info = await new Promise<Record<string, unknown>>((resolve, reject) => {
-            (bot as any).api.call(
-                { action: 'query', prop: 'revisions', rvprop: 'content', rvlimit: 1, pageids: id },
-                (err: Error | null, data: Record<string, unknown>) => {
-                    if (err) reject(err);
-                    else resolve(data);
-                },
-                'GET'
-            );
-        });
+        const info = await callApi(
+            bot,
+            { action: 'query', prop: 'revisions', rvprop: 'content|ids|timestamp', rvlimit: 1, pageids: id },
+            'GET'
+        );
 
-        const pages = info.pages as Record<string, Record<string, unknown>> | undefined;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const pages = (info.query as any)?.pages as Record<string, Record<string, any>> | undefined;
         const firstKey = Object.keys(pages || {})[0];
         const page = pages?.[firstKey];
         if (!page || page.missing !== undefined) {
             throw new Error(`Page with ID ${id} not found.`);
         }
-        const revisions = page.revisions as Array<{ '*': string }> | undefined;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const revisions = page.revisions as Array<Record<string, any>> | undefined;
+        const rev = revisions?.[0];
         return {
-            content: revisions?.[0]?.['*'] || '',
+            content: rev?.['*'] || '',
             pageTitle: (page.title as string) || `id:${id}`,
             pageid: page.pageid as number,
-            lastrevid: page.lastrevid as number
+            lastrevid: rev?.revid as number,
+            revTimestamp: rev?.timestamp as string | undefined
         };
     }
 
@@ -126,16 +127,31 @@ async function fetchArticleContent(
         throw new Error(`Page "${title}" not found.`);
     }
 
-    const pageInfos = await promisifyBotMethod<Array<{ pageid: number; lastrevid: number }>>(
-        bot, 'getArticleInfo', title, { prop: 'info' }
+    // Latest revision (id + timestamp) for the read guard — the bot's
+    // getArticleInfo doesn't expose the revision timestamp needed for
+    // basetimestamp conflict protection.
+    const raw = await callApi<{
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        query?: { pages?: Record<string, any> };
+    }>(
+        bot,
+        // Resolve redirects exactly like getArticle(title, true) above, so
+        // the recorded pageid/revid and the reported title belong to the page
+        // whose content is delivered (the redirect target), not the redirect.
+        { action: 'query', prop: 'revisions', rvprop: 'ids|timestamp', rvlimit: 1, redirects: '', titles: title },
+        'GET'
     );
-    const pageInfo = Array.isArray(pageInfos) ? pageInfos[0] : null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const pages = Object.values(raw.query?.pages ?? {}) as Array<Record<string, any>>;
+    const page = pages.find(p => p.missing === undefined);
+    const rev = page?.revisions?.[0];
 
     return {
         content,
-        pageTitle: title!,
-        pageid: pageInfo?.pageid ?? 0,
-        lastrevid: pageInfo?.lastrevid ?? 0
+        pageTitle: (page?.title as string) || title!,
+        pageid: page?.pageid ?? 0,
+        lastrevid: rev?.revid ?? 0,
+        revTimestamp: rev?.timestamp
     };
 }
 
@@ -154,12 +170,7 @@ async function handleGetArticleWithLinenoTool(
             return errorResult('Provide either "title" or "id", not both.');
         }
 
-        const { content, pageTitle, pageid, lastrevid } = await fetchArticleContent(title, id);
-
-        // Record read state for write-before-read guard
-        if (pageid && lastrevid) {
-            markAsRead(pageid, lastrevid);
-        }
+        const { content, pageTitle, pageid, lastrevid, revTimestamp } = await fetchArticleContent(title, id);
 
         const allLines: LineEntry[] = content.split('\n').map((text, i) => ({
             lineno: i + 1,
@@ -174,6 +185,15 @@ async function handleGetArticleWithLinenoTool(
 
         // Apply maxlen (character-level truncation)
         const { lines, truncated } = truncateLines(limited, maxlen);
+
+        // Record read state for the write-before-read guard — only when the
+        // agent's view covers the whole page. Sliced views (offset > 0,
+        // limit, or a truncating maxlen) must not establish read evidence
+        // for destructive tools.
+        const fullView = offset === 0 && limit === undefined && !truncated;
+        if (pageid && lastrevid && fullView) {
+            markAsRead(pageid, lastrevid, revTimestamp);
+        }
 
         let resultLines = lines;
         if (truncated) {

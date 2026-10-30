@@ -47,11 +47,14 @@ export function getExternalLinksTool( server: McpServer ): RegisteredTool {
         {
             title: 'Get external links',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( { title } ) => handleGetExternalLinksTool( title )
     );
-    tool.update({ outputSchema: { title: z.string(), links: z.array(z.record(z.unknown())), count: z.number() } });
+    // links are the URL strings extracted from the extlinks items ({ '*': url })
+    tool.update({ outputSchema: { title: z.union([z.string(), z.number()]), links: z.array(z.string()), count: z.number() } });
     return tool;
 }
 

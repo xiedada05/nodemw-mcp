@@ -30,6 +30,7 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
+import { fetchSourceSafely } from '../../common/safeFetch.js';
 import { jsonResult, errorResult } from '../../common/utils.js';
 
 export function uploadByUrlTool( server: McpServer ): RegisteredTool {
@@ -37,16 +38,27 @@ export function uploadByUrlTool( server: McpServer ): RegisteredTool {
         'upload-by-url',
         'Upload a file to the wiki by downloading it from a URL (requires authentication). ' +
         'MEDIUM RISK: Source URLs may be untrusted. Existing files WILL BE OVERWRITTEN silently. ' +
-        'You must have rights to the content. Only use when explicitly requested.',
+        'You must have rights to the content. Only use when explicitly requested. ' +
+        'Only public http(s) sources are allowed — localhost, private/intranet addresses and ' +
+        'non-http schemes are refused; downloads are capped at 50 MB and 30 seconds.',
         {
             filename: z.string().describe( 'Destination filename on wiki (e.g., "Diagram.png") — existing file will be overwritten!' ),
-            url: z.string().url().describe( 'Source URL to download the file from — must be publicly accessible' ),
+            url: z.string().url().describe( 'Source URL to download the file from — must be publicly accessible (public http/https only; private/loopback addresses are refused)' ),
             summary: z.string().optional().describe( 'Upload summary' ),
+            initial_description: z.string().optional().describe(
+                'OPTIONAL (not required for upload). Initial wikitext for the file description page (File:xxx). ' +
+                'Only used when the file page does NOT already exist — if the page already exists, this is silently ignored. ' +
+                'Without it, the upload may fail on some wikis when creating a new file page. ' +
+                'Do NOT treat this as required — only provide it when you have meaningful description content (e.g., ' +
+                '{{File info}}, license tags, categories).'
+            ),
         },
         {
             title: 'Upload file by URL',
             readOnlyHint: false,
-            destructiveHint: true
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
         } as ToolAnnotations,
         async ( params ) => handleUploadByUrlTool( params )
     );
@@ -59,11 +71,23 @@ async function handleUploadByUrlTool(
         filename: string;
         url: string;
         summary?: string;
+        initial_description?: string;
     }
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
         const prefixedSummary = params.summary ? `[nodemw-mcp.upload-by-url] ${params.summary}` : '[nodemw-mcp.upload-by-url] File upload from URL';
+
+        const extraParams: Record<string, string> = { comment: prefixedSummary };
+        if (params.initial_description !== undefined) {
+            extraParams.text = params.initial_description;
+        }
+
+        // Fetch the source with hard SSRF/resource bounds instead of nodemw's
+        // uploadByUrl (whose @cypress/request fetch runs from this process
+        // with no timeout, no size cap, the wiki session cookie jar attached,
+        // and support for the http://unix:<socket>:<path> pseudo-host).
+        const content = await fetchSourceSafely(params.url);
 
         const result = await promisifyBotMethod<{
             result: string;
@@ -71,10 +95,10 @@ async function handleUploadByUrlTool(
             imageinfo?: any;
         }>(
             bot,
-            'uploadByUrl',
+            'upload',
             params.filename,
-            params.url,
-            prefixedSummary
+            content,
+            extraParams
         );
 
         return jsonResult(result);

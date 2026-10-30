@@ -30,30 +30,27 @@ import { z } from 'zod';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult, ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import { getBot, promisifyBotMethod } from '../../common/nodemwBot.js';
-import { markAsRead } from '../../common/pageState.js';
+import { callApi } from '../../common/utils.js';
+import { recordReadFromApi } from '../../common/pageState.js';
 
-interface PageInfo {
-    pageid?: number;
-    lastrevid?: number;
-    missing?: boolean;
+async function recordReadState(identifier: string | number, followRedirect = false): Promise<string | undefined> {
+    // Best-effort; recordReadFromApi resolves the current revision (id +
+    // timestamp) so edit-conflict protection has a basetimestamp to compare.
+    // followRedirect must match the content fetch so the recorded pageid
+    // belongs to the page whose content was delivered to the agent.
+    return recordReadFromApi(identifier, followRedirect);
 }
 
-async function recordReadState(identifier: string | number): Promise<void> {
-    try {
-        const bot = await getBot();
-        const pages = await promisifyBotMethod<PageInfo[]>(
-            bot,
-            'getArticleInfo',
-            identifier,
-            { prop: 'info' }
-        );
-        const page = Array.isArray(pages) ? pages[0] : null;
-        if (page?.pageid != null && page?.lastrevid != null) {
-            markAsRead(page.pageid, page.lastrevid);
-        }
-    } catch {
-        // Non-critical: read-state recording failure should not break the tool
-    }
+/**
+ * Whether the view returned to the agent covers the WHOLE page. Sliced or
+ * truncated views (offset > 0, or maxlen cutting the text) must NOT establish
+ * read-before-write evidence: the guard exists so destructive edits are based
+ * on content the agent actually saw.
+ */
+function isFullView(content: string, maxlen?: number, offset?: number): boolean {
+    if (offset !== undefined && offset > 0) return false;
+    if (maxlen !== undefined && maxlen > 0 && content.length > maxlen) return false;
+    return true;
 }
 
 function getFirstItem<T>(obj: Record<string, T> | null | undefined): T | null {
@@ -78,22 +75,35 @@ export function getArticleTool( server: McpServer ): RegisteredTool {
                 'Maximum response length in characters. ' +
                 'If the article exceeds this length, it will be truncated with a "[truncated]" marker. ' +
                 'Useful when deploying behind HTTP proxies with response size limits (e.g. Alibaba Cloud FC). ' +
-                'Omit for full content.' )
+                'Omit for full content.' ),
+            offset: z.number().int().min( 0 ).optional().describe(
+                'Character offset into the article content to start from. ' +
+                'Combine with maxlen to paginate through long articles: first call with maxlen, ' +
+                'then continue with offset = maxlen to read the next chunk.' )
         },
         {
             title: 'Get article',
             readOnlyHint: true,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: true
         } as ToolAnnotations,
-        async ( { title, id, followRedirect, redirectInfo, revision, maxlen } ) =>
-            handleGetArticleTool( title, id, followRedirect, redirectInfo, revision, maxlen )
+        async ( { title, id, followRedirect, redirectInfo, revision, maxlen, offset } ) =>
+            handleGetArticleTool( title, id, followRedirect, redirectInfo, revision, maxlen, offset )
     );
 }
 
-function applyMaxlen(content: string, maxlen?: number): string {
-    if (maxlen === undefined || maxlen <= 0) return content;
-    if (content.length <= maxlen) return content;
-    return content.slice(0, maxlen) + '\n\n[truncated — article exceeds maxlen, use a higher value or omit maxlen for full content]';
+function applyMaxlen(content: string, maxlen?: number, offset?: number): string {
+    let text = content;
+    if (offset !== undefined && offset > 0) {
+        if (offset >= text.length) {
+            return '(reached end of article)';
+        }
+        text = text.slice(offset);
+    }
+    if (maxlen === undefined || maxlen <= 0) return text;
+    if (text.length <= maxlen) return text;
+    return text.slice(0, maxlen) + '\n\n[truncated — article exceeds maxlen, call get-article again with offset=<n> to continue reading]';
 }
 
 async function handleGetArticleTool(
@@ -102,7 +112,8 @@ async function handleGetArticleTool(
     followRedirect: boolean,
     redirectInfo: boolean,
     revision?: number,
-    maxlen?: number
+    maxlen?: number,
+    offset?: number
 ): Promise<CallToolResult> {
     try {
         const bot = await getBot();
@@ -136,15 +147,10 @@ async function handleGetArticleTool(
                 ...(id === undefined && followRedirect && { redirects: '' })
             };
 
-            const info = await new Promise<Record<string, unknown>>((resolve, reject) => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (bot as any).api.call(params, (err: Error | null, info: Record<string, unknown>) => {
-                    if (err) reject(err);
-                    else resolve(info);
-                }, 'GET');
-            });
+            const raw = await callApi(bot, params, 'GET');
 
-            const pages = info.pages as Record<string, Record<string, unknown>> | undefined;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const pages = (raw.query as any)?.pages as Record<string, Record<string, any>> | undefined;
             const page = getFirstItem(pages);
             if (!page || page.missing !== undefined) {
                 const identifier = title ?? `id ${id}`;
@@ -164,9 +170,14 @@ async function handleGetArticleTool(
                         isError: true
                     };
                 }
-                await recordReadState(id ?? title!);
+                // Old-revision views must NOT satisfy the read-before-write
+                // guard: the read state would certify the page's CURRENT
+                // revision, which green-lights writes that clobber content
+                // the agent never saw. Record nothing here — same policy as
+                // get-article-by-revision; a writer must re-read the page
+                // without the revision parameter.
                 return {
-                    content: [{ type: 'text', text: applyMaxlen(rev['*'], maxlen) }]
+                    content: [{ type: 'text', text: applyMaxlen(rev['*'], maxlen, offset) }]
                 };
             }
 
@@ -179,9 +190,11 @@ async function handleGetArticleTool(
                     isError: false
                 };
             }
-            await recordReadState(id ?? title!);
+            if (isFullView(content, maxlen, offset)) {
+                await recordReadState(id ?? title!);
+            }
             return {
-                content: [{ type: 'text', text: applyMaxlen(content === '' ? '(empty page)' : content, maxlen) }]
+                content: [{ type: 'text', text: applyMaxlen(content === '' ? '(empty page)' : content, maxlen, offset) }]
             };
         }
 
@@ -207,10 +220,12 @@ async function handleGetArticleTool(
                 };
             }
             const responseText = redirect
-                ? `Content:\n\n${applyMaxlen(content, maxlen)}\n\nRedirect Information:\n\n${JSON.stringify(redirect, null, 2)}`
-                : applyMaxlen(content === '' ? '(empty page)' : content, maxlen);
+                ? `Content:\n\n${applyMaxlen(content, maxlen, offset)}\n\nRedirect Information:\n\n${JSON.stringify(redirect, null, 2)}`
+                : applyMaxlen(content === '' ? '(empty page)' : content, maxlen, offset);
 
-            await recordReadState(title!);
+            if (isFullView(content, maxlen, offset)) {
+                await recordReadState(title!, followRedirect);
+            }
             return {
                 content: [ { type: 'text', text: responseText } ]
             };
@@ -227,9 +242,23 @@ async function handleGetArticleTool(
                     isError: true
                 };
             }
-            await recordReadState(title!);
+            let responseText = applyMaxlen(result === '' ? '(empty page)' : result, maxlen, offset);
+            if (isFullView(result, maxlen, offset)) {
+                const resolvedTitle = await recordReadState(title!, followRedirect);
+                // When the fetch followed a redirect, the delivered content
+                // belongs to the resolved page — tell the agent explicitly so
+                // it passes the right title to edit/write (action=edit does
+                // NOT follow redirects; writing the requested title would
+                // destroy the redirect page itself).
+                if (followRedirect && resolvedTitle && resolvedTitle !== title) {
+                    responseText +=
+                        `\n\n[Note: "${title}" is a redirect; the content above is from "${resolvedTitle}". ` +
+                        `Read state was recorded for "${resolvedTitle}" — pass that title to edit/write, ` +
+                        `or re-read with followRedirect=false to edit the redirect itself.]`;
+                }
+            }
             return {
-                content: [ { type: 'text', text: applyMaxlen(result === '' ? '(empty page)' : result, maxlen) } ]
+                content: [ { type: 'text', text: responseText } ]
             };
         }
     } catch ( error ) {
