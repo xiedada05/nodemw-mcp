@@ -1,0 +1,522 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:387f72e40e16fe0217fa1c2f4d2cd189c9736f530edff8ac1e86afded618b11a",
+  "claims": [
+    {
+      "id": "claim_147b8f2b05de4475bb2741bbab5efe5f",
+      "statement": "getMediaWikiVersion() in src/common/nodemwBot.ts exposes the cached MediaWiki version string as a number built from the first major.minor match, and returns null before the first successful probe or when the reported string does not match, so every version-conditional decision must handle null.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L234-L246",
+          "version": "repo-lines-v1:sha256:70d6a9e77e2be1d6eb0cfe31c970c664d4147332b03b4e1e8558effed1022e4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkZWNkMmM4OGNjNGU3NDdjYzQxNmFkYjM5ZjRiMTgxYWM1Y2Y0YjA4MWVkOGU4NzcwYTJlN2VmY2VjOTkwMjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyZTgyN2RiMTA2OGYzNGZkYjYwYTA3ZmZlMmNiYThjNzdhMWRmNDE3ZmYwNjcyNjZkMDk5MmIwZmIwNWRhMjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3ZWM3MTJkOWNjMWY0M2JjNWQ5OTRjYTQ2ZmFmNjcwMGJlMjc4OTk3OGY1Y2MyYjEzOWJhOTA4NzhhNjUwYWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5ddd115ce1084f489f6445e5e913fa50",
+      "statement": "The MediaWiki version cache is populated exactly once during bootstrap by promisifyBotMethod(bot, 'getMediaWikiVersion') inside a swallow-all catch, making version detection non-fatal: a failed probe leaves the cache null while the server still starts and registers all tools.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L209-L222",
+          "version": "repo-lines-v1:sha256:5fd09662e0f3b29734e25f6236aaf7ad50e78445186b9e0769d010bd428ce2cb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhNWVjNmFhZjE1YWY3NDI4MDQxMzI0NTRhNWU4OWYwOTAxOWQ5OTcyMTkzYzZmZjc0M2I2YmFmMGJmNmRlZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkMmQ2ZTJjZGRhMjZlNzY5NWRmZDI0NjVjNTlmYWQ3NzdmOGVjY2M3MDNlNDZhYmFlMDYwZTgzZjEzZTcwOWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkYmMyNzVkMWZkYzE4N2NjYjRiNWIwZjY3NmIzOTVjMTc1YjFkMGQ3NjE4ZTk1NmNiNzE2YTRlMDgxNGE5YTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8c53966940db45b5add57fb8a8190bfc",
+      "statement": "block, unblock, protect, and undelete share one token-selection pattern: they compute tokenType as 'csrf' when the cached major.minor version is known and at least 1.24, otherwise they pass the action-specific legacy type ('block' for block and unblock, 'protect', 'undelete'), and they fetch the token with getToken(tokenTitle, tokenType) inside a hand-rolled Promise, using User:<username|id> as the title for user actions and the page title for page actions.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/editing/block.ts#L90-L102",
+          "version": "repo-lines-v1:sha256:037c2357325c968afee1f34e38148fa9a779a4eccb90f2b684df89852c326f2d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1NTk1YzExNDExOTUzODc3ZWQ2YjM3OTM4NmFmMGM3ZmFhMmJkYjZlYTVhMjk3ZDcxNTAyNzhmYzcyZTdmNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhNTI4MTA4ZDlkNjY5OWE4YTlmNWFkMjNjZjg3ZWUzYzRjNzdhOWY1YjhmOWU4YmUwNjVhZmYxN2VkZDBlNGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyMjY0YjM1MDBjMjBiZDQ1Y2Q1ZDQzZWU5MDBiMjc3NmU5YmY4YjFlZjQ2Y2RmZjlmM2UxYjg1YTM0MjNiMDgifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/protect.ts#L80-L90",
+          "version": "repo-lines-v1:sha256:a67cfc768e4187f349113314abefbc4b52e76b9519300a9ff36bb866e7b530c8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmMWQ2ODgyYzdhY2YzYWRmMmQ0NTdlZDUyNzg5Yjg0NDY2NTJlN2YxMTYxZTU5MWRmNzI1M2Y3OTU2MzQyZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3NjQwYTlkZmFjNTk0MzBiODQxNWU1MDdlNmE1MjRkZjEwM2RkMGJhNzgwYmFhNGQ1ZDA1Yjg1ZmY2MTBlMmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRiNDJjMGVjMGM0NTM2NDllNzNhNmM0NGZiYWJmYTBiNGU2ZDQyOTRmOGMyNWQ5OGJjYTkxOGI4NTZkZWIyZWYifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/unblock.ts#L72-L83",
+          "version": "repo-lines-v1:sha256:6af551dfa18e55679258bdd772f75b2a36a7b15bbfd7821186afeedbc22a0465:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1NTk1YzExNDExOTUzODc3ZWQ2YjM3OTM4NmFmMGM3ZmFhMmJkYjZlYTVhMjk3ZDcxNTAyNzhmYzcyZTdmNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhNTI4MTA4ZDlkNjY5OWE4YTlmNWFkMjNjZjg3ZWUzYzRjNzdhOWY1YjhmOWU4YmUwNjVhZmYxN2VkZDBlNGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY5NGI3NGEyZWNlOWYwMTU5ZDdlZTFlNDAwYWUwMjU0NWJhMzJlNDQxMGJkNjFkMTI3YjQ3NGY0MDIxOGUwY2YifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/undelete.ts#L67-L77",
+          "version": "repo-lines-v1:sha256:c0756a5a43da821bca35d5daed052e10b80ff38ad3a1d014877e755b9f619bcb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1NTk1YzExNDExOTUzODc3ZWQ2YjM3OTM4NmFmMGM3ZmFhMmJkYjZlYTVhMjk3ZDcxNTAyNzhmYzcyZTdmNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzYWE3MmYxZWFhNzIyM2EzMWVjOTk4YWNkN2M3NGYxODkxNjA5NzM5NjFhMjAwMWM1MWZhOWNmZjBiOTNhNDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3OGE3N2VjMzBjODJkY2VlOGE5MGFjMGUyYWU5NGM0OGM4MTAwOTA1MDI2MjBkZjAxZDhmMDYyOTdhZjY3OTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d3e6b77607f94fcbb42c2acdeef269f7",
+      "statement": "版本缓存为 null 时四个管理工具回退到按动作区分的 token 名，这个兜底在 1.24+ wiki 上安全，因为 nodemw 的 getToken 用 node-version-compare 把自身缓存的版本与 1.24.0 比较后发出 meta=tokens&type=csrf，动作名只对真正的 pre-1.24 wiki 有意义；这一行为已被仓库自带的 patches/nodemw+0.26.0.patch 固定，同一补丁还让 getToken 在自身版本探测失败时以错误回调而不是默默走 intoken 路径。于是兜底的安全条件是 nodemw 自己的探测成功，两边都失败时工具以 Failed to ... 加 token 错误 details 优雅降级。",
+      "evidence": [
+        {
+          "resource": "repo://patches/nodemw%2B0.26.0.patch",
+          "version": "repo-file-v1:sha256:7ea47c15961e7cd6b7b3b0f7d4ac355f81c197aed106ec22f3c081184a3c9812"
+        },
+        {
+          "resource": "repo://src/tools/editing/block.ts",
+          "version": "repo-file-v1:sha256:4cb3d28b858415199a61b5da6d6969e1c715e3c57f127c0efb5eba752c538789"
+        }
+      ]
+    },
+    {
+      "id": "claim_c86f7e2ef07c49688e059e6c8cfa1925",
+      "statement": "工具在 nodemw 高层方法无法表达请求时放弃 promisifyBotMethod 改走裸传输，并且现在统一经 callApi 而不是各自手写 (bot as any).api.call：该 action 没有封装、封装只按标题寻址而调用方手上是 pageid 或 revid、封装固定发送了会改变结果或 token 类型的参数、或者调用方需要原始续延信封。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/utils.ts",
+          "version": "repo-file-v1:sha256:3cfa34114a53d71c7a72695c0a9d0f9b2eadf2c6cf52871dedb52ef2f8f83334"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts",
+          "version": "repo-file-v1:sha256:e2aca78dfd21efc77b0a4c7e01c1145cb27b85588159e19f45ef90cca22e0b98"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-user-contribs.ts",
+          "version": "repo-file-v1:sha256:9571611510c29bbf0ed9ecb2335358cecfca3724d5993b3a6939b3dd219bf856"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-users.ts",
+          "version": "repo-file-v1:sha256:53f9b8e4b66cc62f68d1bdc3a7563989264f01c265701da231c361908dca6e65"
+        }
+      ]
+    },
+    {
+      "id": "claim_354706555bf74a3c93d1eaa45c1de06d",
+      "statement": "get-users bypasses nodemw's getUsers because that wrapper always transmits auwitheditsonly (false when not requested), which MediaWiki misreads as an active filter that hides users; the tool instead builds list=allusers itself, passes the caller's limit through as aulimit, and sends auwitheditsonly=1 only when onlyWithEdits is true.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-users.ts",
+          "version": "repo-file-v1:sha256:53f9b8e4b66cc62f68d1bdc3a7563989264f01c265701da231c361908dca6e65"
+        }
+      ]
+    },
+    {
+      "id": "claim_7ceda22f00fb4d73892a9ee161fe07f8",
+      "statement": "protect bypasses nodemw's protect wrapper because that wrapper hardcodes the csrf token type, which fails on pre-1.24 wikis; the tool consequently owns the whole request, building pipe-joined protections and expiry strings itself and defaulting an omitted expiry to infinite.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/editing/protect.ts",
+          "version": "repo-file-v1:sha256:8f38fa112cfaa9756df2c00de94dc8ba439e1b607efb4a0905b977a4be9226e1"
+        }
+      ]
+    },
+    {
+      "id": "claim_4b539c2919694c3387341d5c7e634db4",
+      "statement": "get-article keeps nodemw's getArticle for title-only reads but switches to a raw prop=revisions query as soon as a page id or a revision id is supplied, and it adds the redirects parameter only on the title path because MediaWiki ignores it when pageids is used.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article.ts",
+          "version": "repo-file-v1:sha256:e2aca78dfd21efc77b0a4c7e01c1145cb27b85588159e19f45ef90cca22e0b98"
+        }
+      ]
+    },
+    {
+      "id": "claim_46550d08c20c4f0bba8ea36b68cd1a2e",
+      "statement": "裸传输的响应契约集中在一处：callApi 只解析四参数回调中的第四个参数，即完整 JSON 响应体，query、continue、batchcomplete、error 都在顶层。因此页面结果读 raw.query.pages（以 pageid 为键的对象，missing 作不存在哨兵），列表结果读 raw.query.allusers 等对应键，修订内容位于 revisions[0]['*']，因为传输层强制 format=json 且不带 formatversion=2。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/utils.ts",
+          "version": "repo-file-v1:sha256:3cfa34114a53d71c7a72695c0a9d0f9b2eadf2c6cf52871dedb52ef2f8f83334"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-by-revision.ts",
+          "version": "repo-file-v1:sha256:b1f08a466874f2789cd03829e0e36081d17ddc5c368b6fc329322cdb93e23df5"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts",
+          "version": "repo-file-v1:sha256:e2aca78dfd21efc77b0a4c7e01c1145cb27b85588159e19f45ef90cca22e0b98"
+        }
+      ]
+    },
+    {
+      "id": "claim_f1c1a6d959564f788018b195bc5b09c8",
+      "statement": "续延责任按路线划分：经 nodemw 封装的方法（getAll）内部翻页到耗尽，而直连工具必须自己循环并自己设上限。由于 callApi 交回完整信封，这些循环统一读顶层 raw.continue 并把整个对象回灌下一条请求——get-user-contribs 还兼容旧式 query-continue，get-article-revisions 读 continue.rvcontinue，search 与 get-article-revisions 的循环上限是 10000 条。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/utils.ts",
+          "version": "repo-file-v1:sha256:3cfa34114a53d71c7a72695c0a9d0f9b2eadf2c6cf52871dedb52ef2f8f83334"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-revisions.ts",
+          "version": "repo-file-v1:sha256:3cd7bf9031cd9f260e127a7a217b8583a02862a8b6e0d923dcdc3966b575d1a6"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-user-contribs.ts",
+          "version": "repo-file-v1:sha256:9571611510c29bbf0ed9ecb2335358cecfca3724d5993b3a6939b3dd219bf856"
+        },
+        {
+          "resource": "repo://src/tools/ro/search.ts",
+          "version": "repo-file-v1:sha256:9ebd58f555c0e19f3c984122d4f4c4a7fbbcd3310942f933139bc0e750d0b0cf"
+        }
+      ]
+    },
+    {
+      "id": "claim_a2271250e62a40219a30bd800eef5de1",
+      "statement": "nodemw 的公开声明里没有 api 成员，因此 (bot as any).api.call 与 no-explicit-any 抑制现在只集中在两个咽喉点：utils.ts 的 callApi 与 nodemwBot.ts 的 fetchWhoami；其余模块只依赖 callApi 返回 Promise 的接口，不必各自断言 any 或手写 Promise。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts",
+          "version": "repo-file-v1:sha256:e26572a5891b953787a759d4dbbd3c83acd6c8a2fcd85d1618b498b1d3334fd1"
+        },
+        {
+          "resource": "repo://src/common/utils.ts",
+          "version": "repo-file-v1:sha256:3cfa34114a53d71c7a72695c0a9d0f9b2eadf2c6cf52871dedb52ef2f8f83334"
+        }
+      ]
+    },
+    {
+      "id": "claim_3fd9e6c439654099b13d1e58bae7bf80",
+      "statement": "The if (data.error) branches inside block, unblock, protect, and undelete are defensive only: nodemw's transport rejects the api.call promise when the API returns an error body, so real admin-action failures surface through the handler's catch and are reported as an errorResult with the transport message in details.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/utils.ts",
+          "version": "repo-file-v1:sha256:3cfa34114a53d71c7a72695c0a9d0f9b2eadf2c6cf52871dedb52ef2f8f83334"
+        },
+        {
+          "resource": "repo://src/tools/editing/block.ts",
+          "version": "repo-file-v1:sha256:4cb3d28b858415199a61b5da6d6969e1c715e3c57f127c0efb5eba752c538789"
+        },
+        {
+          "resource": "repo://src/tools/editing/protect.ts",
+          "version": "repo-file-v1:sha256:8f38fa112cfaa9756df2c00de94dc8ba439e1b607efb4a0905b977a4be9226e1"
+        },
+        {
+          "resource": "repo://src/tools/editing/undelete.ts",
+          "version": "repo-file-v1:sha256:cd45583744f522a1f01eb1f61324d71cefaacc26e960d23d1d3ff00d4db8a10d"
+        }
+      ]
+    },
+    {
+      "id": "claim_a6b76c52da644e96a4c136afbfe38b9f",
+      "statement": "dryRun is forwarded to nodemw through createBotFromConfig behind a @ts-expect-error comment because nodemw's BotOptions type omits the field even though the runtime honours it; the value originates from the --dry-run CLI flag parsed into ServerConfig.dryRun.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L159-L173",
+          "version": "repo-lines-v1:sha256:ee11d699f86694e190894d7f88e65ea2c47d8a80bae98cf3dc5e06fd7a619340:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhOGM4ZmNhZTQ5ZDAxYzY5MjExNDU0YjcwNjg0NGY5MDQxODMyMDAzNzNjNTg1Y2MzOWViM2U3YTdiMTc0ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3YjhmZmZhNzM5YTgxODA0ODBiZTVkYTZiMzVhMDk2YzQ1ZTU5ODVjNTBjZjkwMjQ4ZDJmYzA0YzgzOTVkZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMDllNTI2ZDBkNGJkNTk3ODU1OWU5OGE0ZDZhMTIxNzhjMDM2ZGVlNjMwMTdjZjc0NDdkZDI5OWQyYjBlMDkifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L104-L104",
+          "version": "repo-lines-v1:sha256:958350b314eb97db87600045e2436faa496bbfb0d94a44c04413400d2f3bd2a6:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTU4MzUwYjMxNGViOTdkYjg3NjAwMDQ1ZTI0MzZmYWE0OTZiYmZiMGQ5NGE0NGMwNDQxMzQwMGQyZjNiZDJhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTU4MzUwYjMxNGViOTdkYjg3NjAwMDQ1ZTI0MzZmYWE0OTZiYmZiMGQ5NGE0NGMwNDQxMzQwMGQyZjNiZDJhNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjVhMTUwYTRjMmQ4NjEyM2FiMGFkMmI1NGUyOGU1NTJiZWY3MzhmNjhiN2M4NmEwYmQ4MzU1Y2ZmNTM4OTg0OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTExM2FmNjRjY2U2OGZiYzExNmQzYzlhZmVmODc4OGIzNTMxN2UzNWEzNDllMmVmMTY4YWVmZjJkZjZlZDcwMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_069a96ab89f04a16aaa1fa3692bfb83b",
+      "statement": "Dry-run protection is inherited per nodemw method, not enforced by this server: tools routed through guarded Bot methods (edit/write/append/prepend via doEdit, delete, move, purge, send-email, upload, upload-by-url, add-flow-topic) are refused in dry-run mode, while block, unblock, protect, and undelete call api.call directly and therefore send real requests even with --dry-run.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/editing/block.ts",
+          "version": "repo-file-v1:sha256:4cb3d28b858415199a61b5da6d6969e1c715e3c57f127c0efb5eba752c538789"
+        },
+        {
+          "resource": "repo://src/tools/editing/delete.ts",
+          "version": "repo-file-v1:sha256:5c8be88b56fdd69b122d83c4bce18d7e9dd00cd7813e7bae74d639e78ee7e363"
+        },
+        {
+          "resource": "repo://src/tools/editing/protect.ts",
+          "version": "repo-file-v1:sha256:8f38fa112cfaa9756df2c00de94dc8ba439e1b607efb4a0905b977a4be9226e1"
+        },
+        {
+          "resource": "repo://src/tools/editing/unblock.ts",
+          "version": "repo-file-v1:sha256:9a8f4c4511a6ab045e7b309a67cb8ecfa5be22fe53192327e8345670a1194193"
+        },
+        {
+          "resource": "repo://src/tools/editing/undelete.ts",
+          "version": "repo-file-v1:sha256:cd45583744f522a1f01eb1f61324d71cefaacc26e960d23d1d3ff00d4db8a10d"
+        },
+        {
+          "resource": "repo://src/tools/editing/write.ts",
+          "version": "repo-file-v1:sha256:a975bea248f644e7853fd1584a317ed9e114e3ce2d5495ab4eb1f42ffd64f0c9"
+        }
+      ]
+    },
+    {
+      "id": "claim_51fdebadcd434cf4879d88ce1bd9bb1d",
+      "statement": "Dry-run mode is a refusal rather than a simulation: a guarded wrapper rejects, the tool's catch converts that into errorResult, and the caller receives isError with the wrapper's In dry-run mode message in details.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/utils.ts",
+          "version": "repo-file-v1:sha256:3cfa34114a53d71c7a72695c0a9d0f9b2eadf2c6cf52871dedb52ef2f8f83334"
+        },
+        {
+          "resource": "repo://src/tools/editing/write.ts",
+          "version": "repo-file-v1:sha256:a975bea248f644e7853fd1584a317ed9e114e3ce2d5495ab4eb1f42ffd64f0c9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a348f5214537438181aa3543102a653d",
+      "statement": "dry-run 开关现在是可读的（nodemwBot.ts 导出 getServerConfig），但没有任何工具读取它：initServerConfig 存入的 ServerConfig 只由 getServerConfig 返回，src/tools 下没有调用点，保护仍完全来自 nodemw 内部检查。因此绕过 nodemw 的写工具若要尊重 --dry-run，必须自己读 getServerConfig()?.dryRun 并自行实现拒绝——这是一个显式的扩展点，不是现成能力。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts",
+          "version": "repo-file-v1:sha256:e26572a5891b953787a759d4dbbd3c83acd6c8a2fcd85d1618b498b1d3334fd1"
+        },
+        {
+          "resource": "repo://src/tools/editing/block.ts",
+          "version": "repo-file-v1:sha256:4cb3d28b858415199a61b5da6d6969e1c715e3c57f127c0efb5eba752c538789"
+        }
+      ]
+    },
+    {
+      "id": "claim_3ea3161cb38f41e8b3b0352f2ad672af",
+      "statement": "Addressing a user by numeric id requires a raw list=users query because nodemw's whois and whoare take usernames; whois and whoare route the id case through api.call with ususerids and usprop, and only the username case goes through promisifyBotMethod.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/whoare.ts",
+          "version": "repo-file-v1:sha256:a16b2ad6affb5fa3caff437428c7a1c91100c2fd9969ecb76d6e8a5ec30f0489"
+        },
+        {
+          "resource": "repo://src/tools/ro/whois.ts",
+          "version": "repo-file-v1:sha256:e2c2aa3f3e4428bbed0cc5fc5a014cc13eb4d5db758b69d4aa58dcd24a5526f0"
+        }
+      ]
+    },
+    {
+      "id": "claim_a0d72b7a231d41a6a8b2a8d86ba6611f",
+      "statement": "裸传输现在是集中式的：26 个模块经 callApi 发起共 28 处调用（compareOutput 与 get-article-with-lineno 各两处），覆盖 4 个管理写工具、revert 的读侧，以及 21 个读工具与辅助模块。这份清单仍是封闭的：新增一处直连调用就新增一处本页负责的兼容性面。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/compareOutput.ts",
+          "version": "repo-file-v1:sha256:ffadfc5d740df6b5f9305e7795528ea94a86391a5c988f3af7fd8159d8ebd987"
+        },
+        {
+          "resource": "repo://src/common/pageState.ts",
+          "version": "repo-file-v1:sha256:41923cbb09c3fbff8442ec2df3e87d5ba063b76800a286ccf0b1d372bc85b634"
+        },
+        {
+          "resource": "repo://src/common/utils.ts",
+          "version": "repo-file-v1:sha256:3cfa34114a53d71c7a72695c0a9d0f9b2eadf2c6cf52871dedb52ef2f8f83334"
+        },
+        {
+          "resource": "repo://src/tools/editing/block.ts",
+          "version": "repo-file-v1:sha256:4cb3d28b858415199a61b5da6d6969e1c715e3c57f127c0efb5eba752c538789"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts",
+          "version": "repo-file-v1:sha256:c8121c06f0a05fc9e0c27afd135b16c73f1bec3154bf2d41f1d47c0352aeeff0"
+        }
+      ]
+    },
+    {
+      "id": "claim_9812aee944b547979181bdd648b482f9",
+      "statement": "create-account is a write tool that receives no dry-run protection at all: the handler only calls promisifyBotMethod(bot, 'createAccount', username, password), the server itself never consults ServerConfig.dryRun, and nodemw 0.26.0 performs no dry-run check inside that method, so --dry-run still creates a real account — an assumption that must be rechecked when nodemw is upgraded.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L159-L173",
+          "version": "repo-lines-v1:sha256:ee11d699f86694e190894d7f88e65ea2c47d8a80bae98cf3dc5e06fd7a619340:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhOGM4ZmNhZTQ5ZDAxYzY5MjExNDU0YjcwNjg0NGY5MDQxODMyMDAzNzNjNTg1Y2MzOWViM2U3YTdiMTc0ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3YjhmZmZhNzM5YTgxODA0ODBiZTVkYTZiMzVhMDk2YzQ1ZTU5ODVjNTBjZjkwMjQ4ZDJmYzA0YzgzOTVkZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMDllNTI2ZDBkNGJkNTk3ODU1OWU5OGE0ZDZhMTIxNzhjMDM2ZGVlNjMwMTdjZjc0NDdkZDI5OWQyYjBlMDkifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/create-account.ts#L67-L74",
+          "version": "repo-lines-v1:sha256:5386599c6056b9a96565ab285cc9c90725944b1ab7fdfbc4eab5615cc8079af9:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWEwZjNiZDZjZDhkYTA2NDI3ZDJjZDkyNzJlYzQ2NjI5ZmUxN2VhZWM2NTJmNjI3ZDE2MTkwN2VlZmQ2NWY5NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2U5ZTdkNjkxMWJkYjA3ZjU0MzllNDQ2MWU4ZDg1NmVkMTcyYjJlZTgzYTA1ZmZkYjBlNmFmNDZmZWJmMzcyNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWYzMmUzYmY5OTg1ZjQxMTRjYjYzZWFiYTkxMzlkMjFhMGM5NDM2ZjY5MzVhMDBjYjkwNmE5ZTNhYzI1ZTMyZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzM2ZGI1MjI1NDViYzMxM2IyNjQ4NGJlY2RiMjcyZGY2NjJjNjcyNjE3ZWIxYjQxY2IxM2ZlNzllZWM1MDE4MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f6660ba7e7fe4030a05bbdb3dcef589a",
+      "statement": "仓库里按目标 wiki 版本分流的位置共有七处：1.24 的 token 类型、1.24 的 action=compare 文本对比能力（totext）、1.27 的 topst、1.32 的 compare 富 prop（user/comment/timestamp）、compare 响应里的 fromtitle/totitle（1.24 起才有）、1.36 移除的 generatexml，以及由 nodemw 自己的缓存决定的 pre-1.24 intoken 获取。其中前三个读本仓库的版本缓存，其余故意不读，而 1.24 并不是唯一边界。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/compareOutput.ts",
+          "version": "repo-file-v1:sha256:ffadfc5d740df6b5f9305e7795528ea94a86391a5c988f3af7fd8159d8ebd987"
+        },
+        {
+          "resource": "repo://src/tools/editing/block.ts",
+          "version": "repo-file-v1:sha256:4cb3d28b858415199a61b5da6d6969e1c715e3c57f127c0efb5eba752c538789"
+        },
+        {
+          "resource": "repo://src/tools/ro/diff-preview.ts",
+          "version": "repo-file-v1:sha256:9acc82370a0817855b578100a65a2231cc9152ebf2f36203f72b3763faa2b205"
+        },
+        {
+          "resource": "repo://src/tools/ro/diff-revisions.ts",
+          "version": "repo-file-v1:sha256:53e83e2a69e57552dda349a9e78a25a4f9a3be1440fb3ce2c7889206620eb15e"
+        },
+        {
+          "resource": "repo://src/tools/ro/parse.ts",
+          "version": "repo-file-v1:sha256:22bb0860eaf1d3da9caefd33acba555ddfd279fe33d75da39a9cac2491f205e3"
+        }
+      ]
+    },
+    {
+      "id": "claim_0c74847b8f3e4323acd64db496905da9",
+      "statement": "diff-preview 把 action=compare 的文本对比能力当成 1.24 门控：只有版本已知且低于 1.24 时才在发出请求前拒绝并给出替代路径（get-article / get-article-by-revision 自己比），版本未知时放行，并在 catch 里把 inputneeded 或 unrecognized parameter totext 映射成同一条“需要 1.24+”错误——能力缺失被统一表达成可操作错误，而不是一个空 diff。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/diff-preview.ts",
+          "version": "repo-file-v1:sha256:9acc82370a0817855b578100a65a2231cc9152ebf2f36203f72b3763faa2b205"
+        }
+      ]
+    },
+    {
+      "id": "claim_a7a76d03c0ff410782f7a30b2e30eb05",
+      "statement": "topst（预保存转换，1.27 起）走的是与 token 相反的默认值：版本为 null 或不低于 1.27 都附加 topst=1，只有 API 明确以 unrecognized parameter 拒绝时才删掉该参数重发；乐观之所以可行，是因为拒绝可识别、重发无副作用。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/diff-preview.ts",
+          "version": "repo-file-v1:sha256:9acc82370a0817855b578100a65a2231cc9152ebf2f36203f72b3763faa2b205"
+        }
+      ]
+    },
+    {
+      "id": "claim_8a694a23866f439487202f1d6bc878a1",
+      "statement": "compare 的富 prop 完全不做版本判断：callCompareApi 总是先请求 diff、ids、title、user、comment、timestamp 这组 prop（后三项 1.32+），只有在被拒且消息匹配 unrecognized … prop 时才退到只带 diff 的请求。旧 wiki 上的额外往返被当作探测成本，换掉了一个新阈值。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/compareOutput.ts",
+          "version": "repo-file-v1:sha256:ffadfc5d740df6b5f9305e7795528ea94a86391a5c988f3af7fd8159d8ebd987"
+        }
+      ]
+    },
+    {
+      "id": "claim_f13740ad38c94f2d8c9b4491fed6bab7",
+      "statement": "generatexml 的移除（1.36）用“绕开参数”而不是版本判断解决：parse 与 expand-templates 都不调用 nodemw 的封装，改为 action=parse/expandtemplates 配自选的 prop 输出，因为封装硬编码 generatexml=1，在 1.36 之后失效、在更早版本上又返回语法树而不是展开结果；被移除的参数根本不出现在请求里。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/expand-templates.ts",
+          "version": "repo-file-v1:sha256:e28fcf452076735391c0bfeaad2b62da9426b86dc7e7cc637b3a60116b545c6d"
+        },
+        {
+          "resource": "repo://src/tools/ro/parse.ts",
+          "version": "repo-file-v1:sha256:22bb0860eaf1d3da9caefd33acba555ddfd279fe33d75da39a9cac2491f205e3"
+        }
+      ]
+    },
+    {
+      "id": "claim_afc9b7cb66cf4bb9b6ff9bda9485527f",
+      "statement": "低于 1.24 的 action=compare 响应缺少 fromtitle/totitle，diff-revisions 因此有一条三段标题回退链：响应字段 → 自己解析出的页面标题 → 修订对字面量，保证老 wiki 上仍能给出可读的 diff 标题。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/diff-revisions.ts",
+          "version": "repo-file-v1:sha256:53e83e2a69e57552dda349a9e78a25a4f9a3be1440fb3ce2c7889206620eb15e"
+        }
+      ]
+    },
+    {
+      "id": "claim_620ce3e7418b435bb12335ebaec0532f",
+      "statement": "compare 返回的是 HTML 表格片段，解析器必须跨版本容错：diff-lineno、diff-deletedline、diff-addedline、diffchange 这些类名稳定，但内联改动在旧版本是 div.diffchange、新版本是 ins/del.diffchange，class 属性有单双引号两种写法；parseCompareDiff 对认不出的行降级成去标签文本，从不抛错。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/__tests__/compareOutput.test.ts",
+          "version": "repo-file-v1:sha256:6e02fd66173e03d921c1772dbf4f559e5e71960519b0be2f3ac2c984f00cbbfc"
+        },
+        {
+          "resource": "repo://src/common/compareOutput.ts",
+          "version": "repo-file-v1:sha256:ffadfc5d740df6b5f9305e7795528ea94a86391a5c988f3af7fd8159d8ebd987"
+        }
+      ]
+    },
+    {
+      "id": "claim_cec1e5d8755e4019a2964594db27951e",
+      "statement": "同样是“版本未知”，token 走旧式而 topst 走新式，因为两者猜错的代价不同：token 猜旧式在现代 wiki 上会被 nodemw 覆盖成 csrf，而参数猜新式只是一次可识别、可重发的多余往返；加上绕开参数（generatexml）与明确拒绝（已知 <1.24 的 totext）共四类取舍。贯穿其中的规则是版本未知时不能静默做错事——要么给出等价结果，要么明确失败并说明原因。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/compareOutput.ts",
+          "version": "repo-file-v1:sha256:ffadfc5d740df6b5f9305e7795528ea94a86391a5c988f3af7fd8159d8ebd987"
+        },
+        {
+          "resource": "repo://src/tools/editing/block.ts",
+          "version": "repo-file-v1:sha256:4cb3d28b858415199a61b5da6d6969e1c715e3c57f127c0efb5eba752c538789"
+        },
+        {
+          "resource": "repo://src/tools/ro/diff-preview.ts",
+          "version": "repo-file-v1:sha256:9acc82370a0817855b578100a65a2231cc9152ebf2f36203f72b3763faa2b205"
+        },
+        {
+          "resource": "repo://src/tools/ro/parse.ts",
+          "version": "repo-file-v1:sha256:22bb0860eaf1d3da9caefd33acba555ddfd279fe33d75da39a9cac2491f205e3"
+        }
+      ]
+    },
+    {
+      "id": "claim_4e3abda4c3a2462482537e3656d6df03",
+      "statement": "回退判定只能匹配错误文案，因为 nodemw 的传输层把带 error 键的响应体转成 new Error('Error returned by API: ' + data.error.info)，error.code 在传输边界丢失，errorResult 之后又只保留 message。于是能力回退与恢复提示都靠正则匹配（unrecognized parameter … topst、unrecognized … prop、inputneeded、missingtitle、nosuchrevid、editconflict 与编辑冲突、登录过期四式），并且这些匹配是单向降级：匹配不上时退化成普通失败而不是错误结果，所以文案或语言一变，回退就会静默失效。",
+      "evidence": [
+        {
+          "resource": "repo://patches/UPSTREAM.md",
+          "version": "repo-file-v1:sha256:4643441c8bc7352f197d1746f7a725ce45858a830f1762cb9dbf3759770f578e"
+        },
+        {
+          "resource": "repo://src/common/compareOutput.ts",
+          "version": "repo-file-v1:sha256:ffadfc5d740df6b5f9305e7795528ea94a86391a5c988f3af7fd8159d8ebd987"
+        },
+        {
+          "resource": "repo://src/common/utils.ts",
+          "version": "repo-file-v1:sha256:3cfa34114a53d71c7a72695c0a9d0f9b2eadf2c6cf52871dedb52ef2f8f83334"
+        },
+        {
+          "resource": "repo://src/tools/ro/diff-preview.ts",
+          "version": "repo-file-v1:sha256:9acc82370a0817855b578100a65a2231cc9152ebf2f36203f72b3763faa2b205"
+        }
+      ]
+    },
+    {
+      "id": "claim_4efadef7aedf410a9842cc426af58d19",
+      "statement": "版本号被压成两段浮点数：getMediaWikiVersion() 用正则抽取前两段再 parseFloat，因此补丁号永不参与分流，且单段 minor 会被读成小数位——1.9 变成 1.9，大于 1.24，古老 wiki 会被误判成现代。新增门控不应扩大这个精度假设。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts",
+          "version": "repo-file-v1:sha256:e26572a5891b953787a759d4dbbd3c83acd6c8a2fcd85d1618b498b1d3334fd1"
+        }
+      ]
+    },
+    {
+      "id": "claim_73a470580cd04e8c85870829a83b89ac",
+      "statement": "新增直连调用点必须遵守写在 AGENTS.md 与 CLAUDE.md 里的约定：在低层 api.call 里使用任何版本相关参数之前先用 getMediaWikiVersion() 判断，让未知版本降级而不是失败，并且拒绝分支要把替代路径写进错误文案。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md",
+          "version": "repo-file-v1:sha256:6f4c5fb2dbe832729c73de6b5b19c4e7f66aed644640251cf8074962e47651b4"
+        },
+        {
+          "resource": "repo://CLAUDE.md",
+          "version": "repo-file-v1:sha256:1613ea8794b2c40758aea28faf60cbdff8ea40d51e1de54873bd030eae2041cb"
+        }
+      ]
+    },
+    {
+      "id": "claim_e6d0a8592da8435290b2c9ee036bd7a9",
+      "statement": "nodemw 的库内行为由仓库自带的补丁固定：package.json 的 postinstall 跑 patch-package 把 patches/nodemw+0.26.0.patch 注入 node_modules/nodemw，补丁针对 0.26.0 写死，覆盖崩溃防护、30 秒请求超时、fetchUrl 的 cookie 隔离与不再记录 process.argv；它保留了 getToken 的 1.24 比较并补上版本探测失败的 err 传播。升级 nodemw 必须先重做补丁，patch-package 失败是最便宜的复核提醒。",
+      "evidence": [
+        {
+          "resource": "repo://package.json",
+          "version": "repo-file-v1:sha256:abf9b47a45c7a5248359466a72c1af056e0a00d8733851626b05e14de8b93e9a"
+        },
+        {
+          "resource": "repo://patches/UPSTREAM.md",
+          "version": "repo-file-v1:sha256:4643441c8bc7352f197d1746f7a725ce45858a830f1762cb9dbf3759770f578e"
+        },
+        {
+          "resource": "repo://patches/nodemw%2B0.26.0.patch",
+          "version": "repo-file-v1:sha256:7ea47c15961e7cd6b7b3b0f7d4ac355f81c197aed106ec22f3c081184a3c9812"
+        }
+      ]
+    },
+    {
+      "id": "claim_c300385f956546bb92c843fb320ec979",
+      "statement": "版本分流的使用率远低于代码量：冒烟测试跑的假 bot 把版本硬编码成 1.43，因此 <1.24 与 <1.27 分支在自动化里一次都不会执行；假 api.call 永远以 null 错误回调，于是 topst 重发、富 prop 回退、inputneeded 映射这些请求期回退在测试里不可达。真正有单测的版本相关行为只有 compareOutput 的跨版本 HTML 解析与 utils 的文案匹配。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/__tests__/compareOutput.test.ts",
+          "version": "repo-file-v1:sha256:6e02fd66173e03d921c1772dbf4f559e5e71960519b0be2f3ac2c984f00cbbfc"
+        },
+        {
+          "resource": "repo://src/common/__tests__/utils.test.ts",
+          "version": "repo-file-v1:sha256:52a22d09d7c7aa8e4e6ee3ef1b63a82732ca467ddd79bc9a34f351d141bc2b73"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/fakeNodemwBot.ts",
+          "version": "repo-file-v1:sha256:bf1d167a6bfb16bb8194b226bf58592a61e364aec9932819248483ca1c38abdd"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts",
+          "version": "repo-file-v1:sha256:a07ae00cfc7c344be7972c19dccabd55a9e9af097eb137a45793143313ed8406"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-30T18:16:46.462Z"
+  }
+}

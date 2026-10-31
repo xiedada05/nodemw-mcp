@@ -1,0 +1,688 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:20acc5d65c2b0a55e59cf273c6c7e6f614d415e5b1ec65581ee1415fbc36754e",
+  "claims": [
+    {
+      "id": "claim_8d0fbf72f71b4666a83163f029a9af84",
+      "statement": "The lint script's glob `src/**/*.ts` is unquoted, so the POSIX shell that npm uses expands it before ESLint sees it and, without `globstar`, the pattern resolves like `src/*/*.ts` — covering `src/common/*.ts` and `src/tools/index.ts` but never `src/tools/ro/*.ts` or `src/tools/editing/*.ts`.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L21-L21",
+          "version": "repo-lines-v1:sha256:a3d37da4f068035c023f3beaa4185e5ca4bb9ffe7eb075a9c9fb9c87c95efd15:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNkMzdkYTRmMDY4MDM1YzAyM2YzYmVhYTQxODVlNWNhNGJiOWZmZTdlYjA3NWE5YzlmYjljODdjOTVlZmQxNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNkMzdkYTRmMDY4MDM1YzAyM2YzYmVhYTQxODVlNWNhNGJiOWZmZTdlYjA3NWE5YzlmYjljODdjOTVlZmQxNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjU2MWJmMDk1MDc5MmIzMjIxNjM2MGIxNzBiYzA5NWI5YTkwNWQ2ODU3NjlhZDg4Y2YzZmY0MTgxMmQzYzFkZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmUzNTA4MjZlYTc5MjViZTA1MDNlZmEyY2IzZTI5MzE0YTU0NjcyZWY4MGRlZGJiOGQxMTA0NjAxNDkwZjY0ZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0ab1d91a15944e98ac9a24cbe597acc9",
+      "statement": "The release workflow gates a publish only on `npm ci` and `npm run build`; lint, tests, and type checking are absent, so the sole automated obstacle to shipping a broken change is esbuild's ability to bundle it.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/npm-publish.yml#L11-L47",
+          "version": "repo-lines-v1:sha256:6090d1de29f250da34404e094782012f2333c6747b6da769b2e668415186bd5a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1MGE2MDZkZWQyMDhhNzcwMWFmZTU5ZTg2MjQzYWQ4M2EyMjg0MjlmNTMzMjk4MDNlZGU1MDBlOGY2Y2M5ODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZWM1ZjQ4Mjk1NjUxN2U4ODNmMzgxMjZmMjBjODYwMTk5ZmFhMWI1NWNjYTc2ZDRhZTc1MDk0NTQ3YTM0NTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_15ed69f4c882481fa832b584ad2d6c0c",
+      "statement": "esbuild 直接剥掉 TypeScript 类型而不做检查，package.json 里没有任何脚本、两个 workflow 里也没有任何步骤调用 tsc，所以 npx tsc --noEmit 是项目里唯一的类型闸门，而且只能手工跑。",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/npm-publish.yml#L11-L24",
+          "version": "repo-lines-v1:sha256:5a0c9b16c0fb7f392954d1e17cde26dbbf960425fb73d24d652d0cb5b1714250:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1MGE2MDZkZWQyMDhhNzcwMWFmZTU5ZTg2MjQzYWQ4M2EyMjg0MjlmNTMzMjk4MDNlZGU1MDBlOGY2Y2M5ODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNTI5ZDU0MGQyOTNiM2EzNDBkY2Q5MDQwMjFkOGQwZmFhOTg3NjNkYWE1NjgyYmRjNTI1YzQ5NTVjOTFiYzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZWM1ZjQ4Mjk1NjUxN2U4ODNmMzgxMjZmMjBjODYwMTk5ZmFhMWI1NWNjYTc2ZDRhZTc1MDk0NTQ3YTM0NTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0N2M5YjgzZGY3ZDc0MTE5MDhlOGI4MmJjMWRlNDExMzA0MDA2MjU3NThmZTZmNDdkZTdhNGM1N2FjMTg5Y2IifQ"
+        },
+        {
+          "resource": "repo://package.json#L18-L26",
+          "version": "repo-lines-v1:sha256:1a22f453318341ab35a467c086ac5d180fbd7f9a46191afa797c39bda953c99a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTg0MDY5ODRiZGVmY2EzNGRkNmJjOTAwMjdmMWQxMWFiY2IxNzAzNGM1MjVjOWE1Y2VmYTFkODRmY2NkODFkMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBjOTQ5ODU1MjZjMWM1N2VmMDBjMDBkM2Y0ZGM5MDYxNTY3N2EwYTM2YThiNzk1ZGZmOWFmZmQ1MGZlOWY1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDAyNGMxOWVmMDgzYjZhYmEzMDYzOTQzNmVjMTE3NDhiOTY0OTRhYmI1ZjhjNDIwOGM1Mzc3YTIxNWNlMzU3NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzcxNjI0NzdkOGQ0MGM1MjQ4MTJiNmVkMzJiMmFjYjgyYTQ5NTdkZDFiZmQzZjI5ZWYzZGUxMWU3ZTllYjgwMSJ9"
+        },
+        {
+          "resource": "repo://scripts/build.js#L11-L20",
+          "version": "repo-lines-v1:sha256:721d418528908d2d8682674efacbca27c4e2465ab0b554fc0fe32801b1d6a0ca:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyZWQ2Zjc0MDBlNzFhZWJlOTNjNTk5YmEwNTBjZmMyOWQ4MDk5MmJhZWQ0OTliOGVlZDRkYTBmOWE2MWMwMDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhOGJkMjhkMGM1OGY1M2Y2YTlkZjEyNTMxYjEwZWFiZTI1ODQ5N2NmNGY5NWI0ZTEzMDM5ZTkyYjg1ZTA0MDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhM2M1MTc0NGU0Nzk2MWQ5ZDk5MTNiNjE3YmI1ZjU2ODc5OTQ0ODVmZTM2M2UyODJiMDQ5MjFmMWVjOGZjYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVjYmI5YTUwMmM5MDM4ODlkNzk5MWVjYjY2NDdhMzBhYWQxNmYzYTc1NzU1NzJiMDI0NTU1ZTNmM2I1YzZiYzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0b3501d269464b439c79b36a1ec9df01",
+      "statement": "`tsconfig.json` includes only `src/**/*`, so `scripts/` and `test-server.js` are never type-checked; and since `outDir` is `./dist` with no `noEmit`, a bare `tsc` is an emitting build aimed at the directory holding the esbuild bundle, which is why the type check must be run as `tsc --noEmit`.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L32-L32",
+          "version": "repo-lines-v1:sha256:68c0cc9ce579380c03634a2e9dbd092d1b7efa11bd9e6532cf8e12c545c436e9:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjhjMGNjOWNlNTc5MzgwYzAzNjM0YTJlOWRiZDA5MmQxYjdlZmExMWJkOWU2NTMyY2Y4ZTEyYzU0NWM0MzZlOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjhjMGNjOWNlNTc5MzgwYzAzNjM0YTJlOWRiZDA5MmQxYjdlZmExMWJkOWU2NTMyY2Y4ZTEyYzU0NWM0MzZlOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmMwODRkMTgzMDUyYzgzYzljMDhhNzgzZDE0MjIyYjgyYjE2ZGI4ODgxOTBlNWE1NTBkNGM2OGQwYTczMWQ5NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODRkNWU3MTEyMzBjYWNiMDdhMjYwZjRiMTI2YjVlNWZkMGUyMTFhM2I4ZjlmY2M0MGViMzdiYjExNGJmOTJiMiJ9"
+        },
+        {
+          "resource": "repo://src/server.ts#L31-L31",
+          "version": "repo-lines-v1:sha256:7d9a04a1e60ab1e1c4c043e343321243512c4a4be56575dbfbfba783a86e1eaf:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2Q5YTA0YTFlNjBhYjFlMWM0YzA0M2UzNDMzMjEyNDM1MTJjNGE0YmU1NjU3NWRiZmJmYmE3ODNhODZlMWVhZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2Q5YTA0YTFlNjBhYjFlMWM0YzA0M2UzNDMzMjEyNDM1MTJjNGE0YmU1NjU3NWRiZmJmYmE3ODNhODZlMWVhZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTg0YzQ5ZTFmYmY4NzBmOWI5NGJkNjY3YWYzNDBmMDE5NzU3NDAxNWNlMzQ4MGQ2OTgxMGQwN2EzZDIyNTFkNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGNmYzY1ZjM1YTRkZmJhNmIxYjIyN2I4MWYzMTQ5MzZiZjIxYzJjNjRmMDFjMGUxNDYwMjFjZTAyYjAzOTQ4MCJ9"
+        },
+        {
+          "resource": "repo://tsconfig.json#L2-L20",
+          "version": "repo-lines-v1:sha256:e82fb70d3eb853b671f1e8f2e56ee382c8e5dd33c2879812f3085077bee2bf1b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjY2RjYzE1ZWM5MmQ0ODM3YjkwN2YzMmZkYzgyNTc4NzViMGE2ZDA2NmJmZTk4NGNhNzE1NDliMWFkZGJlYTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxZDVjYmUwNDljZTU1MTM3NTk3NWQ0YmRiZjRkMDBlYTFiMWQwMDJhM2JkOGZkMTU3ZjM3NWFlOTlmZTQ2OWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoxLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzZWFlN2U2YTRkM2M3MWJjYzk2MzI4YzUxOWZiYTI5NDFlZTQ4Njk2OGE2ZDYzMjJmYjA4Y2ViNDRlM2VmZDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1abdf25ede0e456d98f9c5c6f4aa1e9b",
+      "statement": "`test-server.js` stage one is a real assertion: it checks `fs.existsSync(dist/index.js)` and exits 1 with a \"run npm run build first\" message, making a prior build mandatory.",
+      "evidence": [
+        {
+          "resource": "repo://test-server.js#L11-L18",
+          "version": "repo-lines-v1:sha256:46eb35ea4c5f6b35d1515d402934e9db4c8abb00628f73aff8a56002b00dcab1:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2I3ODFiM2JkZGU1YjIxMmMwMWM4NDU3NjIyZjc3ODQwMTBmMTg3YWExOGM4NjdiYzU3NmJjMDVkODkwYWU0ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGRhYWRjODIwMTMyNDI4YjFkZWNkYjg4NWJiNjNjZGVjMmE3ZjhjYzMyMzE0NDIwNzRlMzExMzM4ODUxMzgwNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTI2OWY3ZjliOWQwMzVlZDEyZWZiODc2MWUzNWE1YzcwNDkzNmQ5MmJkN2QwYjdmYTQxZjBkNTUyNjkwNTgzZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjQzYjQ1ZjQ4NzYzZGM2YzQzZWJjN2E1NDM2YTNjYWEzYWVkZTFhN2MwYzFmOTEyNzFhNmEyZDIxNWYxYmViOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0d7ba61046b044cda185e0c09f7003d6",
+      "statement": "`test-server.js` stage two asserts nothing: it spawns `node dist/index.js` with piped stdio and an added `CONFIG` variable, waits a fixed 2000 ms, kills the child, prints at most 500 characters of each stream and logs completion — with no exit-status check, no readiness condition, and no JSON-RPC frame ever written to the child.",
+      "evidence": [
+        {
+          "resource": "repo://test-server.js#L20-L56",
+          "version": "repo-lines-v1:sha256:4707f324ef3ab054f72bec25662a86611216b253f975de5bcbbb63d63ca99718:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyYjZkOWYzM2QyNTkzYmZlMDJjZDBlYWI1MTJiNDAzNmIxNDA2NjVhYjc3OTNiNTg3MjdiOTdmOGI1NzEyODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzZTVhZjYzNTBiYzcxODJkM2Y4N2YzZWQ3OTE2YTNkNjJlYmU1MWU2NjQ4ZWRlYzZiMmRhOWMyNDdlOTM3ZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlNDVlMDA5YzI1ZTY1OTgzNzYyNDM2N2ZkMzdkMmVlYTM0ZDc4OGQwMmE5YzAzYjg1OTg5MTBlYzNmZDFmMGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjMTExMjg3Y2MyZjIwYjhhNjY1YWZhYTc3MzNjMTZkMDdiNTlmNWU4Y2Q0N2U0ZTQ1YzRkMGJmMTA2NDU1NGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d6c1ea3f565f422bbc88b78c0ead3067",
+      "statement": "Because `test-server.js` passes no target wiki, the spawned server reaches the \"target server is required\" path and exits 1 while the script still prints both success lines; the captured stderr block is the only meaningful signal, and the script exits 0 either way.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L67-L71",
+          "version": "repo-lines-v1:sha256:c624d96af629fcde250fd668625a9f37d6952f217c42a768494fca94cc177da3:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODkyZDM2MmNiZWY4MjI5MTkzNWY2MTM4MDMwZTI3ZDNhYmZhMDEwZGU2OTkyNmM4NGZlMTQwZmNhZDZiNDI3NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTJmY2RiZDQwZWE0ODFmYWNmZTNkMDc3ZjA3Y2Y4OWUzN2U5NTBlYTljY2NkZjgzZTQ0ZWEyMmVhZmI2OGM2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWY1ZjRlMTNkMDE4NDk1YTA5YjRlY2E5ODU0NzA3N2I4ZDliMTIxZDYxOTY1MGNiMWM0ZjRkZGM3MzNmNmRlZCJ9"
+        },
+        {
+          "resource": "repo://test-server.js#L22-L25",
+          "version": "repo-lines-v1:sha256:cf665e668dbb9df1616701f9c9a441a3776aeaac547494e6908239b10a8f6fb9:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjJiYWZmZjhiMjQ3NmE3NjI4NzY5YjkwZWE2MzExMjlmZWU4YTM2YTYxOGEwNTIzYWM1YTI3YzA0Yjc3ZGY2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNkZGVmNzI0Nzg2YjRhZjQ1YWI3Y2FkODFkMzc3YWU1NDNiYjc4NDEyOTY1NjhmYjUyMjY5OThhZWMyMTYzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjQzYjQ1ZjQ4NzYzZGM2YzQzZWJjN2E1NDM2YTNjYWEzYWVkZTFhN2MwYzFmOTEyNzFhNmEyZDIxNWYxYmViOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjVkMDI0ODRmZGFmYzQ0MTFjMDNhZmQ3NzAwNGE3OGI2MTEwMjZmNzJmNWU3MDE2N2ZmY2U5Nzg2YWJkMjJkNSJ9"
+        },
+        {
+          "resource": "repo://test-server.js#L39-L56",
+          "version": "repo-lines-v1:sha256:61b61dfc4d467459975bc6894d9e6e9e9b8fdb6016a0fb856fd347ecdd1a4b5c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlZWJmOWQzOGQwOTY5ZGFkOWZiZDFhYTU3NDcwNDU2ZDYyMWE5MDc3MjJiMjdkMTcwNjk1YTA0MGMyZGM0YjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzZTVhZjYzNTBiYzcxODJkM2Y4N2YzZWQ3OTE2YTNkNjJlYmU1MWU2NjQ4ZWRlYzZiMmRhOWMyNDdlOTM3ZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmNWM4ZjliODc0NWFiZTQyNGNkZWIxN2Y2YzkwOWI0MzBhNTFiMjcwZDRiZGMwYTAyZGE3YTE1ZTQ4ODFkZDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjMTExMjg3Y2MyZjIwYjhhNjY1YWZhYTc3MzNjMTZkMDdiNTlmNWU4Y2Q0N2U0ZTQ1YzRkMGJmMTA2NDU1NGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c1e5cfcff26d4ad3ac80f99b74040dd1",
+      "statement": "`test-server.js` is referenced by no npm script, so it runs only when someone invokes `node test-server.js` by hand.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L18-L26",
+          "version": "repo-lines-v1:sha256:1a22f453318341ab35a467c086ac5d180fbd7f9a46191afa797c39bda953c99a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTg0MDY5ODRiZGVmY2EzNGRkNmJjOTAwMjdmMWQxMWFiY2IxNzAzNGM1MjVjOWE1Y2VmYTFkODRmY2NkODFkMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBjOTQ5ODU1MjZjMWM1N2VmMDBjMDBkM2Y0ZGM5MDYxNTY3N2EwYTM2YThiNzk1ZGZmOWFmZmQ1MGZlOWY1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDAyNGMxOWVmMDgzYjZhYmEzMDYzOTQzNmVjMTE3NDhiOTY0OTRhYmI1ZjhjNDIwOGM1Mzc3YTIxNWNlMzU3NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzcxNjI0NzdkOGQ0MGM1MjQ4MTJiNmVkMzJiMmFjYjgyYTQ5NTdkZDFiZmQzZjI5ZWYzZGUxMWU3ZTllYjgwMSJ9"
+        },
+        {
+          "resource": "repo://test-server.js#L1-L9",
+          "version": "repo-lines-v1:sha256:25d42f5a0b018e1c7f6d07bdb9c0ff734740654d2c68bcd594925113b39c7a83:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDFhZDA4MTI0MDYxZDc0ZDY3MmYxNGZlMzYzNTMxMzcyMGI3YmE5NTM0NGEyNWU4MTQ1NWUyODNhYTllZDYzNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGViNWJjNGRkYmE0ODM0ZTYzMzkyZTk1ZGFlN2ExYThjMmMwMjRlYmUyYTY4N2YxYTg5OGU2NzMwOWE2NzJmZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODA1MzFiMDgyMmYyOTQ5MzFkYTQ3ZWU2ZDQzOTJmZGU1N2U1MzlmZjJiMzk1ODRlYTczMzYzMmU1ZTQxNDczNiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f57aa6754e234f1c935495773b0ace3c",
+      "statement": "`parseCliArgs` is module-private and calls `process.exit(1)` when no server is configured, so it can only be exercised by spawning the CLI and asserting on stderr and exit status, or by exporting its pure parsing half first.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L48-L112",
+          "version": "repo-lines-v1:sha256:c6b9a2707d156ebfe1ebd7abec74160a0c15d49ce2d8cd7fffef2558990fc6f9:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhZTBhY2VjODQxOTQ2MDY2MTNjM2Q1MDRiNmZmYmYyYzRiMDllMWJjZjBlNzVmNTNjOGI4ODQ3NDViNzVhYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlMWYzMzMyODEyYWE2NWJmNDliMWFkZmUyYjljMGEwYmU3MTYxOWUzY2Y4Y2JhYzhlNWIxYTM5ZDYxY2M2ZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI4N2M1ZGYzYjRlZDA2MTgyMjM0ODAzYjUxMzU5ZGQ0NDA5NzFmODlmMWE4MjNlNzU0YWYxZjViMzI2ZDZlMzAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_21f8ae7d774f4bc8a044d4e16d803503",
+      "statement": "写前读守卫把会话状态放在两个模块级 Map 里（pageid → 读记录，title → 写缓存），由 clearReadState() 一并清空；requireRead 每次都重新用 getArticleInfo 解析标题，页面不存在时返回 0，存在但没有读记录时抛错，标题现在绑定到与写缓存不同的 pageid 时拒绝。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L210-L267",
+          "version": "repo-lines-v1:sha256:1737c3487e2e1b1e407e368b9e6031c659881b5b40c9dc7f944f43e8f46a38fa:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzYjE2YWI1YTI0MzYwMTE4NDQ1N2E4MzNiY2NjNTc4NDZmY2U0NWMxYmIwMGZjNWVmMjJmM2U2ZTU0YWJlMmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIwNjUxMGNlZTkxMjIxZTBhN2YwOTBiOTY5YTA4YzAyZTBkZGE1YmNiZDJiNWNhOTAyMWUwYWQzMDJhMWExY2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3NmZkNGRmNjQzNTJiNTJiMDkwZjc5NDU5M2E2OWJmNDUxNTgxMmEyODhmNjZjNzQxZTZmN2IxNjhhMzU0ZTEifQ"
+        },
+        {
+          "resource": "repo://src/common/pageState.ts#L269-L272",
+          "version": "repo-lines-v1:sha256:2a8fe18b02d27ae7f496dc46cd1bf51dcd4e300b99b4c3d0a947410414113196:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODdkNjg3YTQyODMzYmNhMTYwMjEzMjU4YjdlNDEyZWEzMzY0ODUxMGRjYTc5ZjE2ZmNhNGViMmFmMjRmYTFiMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzI5YWRkOGYzY2RjMDhiYTNjNDFjYjRjMmFkZGM0YjkzMGNjNTA1NjJiYzJjZjczZGEzNmUyNjM4NDMxMWY1YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/common/pageState.ts#L43-L49",
+          "version": "repo-lines-v1:sha256:13cc3129053aca106e4cb0c8165eb00cfeabd4b8d683974bc1ed0767d8e778e8:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDBlODZkMjk4YjAxYzRlNDJiYTJjYTMzMGQyODNlYTZhNjJhNzU2YWU5MDRjZjQ0MGZhYmE2NmQ4OWY2ODJmZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGIxOTlmZDE5NjhkNzQ5YTA4OTc5NGMxZWVjN2IxNzljN2YwYWE2YjgzZjkzMjg3MTQzZTdhMGFkZTZjMjZlMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWM5ZTBjZDgwYzMzMDk4N2MwZTcyZTZjY2NjNzBiNWY0YTZmZTgyNDcwZjNhNWIwNDJiZDdhYmNhNzQ0MDI2OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTFjOGU2ODdhMzhiMTRlNTdjY2YwNDZiOGJmZDQwMGNhM2JjODAyMThhYWQ2NzY0NTgzMzQ2ZTFiMjNmZGZkZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_eaf0fc790f434b1ea7f9644f3f510533",
+      "statement": "write 工具的 intent 启发式比较 UTF-8 字节长度，缩水不超过 200 字节时什么都不拦；超过后 add 不得缩水、revise 至少保留 3/4、rewrite 与 delete 至少保留 1/10，当前内容为 null 时整块跳过。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/editing/write.ts#L86-L131",
+          "version": "repo-lines-v1:sha256:32327e356ba9e681469cf32c91dc3d647095e4c92d512a4a0772d804c6b05cd9:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxZGRhNzJjMmU1NjYyZWNkODhiNTliZjg4MTUxMmQ1NzQzZDkwMzJkNDZmODc0ZDUxY2RiZDVlZjM4NmYwNGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhOGQ2NjBjNmQxOGVmOGVlNGY1OWY5NDZiYmRiYmQ3NzFkMDI5ZTJmOWVhNGZmNDAwNTYyNTczZTI0YzNiNmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBmNzk1YWI3MjAzNTk0OTNlNjdkNmIwNjRhNWY2MDFiMjZlZjEzMzVhN2ZlMjA2MGQzY2NkNTA2ODI5MDczZjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5abd79fdf5814ff9877383b215c391c3",
+      "statement": "`block`, `unblock`, `protect` and `undelete` select the unified `csrf` token when the cached MediaWiki major.minor is at least 1.24 and the legacy action-specific token otherwise, via a per-tool ternary.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/editing/block.ts#L94-L102",
+          "version": "repo-lines-v1:sha256:6be7dfc28d1d47e37937007249d218974941cf4a2dbd26723761cde4535982fe:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODFmMmZhMzIyNTAzMzU3YTE0MjUxYzMzNTM4ZjNmMTM0MzAxZmQ2ZmE0MDE0NzAxMDE4MDBlMzAzMmQ2MDBhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzc0Mzk4Mjc1ZjFkOGNjNDE0MWJjZDA3OWRlZjMzZDRjNTUyMDVmYzBkYmVhOWI3Mzg1NDJmZWFjMWRhNmI5MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2ZhYTU5MTBmMmQxZDM2ZTM4ODEwYjc4ZTFlY2VlNTczMWZhMWRiZDFiNDc0ZTMxZjYwZGI3ZmE5YjUzNjQ5YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDIyNjRiMzUwMGMyMGJkNDVjZDVkNDNlZTkwMGIyNzc2ZTliZjhiMWVmNDZjZGZmOWYzZTFiODVhMzQyM2IwOCJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/protect.ts#L80-L87",
+          "version": "repo-lines-v1:sha256:391f1a93d03941c7d6158c6cdbea3dc1d109b7f0a412e3a24875af15c2cebf77:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWYxZDY4ODJjN2FjZjNhZGYyZDQ1N2VkNTI3ODliODQ0NjY1MmU3ZjExNjFlNTkxZGY3MjUzZjc5NTYzNDJkMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWNiZDgyMDRjZGJlMTlhN2E3MzdjOWUwYjFkY2ZhZTFhODAyNzI4NDY3Mzk0MmYxZTk1YzBjMDRhZjA0N2E1NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTc2NDBhOWRmYWM1OTQzMGI4NDE1ZTUwN2U2YTUyNGRmMTAzZGQwYmE3ODBiYWE0ZDVkMDViODVmZjYxMGUyZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2E5Y2UxMGQ4ZjBkODgyZDc0NDk2MGI4ZTQ4YmEyZDJlM2I1N2ZiN2U2Mjg5ZDU5MTBhNTNlMGYyNDUyOTllNyJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/unblock.ts#L75-L81",
+          "version": "repo-lines-v1:sha256:db15591829e949cbb4d9dd43def08d87065a89df652f1daff9af4fdb4d48b40f:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODFmMmZhMzIyNTAzMzU3YTE0MjUxYzMzNTM4ZjNmMTM0MzAxZmQ2ZmE0MDE0NzAxMDE4MDBlMzAzMmQ2MDBhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWRkM2E0NzRlY2U4YjFiM2E2ZDdlOTk4ZGU4YmFmY2M4ZWQyZmU0MTJkYTNlNDVkMGZiMWM1YzRmMWQxMzkxZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjFmNTNlOGEyMTdiN2JlYjkzMWE2MDgxMzQzM2E3MmFjMjNlNmVkZjg4NWY4MjY4ODJlMWIyOTExYWJmNzgyMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmZhMDg3MzVkZTgxNjY0YzgxZWU2NzBiZjRmMGVjMzdmNDM5MGNmNDNhMmU0Y2Q4ZGEzY2M0YmU0YmVjYmY0MyJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/undelete.ts#L69-L77",
+          "version": "repo-lines-v1:sha256:54a834f21e2471407f4e19b469d3137fda34a21bea418058a5751cc22180b193:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODFmMmZhMzIyNTAzMzU3YTE0MjUxYzMzNTM4ZjNmMTM0MzAxZmQ2ZmE0MDE0NzAxMDE4MDBlMzAzMmQ2MDBhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzc0Mzk4Mjc1ZjFkOGNjNDE0MWJjZDA3OWRlZjMzZDRjNTUyMDVmYzBkYmVhOWI3Mzg1NDJmZWFjMWRhNmI5MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2RkMjczZjZkMWU2NjY4ZDI5NmI0MzA1MTc4MjlhNjVhOTdkNTUxYzI3NDRlMGM1NzcwMjY3ZDgyYTRkZjQwNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDc4YTc3ZWMzMGM4MmRjZWU4YTkwYWMwZTJhZTk0YzQ4YzgxMDA5MDUwMjYyMGRmMDFkOGYwNjI5N2FmNjc5OCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_dca4810fbe5342d086b40d710cfc7be8",
+      "statement": "`getMediaWikiVersion` regex-parses the cached version string and returns major.minor as a float, so a minor version of 100 or more mis-orders (`1.100` becomes `1.1`, below the 1.24 threshold) and would wrongly select legacy action tokens; a null cached version takes the same legacy branch.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L234-L246",
+          "version": "repo-lines-v1:sha256:70d6a9e77e2be1d6eb0cfe31c970c664d4147332b03b4e1e8558effed1022e4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkZWNkMmM4OGNjNGU3NDdjYzQxNmFkYjM5ZjRiMTgxYWM1Y2Y0YjA4MWVkOGU4NzcwYTJlN2VmY2VjOTkwMjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyZTgyN2RiMTA2OGYzNGZkYjYwYTA3ZmZlMmNiYThjNzdhMWRmNDE3ZmYwNjcyNjZkMDk5MmIwZmIwNWRhMjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3ZWM3MTJkOWNjMWY0M2JjNWQ5OTRjYTQ2ZmFmNjcwMGJlMjc4OTk3OGY1Y2MyYjEzOWJhOTA4NzhhNjUwYWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c441e568a7034fe384000f7927e4c222",
+      "statement": "registerAllTools 吞掉每个 registrar 抛出的异常只 console.error，而启动横幅的计数来自 registrar 数组长度而不是实际注册结果，所以注册期失败的工具仍被算进 54 (37 read + 17 write)。",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L386-L390",
+          "version": "repo-lines-v1:sha256:787e0f8f7c125f78a393f96d959616bb71d98f9819a7fec6f23162243a8c36f6:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWRhNDQ1YjA5MDk1NDZlZTA4ZmQ5NmJjOTU4MWU2YjIxMGE5NDM1Njc5OGJmNDIwM2EzMmZkMThhYjYzMTkyOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWJjZjA1MjNmOTc2NjkzNmI5MDdmNjE4NWNkODBmY2RhMmZjNTZmYzZkY2U4NTYyMDRkZDE1OGMzNDY5ZTZjNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2M0ZjcwMWU1ZmQzYzkwMjVlOTAwMjQwOGYxMWU2MDRlYTA4NzkwMWMxZjI4MmI3OWYwMmZjYzU1MjM5M2E2NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzYxZThiODU3NmM4NjAzNDAxMWM2YTI4Zjc4NTE1MGM0MDY4MzcyNTVlNmNhYzdkYjVmZWIwYTM0ODY3NWUxNCJ9"
+        },
+        {
+          "resource": "repo://src/tools/index.ts#L149-L163",
+          "version": "repo-lines-v1:sha256:72af8cecac2edfb28cd19e0c9d3c0f772c2d774584c41ae0f0ac3ca1daf5c980:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlODUwOWI3YjVkZTE1NGMzMzZkMmYxMWRjMTIxNWYxZDJmZGQ3MTYxZGZlNTU5YTMyMmJlZDAwNWY1NGYwYWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyMWYzNzdiMTFiMDhmMDExMTJhYzNmMTI3OTZmNjUwYjgzYzE4NDQ0YTI5OWEyZWFjNmExY2ViNThiZGQ3OTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c727dfeb66ad47a6b75c8b2179b4556e",
+      "statement": "响应形状的唯一自动检查是 MCP SDK 对 structuredContent 的 outputSchema 校验：它直接跳过 isError 结果，所以 errorResult() 的 payload 从不被校验，而一个坏的成功 payload 会以“文本是校验信息”的 isError 结果返回客户端。",
+      "evidence": [
+        {
+          "resource": "repo://node_modules/%40modelcontextprotocol/sdk/dist/esm/server/mcp.js#L125-L141",
+          "version": "repo-lines-v1:sha256:799d56b25cdcab0797c972675a6163cd774a431eb896b974b871719f1ebdcad0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyOTg1ODcyYzdkNTY0MjkwYzllODkzZTQ0N2QxNWE5YTFjMTFiNzZlMGI5ZjgwN2RlMDM4MGM3OTQ5ODQwYzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyZDViYjA3MjFmNmU0Zjg5MTA5Yzg5Mjg2ZDJmZWQxYjlhNTBkZGY2NzliZmIyYzI0NDQ0ZjAwNGEzMjQ0NWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1MDA0MzBhYzhjNWE4NWQwMWRlY2JjY2RlZjI0OWRiOTUwZjA0ZDgzZGNhODVmZGFhOTI4YWQzZjJmYzg4ODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjExZDJmMDlmN2Q1MzZhZjczOGE2OTE3NzJkNGY2ZWJhZDc3NjU1ZWQ3YWE2NTVlZmQ3NGM5M2NiNjE5YTI1NjgifQ"
+        },
+        {
+          "resource": "repo://node_modules/%40modelcontextprotocol/sdk/dist/esm/server/mcp.js#L185-L206",
+          "version": "repo-lines-v1:sha256:7b58d3529d59979e857eac1f966a56c46686678e89f08fac9da61dbec421b8de:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkMmYyOTUwMmM2MzIxMTRkMzE0NWM2YWFhNjVlMTIyY2IxOWIwYTI3NzUyNzZjOTQ5MTllOTI0YWExZjgxOWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5ZWFhZTU2ZjEzZjU0Y2I3MDIzNzM0MTgwZTk4M2MyZjBlOWQ3Yjg1YmMxMDcwZGJiMjZjYmU1YjNlMTI0M2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ4ZTQ0MTg0MDRhMWJjZGY5NzBhOWZhZDNlMmY2MGJmM2VkMTRlZTYxODBhYmE1MjFiMGI2NDQ3MjYxNGZkYWYifQ"
+        },
+        {
+          "resource": "repo://src/common/utils.ts#L136-L148",
+          "version": "repo-lines-v1:sha256:9707db5657b6d1d2b63d5a115d755014b20a67aa82325b4daae8cb47c2e2ff10:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2NzU4ZjUwYTk1ODE1MTIyYzExMDNkZmI1NDE5YzA0YjUzMDIzZmY2OWY0NDQ0YjMyZjIwZGJkY2JhMTJkMDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2M2UxNjljNzc0YzQ5MjMxNDgyZjU1MjhhY2ExODBlMGJiZmYxYzBiMDMyN2IwYTI5MGM1MmYzZWYxMWYzNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f47f24ae5dc944be8685e199602cd74a",
+      "statement": "工具模块只导出 registrar 工厂，装着逻辑的 handle… 函数是模块私有的，所以工具行为只能通过真实 McpServer 驱动——现有工具级套件正是这样做的，而不是 import 内部函数。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L117-L161",
+          "version": "repo-lines-v1:sha256:407b55c7576af2445e8541e0fc0267d0bfa142950ec65bd828c38999d4821e08:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyZDZkZGJmYjUxMDBlYmZlMWMzNWU2NzFjYzkyMjc2ZjNmYTBlMTg3OGZkOGQ1NjVhNDQ1ZWY2MzZiZjNiNjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY0ZjE2M2YzNWYwZTkwZTdhZDVjNTA3MTI3NWRlNDNkOTMzMmY5OGQzNmIyMjQ5N2Y4Nzg0NGRiOTMyZmQ1NzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3NWUwMWZkMDllODQ2N2U3ZGFlMjdmYmI3NjEwNGU2YmU1NzNkYmRkYmQ5YjgzMDA5YjU3ODc0MmU1MzZkMmMifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/edit.ts#L36-L90",
+          "version": "repo-lines-v1:sha256:0a382de0ce11fcd93cd7fbf1664a8d1dffbe1cf588b89722459e39ecf954882b:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZjBjYTZjZGRlNjQ0NjcyNjQ0MzQ4YWFjZTcyNjg5YjlhODFiMDA2ZDQ1ZjcyMDNjNmFlN2Q3YmFmZWNiY2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlMmUxMzc5ZDRiMDBlOTgyZjQ2MGQ3MjM3MjUzMjA5NDEyNTM2MTFmZmMzYjViMDZmYWFjYTc4MjEzMzA0MGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk0NzE4MDY3ZDM0ODlhYThmZWM4ZTJiNjQwMDBjMDk5OTU2Y2YyMjg5MGYwMmM1MzFhNTQ0NjNiNmZlZWZhMTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE2YjRhNzE4MGZhYWE2ODBhM2QwZjUyMGVjNjM0OTQ3ZDlkMDYyYjM5OTFlYmRjMjI2MWMwYjczOTE2ODNmOWUifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/write.ts#L36-L70",
+          "version": "repo-lines-v1:sha256:4799529554f783e665794ca9960a3d85229c5984087b424dd063fa37d262aa76:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmZDdmYWE5NjM2OGUyNTE4ZmNkNmY3MGNjYmM4Mzc1ZGVjNDdhODYyOWZkYjg4ZmY2YzczNTE2YjYxODIxYTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdiMzhjZjQzNjkyY2M0YTllNjNjNjIwZjdmYThmZjA1NTI4NzhlM2M5M2U5N2RlN2YyMjA1YmQyNjBhZDI5ODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxNzQ3MmRkZjBjZTM1OWUwMzJkYzkyMzhkMWE0YmM5Zjg1NTc1MzdiMmI0NjExZWI3ZWEzNGE2NDQ1ZWQ2MTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_af0d444de322452197a54f4f7bbc9f25",
+      "statement": "Because argument validation happens at the protocol boundary before a handler runs, an invalid `tools/call` returns an `isError` result carrying an input-validation message without touching the wiki.",
+      "evidence": [
+        {
+          "resource": "repo://node_modules/%40modelcontextprotocol/sdk/dist/cjs/server/mcp.js#L166-L181",
+          "version": "repo-lines-v1:sha256:fcbb6d2e1b7e52954190f2ba91b4f3537a36b5e7f894e92027a4b1975585473f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5Y2JiYzY1NDY5ZGIxY2EyODQyZWZkOTdkZjdlZTJjZTZjYzE1NzE0ODJkMDFhMThiNzkwYTEwYzdjNTEwZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1YTA1NDFjOGQ4YTJlYzY0NTI5NTAxZjI0MjVlOWEzOGQ2YmIxZTQ0NDhhZDkxZDM5NzU5Mjk4MTFjNzQ1OTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxNjEzMjJjMzFiZjhmMmQ4NzNkMjVlYzliZDQ5NmM2NDZlOTQ3YmVmNDg1NGVjMjJmMzA3ZWQ5M2QwMjBhOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJhOTM5M2VmODYyODE0YjkwY2JlZmEyMTI1M2YzZWQ0ZGIwOTY4ZjA0MWNmN2ZhZWYyZjdkZDI0NzdhYjUwZTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_179e33e4574841c182a1e058bfdc9571",
+      "statement": "MCP SDK 自带 InMemoryTransport.createLinkedPair()，让 tools/list 与 tools/call 在同一进程内走真实协议；三个工具级套件靠它把 nodemwBot.js 换成假 bot 后覆盖工具目录、注解矩阵与守卫，既不需要 wiki 也不需要 stdio。",
+      "evidence": [
+        {
+          "resource": "repo://node_modules/%40modelcontextprotocol/sdk/dist/esm/inMemory.d.ts#L16-L19",
+          "version": "repo-lines-v1:sha256:8f0a2c2bc8c2228d6e0a670f99bc7a030c32693c7dee69b1727b79ed9ea160eb:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzljYmJjNjU0NjlkYjFjYTI4NDJlZmQ5N2RmN2VlMmNlNmNjMTU3MTQ4MmQwMWExOGI3OTBhMTBjN2M1MTBmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmZmNDgxMWNmZmM5ZTcxMmQwNWNhYjk1NzU3ODg5YzNlMzZlNWQzOGUwM2UzZjMwOWEzNDJjYTdmYWM2ODYyYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWUzYWYxMDM1ZDY1NTU2NzAxYmJhNzNiMjExZmFiNjljZTU5ZmFhNzAxOWQwMWE4Y2EwOWFlNTk3YmNjNDJhMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGY1NTdmNjcwMGUyMDYxMGYwNjllZGQwNWQ3NjdmZTQ0OTVkMzgyZTIzMWY0MjA2MDMzNzk1ZGMxNjY1NDBiNiJ9"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/annotations.test.ts#L83-L100",
+          "version": "repo-lines-v1:sha256:e0070b0053a786a949d40b439960ab578d9a9729490153173f814db132b22a65:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxZmE4OTk4ZTk5YjZjZGY2YTczN2Q1MGQ4Y2QwOTRhMWIzOTMxNDRhZTNiM2IyNWU4N2EwNTkxODg5OTA4M2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdlMzU1MWZhZDg1YzI1MGI5M2Q2NTI3ODIwM2Y2ZWM4MmI2MjBkMzdhYjdiNjJkNGRiNWQ1MzFiNWRjZmI3ODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2Nzc4ZDRmM2U4NzM4MzY2MmFlMTdlYTgwMzBmYzhiNzMwMzc1ZWExNzhlYmU4ZDY0YjhhN2UyOWI2YTkyZGUifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L122-L133",
+          "version": "repo-lines-v1:sha256:aaa0a4e13fee743d7694d4f63d9dc94adf1c0ca5de5d9eda98f6fe2eb5efae52:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxZmE4OTk4ZTk5YjZjZGY2YTczN2Q1MGQ4Y2QwOTRhMWIzOTMxNDRhZTNiM2IyNWU4N2EwNTkxODg5OTA4M2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjZmVjNDE0YTQzZGM3NzUyYmNjMDJlNThkYTQzODE1ZDAxZmZiMzA3ZjA5NzE3YjlmYWRiNTBmNWE4OWJhODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIxYzE2M2NmNjJmNjBiYjI1Njg2OTg4OWM3MTFkYmM4ZWI5NWNkMjg2MzI0ZTIxNzk0Yjc0NGFmZDM5MTZiZjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_442c9f71f00240849beff9939efb8daa",
+      "statement": "游客模式只注册读工具，因为启动时 registerAllTools(server, auth) 传的就是认证标志；横幅在游客模式报 37 read-only，登录后报 54 (37 read + 17 write)。",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L348-L349",
+          "version": "repo-lines-v1:sha256:ff413f35dd52ebcca8ce01aeec66939fc430313ed5d83092837f7c53c6cb50f4:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTgxYjg3MWEwODY4MDM1ZjIzM2IwOTIwNDA1NWFjY2YyZjZlOWZlMTBhZDkyMzlkNWMxMGYxMmFlYjRkNjJlNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2IwMjNhYWJhZWNjZTcyMjlmZGY2Y2UwNzVhZDZmMmY5ZjllZTk2ZmRkNGFjNDRkNmE1NDE5YzQ0ZDUzMjE2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTRmYjZiYTY2MThkNWY1YWViOTNjZjIwMzc0OTdjM2UyNmQwYmYzOGZmZjc0N2RlY2I4YTdkOWQ4ZDEwYmNkMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmNlNTUzNmFlODA4ZWU4MTM5YzIyNTZkNDZlYTljM2IzMjNlMzgxNTQ0ZDZjNWU4MjIwMjg5ZjI2NDg1ZWZmOCJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L386-L390",
+          "version": "repo-lines-v1:sha256:787e0f8f7c125f78a393f96d959616bb71d98f9819a7fec6f23162243a8c36f6:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWRhNDQ1YjA5MDk1NDZlZTA4ZmQ5NmJjOTU4MWU2YjIxMGE5NDM1Njc5OGJmNDIwM2EzMmZkMThhYjYzMTkyOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWJjZjA1MjNmOTc2NjkzNmI5MDdmNjE4NWNkODBmY2RhMmZjNTZmYzZkY2U4NTYyMDRkZDE1OGMzNDY5ZTZjNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2M0ZjcwMWU1ZmQzYzkwMjVlOTAwMjQwOGYxMWU2MDRlYTA4NzkwMWMxZjI4MmI3OWYwMmZjYzU1MjM5M2E2NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzYxZThiODU3NmM4NjAzNDAxMWM2YTI4Zjc4NTE1MGM0MDY4MzcyNTVlNmNhYzdkYjVmZWIwYTM0ODY3NWUxNCJ9"
+        },
+        {
+          "resource": "repo://src/tools/index.ts#L89-L147",
+          "version": "repo-lines-v1:sha256:2bb867156e061fe70a9c8809ad71351ecdbe9c5d7b1d37062d996b1314d14ed1:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3YjMxNzM1MjIwMjNmZWM2ODQ2YjZlOTkzYjRkZTRiY2Y2NTU4ZmYxMDJiNWFkMDQ3MDMzYmUyNmVhYzc2M2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4YzNiMzRjMDkxMzRmOTc3MGU5OGMzNTBmZjJiNjE2YmRjNjQ0MTgzOWQ2OGJiZjRhYmQyMjkzMTZlN2Y4NzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0YmZkYzRkYmNhYWM4YzI1YTU4MzM5N2E2NzExODEzMjJmZGU5MWZkODk2Y2E4Y2IxMmVjNjM4YTYxMTVlYWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1MzU1OGFiOTY4YWU3YjAwNTI2NjkwNTM0YjZkMzZhMDBkOGUzOWFjMTc0NTBjNTJjMjRlMGNiMzU4NWNiNmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6bbbc9effb7f4c259764f54811f10f6e",
+      "statement": "main() 以 .catch(console.error) 收尾，所以只有四条显式 process.exit(1) 路径产生非零退出码——缺 server 参数、API 路径探测失败、登录失败、站点信息抓不到；版本与 whoami 抓取失败被静默吞掉，这四步之外的异常只打印。",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L132-L150",
+          "version": "repo-lines-v1:sha256:3ca856b210dab4576ff2ba5499137f859a9f78f91b1d29390c6aa5f77332ad79:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZiOTNmOGFlYmU0OWUzZTViNGNmNzNhZjI1YWEzMmU5OGZhOTg3MGMwNTAxN2I0ZjMxOGU1OGRiN2ZiYjA3ZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxNzgwYWQ0ZWE2NzJjYjViMjc2ODQwNjJjZWE0YzhmYjgzOTUxZTU4MjUwNWY3OWU1YWI1MWY0NjVkYjdjYTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiOWM5ZWIwYTYxMTRlMjY4MDNhN2NjZWU2ODYxMGIxODg0MzY3NjA0OGYxMWZhYWE1ZjlmM2VmNGM1MzRkZmUifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L196-L207",
+          "version": "repo-lines-v1:sha256:43424f1a8ff03d86d24a348a39397cdb01ed30850022d298de58a57dad4a316b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjZDYyNDU4MjVmYjYzZWVjMDc0YzhhYjM0Y2Q4NTA0ZmE4YzVjNTkyZjNlMDdmMGJjYjM5YzNiMzg4YzJkNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1ZWNkMTAwOWQ1Y2QzNzYzNjNkMTIzNGVmMDM1YjYyNGUwYzVjYTE1MmNhZGM4NWNiYWRhMTNkNWY3ZWI3NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4NmI1YzI2MTBkNjM3NGM2NzEzNjIxZDYwMTI4ZjMxMTNlNTBjOWE1MTYyYmRjNjA4NjQ3Mzg1M2ZhZmQzYzAifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L406-L406",
+          "version": "repo-lines-v1:sha256:098c8d31048c26a358302776fc2bfd1f4c31c30e1baec478a9d46123d1a13636:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDk4YzhkMzEwNDhjMjZhMzU4MzAyNzc2ZmMyYmZkMWY0YzMxYzMwZTFiYWVjNDc4YTlkNDYxMjNkMWExMzYzNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDk4YzhkMzEwNDhjMjZhMzU4MzAyNzc2ZmMyYmZkMWY0YzMxYzMwZTFiYWVjNDc4YTlkNDYxMjNkMWExMzYzNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWI0ODdhZDQyMTZhZmFjZTdiNjBjNDYyMTY2MjZhOTBmMjg2NGZkYjI4ZGRkZWFkMWQ2ZTYzMDAxODFiMmUxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L66-L71",
+          "version": "repo-lines-v1:sha256:028efb515a1447e85237d0ff24a7380e7c22e8f990e6682c4436a36ca6acfa58:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWIzMTZlZjYxNjFjYmI1N2RjMjBiMDI2YzJmNDQyN2NiYTQ3YzgwODgyMmFhYThlNDgxNmI5ZjEzNTkwMzlhNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGYyNzY5NGVjZWJjMDVjY2JkYmMyYzFiNzY1MWM2YjkzZDUxN2RlZGUzYjI3OWY2OTFhMTVmNWJkMzliMDQ4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWY1ZjRlMTNkMDE4NDk1YTA5YjRlY2E5ODU0NzA3N2I4ZDliMTIxZDYxOTY1MGNiMWM0ZjRkZGM3MzNmNmRlZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3a62a2d4cf2342bbb23bb950cea57c81",
+      "statement": "`--dry-run` 只是部分验证覆盖：nodemw 的高层写方法会以 \"In dry-run mode\" 拒绝，工具把它变成 isError 结果，但 block、unblock、protect、undelete 发的是裸 callApi 请求，没有任何 dry-run 闸门拦截它们。",
+      "evidence": [
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L644-L648",
+          "version": "repo-lines-v1:sha256:74f84d17e6de3d689cd55d103a6b0d20494f7070bc13e5069d2e80d3a8cfe4d6:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjQ3ZjMyMDQxOWI2YTI1ZGM2NTNkN2E5OWRhYmZjNjI1ZGMzMTMxZWQ0MzI1M2ZhZjBmNzRlOTk2NmFjOTM3OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmI0YmMxZDlmNWFiY2E4MDYxMmZlN2Q5NTVhZDhjNzk2OGUxOWViMzBmMTBkMzI1NzAxYTQ3ODgwMmIzNmRkMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTQyMWY1Njg2YjRhYWI4NDA0NGMyNzRlOTMyOTZlMWUwNzZlMGNmNDc1MTg2Njg3MTM0NmU5YjQzMTljMDg1YSJ9"
+        },
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L159-L173",
+          "version": "repo-lines-v1:sha256:ee11d699f86694e190894d7f88e65ea2c47d8a80bae98cf3dc5e06fd7a619340:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhOGM4ZmNhZTQ5ZDAxYzY5MjExNDU0YjcwNjg0NGY5MDQxODMyMDAzNzNjNTg1Y2MzOWViM2U3YTdiMTc0ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3YjhmZmZhNzM5YTgxODA0ODBiZTVkYTZiMzVhMDk2YzQ1ZTU5ODVjNTBjZjkwMjQ4ZDJmYzA0YzgzOTVkZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMDllNTI2ZDBkNGJkNTk3ODU1OWU5OGE0ZDZhMTIxNzhjMDM2ZGVlNjMwMTdjZjc0NDdkZDI5OWQyYjBlMDkifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/block.ts#L94-L124",
+          "version": "repo-lines-v1:sha256:dd5137e36be12febf0500eff352fdd36129875f38ae55efe8eb9c2c78e5526d2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxZjJmYTMyMjUwMzM1N2ExNDI1MWMzMzUzOGYzZjEzNDMwMWZkNmZhNDAxNDcwMTAxODAwZTMwMzJkNjAwYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzZDkyNzA4MDg0NWIyOWMzMzQ2NDQ0MzgwZjc1YWIzYTc5NDMyYWM1YmZmMjMzYzE2NjVjZWQ2M2RiMDI4YzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmYWE1OTEwZjJkMWQzNmUzODgxMGI3OGUxZWNlZTU3MzFmYTFkYmQxYjQ3NGUzMWY2MGRiN2ZhOWI1MzY0OWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhNjFlMDY5NWI4MmM5MDNiNjEzZmJmODlmMmI0Zjk4ZWNiN2JiYWZiM2UyOGIyOWY5MWNjMzgyYWUwNjI1NTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a4430986c2ef4871b38bca801157973e",
+      "statement": "`prepare` 是 `npm run build`，把依赖安装与构建绑在一起，因此装过依赖的 checkout 通常已经有 `dist/index.js`，`test-server.js` 的存在性检查只会因为跳过生命周期脚本的安装（如 `npm ci --ignore-scripts`）或手工删掉 `dist/` 而失败。",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L18-L26",
+          "version": "repo-lines-v1:sha256:1a22f453318341ab35a467c086ac5d180fbd7f9a46191afa797c39bda953c99a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTg0MDY5ODRiZGVmY2EzNGRkNmJjOTAwMjdmMWQxMWFiY2IxNzAzNGM1MjVjOWE1Y2VmYTFkODRmY2NkODFkMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBjOTQ5ODU1MjZjMWM1N2VmMDBjMDBkM2Y0ZGM5MDYxNTY3N2EwYTM2YThiNzk1ZGZmOWFmZmQ1MGZlOWY1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDAyNGMxOWVmMDgzYjZhYmEzMDYzOTQzNmVjMTE3NDhiOTY0OTRhYmI1ZjhjNDIwOGM1Mzc3YTIxNWNlMzU3NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzcxNjI0NzdkOGQ0MGM1MjQ4MTJiNmVkMzJiMmFjYjgyYTQ5NTdkZDFiZmQzZjI5ZWYzZGUxMWU3ZTllYjgwMSJ9"
+        },
+        {
+          "resource": "repo://scripts/build.js#L61-L74",
+          "version": "repo-lines-v1:sha256:45e2e639801e99e4c0aa9eadb73f3f0db556393979cd55a69b4a100e0876e1c6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlM2E0NTcyOWZhZjk3ZmNkYjUxYTYyOTExM2EyM2EzZDczZTRiOGY2NTliMmFkYjY2ZDExZjk2NGE4YTdhYjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmMDAwZmFlYjA3NjFiZDk2NzMxZjczNWI4Mjc3ZTk3YzAyNDcxYzc5YWU4NDYyOTFkMzE2NzVlZTc5ODczOWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY4NWU5OWVjOGQ2YjJlZTk3NzA5YjFhMjIxNDJmZDQyNzY3MzczMGZmNGQwYmIyMWY2NjVhNTlhNTQxNjMzMWMifQ"
+        },
+        {
+          "resource": "repo://test-server.js#L11-L18",
+          "version": "repo-lines-v1:sha256:46eb35ea4c5f6b35d1515d402934e9db4c8abb00628f73aff8a56002b00dcab1:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2I3ODFiM2JkZGU1YjIxMmMwMWM4NDU3NjIyZjc3ODQwMTBmMTg3YWExOGM4NjdiYzU3NmJjMDVkODkwYWU0ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGRhYWRjODIwMTMyNDI4YjFkZWNkYjg4NWJiNjNjZGVjMmE3ZjhjYzMyMzE0NDIwNzRlMzExMzM4ODUxMzgwNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTI2OWY3ZjliOWQwMzVlZDEyZWZiODc2MWUzNWE1YzcwNDkzNmQ5MmJkN2QwYjdmYTQxZjBkNTUyNjkwNTgzZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjQzYjQ1ZjQ4NzYzZGM2YzQzZWJjN2E1NDM2YTNjYWEzYWVkZTFhN2MwYzFmOTEyNzFhNmEyZDIxNWYxYmViOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_4513c95c36f948fab3161df4d425ea06",
+      "statement": "`test-server.js` 注入的 `CONFIG` 环境变量指向仓库根部并不存在的 `config.json`，而服务端没有任何代码读取 `process.env.CONFIG`、也没有配置文件加载器——配置只来自 CLI 参数与 `NODEMW_MCP_*` 环境变量。",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L48-L112",
+          "version": "repo-lines-v1:sha256:c6b9a2707d156ebfe1ebd7abec74160a0c15d49ce2d8cd7fffef2558990fc6f9:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhZTBhY2VjODQxOTQ2MDY2MTNjM2Q1MDRiNmZmYmYyYzRiMDllMWJjZjBlNzVmNTNjOGI4ODQ3NDViNzVhYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlMWYzMzMyODEyYWE2NWJmNDliMWFkZmUyYjljMGEwYmU3MTYxOWUzY2Y4Y2JhYzhlNWIxYTM5ZDYxY2M2ZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI4N2M1ZGYzYjRlZDA2MTgyMjM0ODAzYjUxMzU5ZGQ0NDA5NzFmODlmMWE4MjNlNzU0YWYxZjViMzI2ZDZlMzAifQ"
+        },
+        {
+          "resource": "repo://test-server.js#L22-L25",
+          "version": "repo-lines-v1:sha256:cf665e668dbb9df1616701f9c9a441a3776aeaac547494e6908239b10a8f6fb9:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjJiYWZmZjhiMjQ3NmE3NjI4NzY5YjkwZWE2MzExMjlmZWU4YTM2YTYxOGEwNTIzYWM1YTI3YzA0Yjc3ZGY2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNkZGVmNzI0Nzg2YjRhZjQ1YWI3Y2FkODFkMzc3YWU1NDNiYjc4NDEyOTY1NjhmYjUyMjY5OThhZWMyMTYzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjQzYjQ1ZjQ4NzYzZGM2YzQzZWJjN2E1NDM2YTNjYWEzYWVkZTFhN2MwYzFmOTEyNzFhNmEyZDIxNWYxYmViOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjVkMDI0ODRmZGFmYzQ0MTFjMDNhZmQ3NzAwNGE3OGI2MTEwMjZmNzJmNWU3MDE2N2ZmY2U5Nzg2YWJkMjJkNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_fafca603d194490183e03d891db22ea0",
+      "statement": "“通过”的输出形态是可断言的：一次成功的 esbuild 运行只打印一行 `Build complete: dist/index.js`，一次干净的 `tsc --noEmit` 什么都不打印，所以正常验证只需保留这两行、只有失败才需要保留完整输出。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L58-L58",
+          "version": "repo-lines-v1:sha256:bcb305dcb14dcb4153e1a3f259465ceadadc9b044a793da427d2c43d3a09d491:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmNiMzA1ZGNiMTRkY2I0MTUzZTFhM2YyNTk0NjVjZWFkYWRjOWIwNDRhNzkzZGE0MjdkMmM0M2QzYTA5ZDQ5MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmNiMzA1ZGNiMTRkY2I0MTUzZTFhM2YyNTk0NjVjZWFkYWRjOWIwNDRhNzkzZGE0MjdkMmM0M2QzYTA5ZDQ5MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDhhMTMzOGFlN2QxMWM5NDRlODVjNTU0N2JiNmVmNDRlZTljMmNkZjA4ZDZjOWIwOTI3ZDgzMGIxNzFjYzBlNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjU1MjQ4YjYyZjU1MmY2Y2I2ZjcxMTA5YzgzY2E0OWZlOTU1MmU5NjYyYTBhZmNjZTdjNjY5YTJiYmEwZWMwYSJ9"
+        },
+        {
+          "resource": "repo://scripts/build.js#L61-L73",
+          "version": "repo-lines-v1:sha256:6ea753eb62f8f2733e29229feff0b90adb528f9ce9348924bec95cce087894c5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlM2E0NTcyOWZhZjk3ZmNkYjUxYTYyOTExM2EyM2EzZDczZTRiOGY2NTliMmFkYjY2ZDExZjk2NGE4YTdhYjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3Y2RhODJkYTYwNjIzOGUwNWU2MjM5OTU2OWM1ZWUwMzk5MzQxOTY0OGFlNWQ0M2EyYmY4Y2Q2MzQ3ZjgyNjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmMDAwZmFlYjA3NjFiZDk2NzMxZjczNWI4Mjc3ZTk3YzAyNDcxYzc5YWU4NDYyOTFkMzE2NzVlZTc5ODczOWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3ZTlkNGJkZDZmZWNjYzExMTk0ZmVmYTM3MTE5NjE5MGU4MzFiYmNhOWI1ZmQ5YjJmZTk2OWM3Y2I0NDFkZWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6e8fe3ace6d944d2bd2b905c850cc6af",
+      "statement": "测试落在 src/**/__tests__/*.test.ts：命中 vitest 的默认 include（仓库没有 vitest.config.*），同时被 tsconfig.json 的 include:[\"src/**/*\"] 纳入同一套 strict 检查；但 esbuild 的唯一入口是 src/index.ts 且发布只带 dist，所以测试永远不会进入产物。",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L22-L22",
+          "version": "repo-lines-v1:sha256:d8d66f79e965b0913a764970557a9d0db8cfec844172b4fd58c34b8f8c2f81f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDhkNjZmNzllOTY1YjA5MTNhNzY0OTcwNTU3YTlkMGRiOGNmZWM4NDQxNzJiNGZkNThjMzRiOGY4YzJmODFmOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDhkNjZmNzllOTY1YjA5MTNhNzY0OTcwNTU3YTlkMGRiOGNmZWM4NDQxNzJiNGZkNThjMzRiOGY4YzJmODFmOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWIyMTQ0ZGIwNTk0NWRjOTI0OTI0MWEzNGU4MTFjODViODMxYWY5ZmQ0NWQ2ZTIzMTRlY2ExMzVhOTFmZDVjZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzkwZmZlMTJjZWY0NWZiNGRmOTM5MDY3NTg0MDAxMzVjMjBiN2ZkNzM1OGIxMmU3NjhkNmE4M2Q1ZDQ2MDU3NiJ9"
+        },
+        {
+          "resource": "repo://package.json#L51-L53",
+          "version": "repo-lines-v1:sha256:9af3b22f7d83920333aec3f546f58bdc2642e8ee76eed80b68bc3456de3ce0f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzE4ODYzMmUyNzEyODQzNWNmOGZlNDcyYzFlYjc4MTU5NWI2NzE4NzdjY2I4N2UyZTQyNWM3NjgyZDBmODQ5OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2VhYTQ5YWVjNDJmMmI3YThjOWZmN2YyYjQzYjMwMzc3NzhjYmNkMjc5ZDYyNTVlMmU1YzQ2NzJhYTNkMDkxNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzNjNGFhM2EwYzk0M2Q4ZjgyN2FjY2VhMjIxYmQxMmQwYmUwODg2MjcwOTIwNGZhYzk5MjI4N2ZlMGNiYWQwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2RhNDVhMzc3NmJhOThjOWI0NjI1ZjJjNzllN2I0ZjI2NjIwNGQ3MGMxNzAxN2VmYTJkMTc0NzYyYmJiNmMwMyJ9"
+        },
+        {
+          "resource": "repo://scripts/build.js#L11-L18",
+          "version": "repo-lines-v1:sha256:b549d50571e057f0e6ff879263a3639061d744695e3072425e3dca05a6a0ef54:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzJlZDZmNzQwMGU3MWFlYmU5M2M1OTliYTA1MGNmYzI5ZDgwOTkyYmFlZDQ5OWI4ZWVkNGRhMGY5YTYxYzAwMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWY5ZTRkMzRkYTA5YzIwNTlmZTRhNjY2MWNhZTBjMjZkMDNmNjBiYWQwN2I3MzZiZWMzMTZkZWM1MmMwODBiMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWEzYzUxNzQ0ZTQ3OTYxZDlkOTkxM2I2MTdiYjVmNTY4Nzk5NDQ4NWZlMzYzZTI4MmIwNDkyMWYxZWM4ZmNjMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjEyZWIzYTFhNWRjZDg2YzBkYmQ0YTk0OWMzOTQyNDAyYjExNGFlN2I0MzI1NzRmZDYwMThkOTBlMmU5YjY5NyJ9"
+        },
+        {
+          "resource": "repo://tsconfig.json#L19-L20",
+          "version": "repo-lines-v1:sha256:d921dc78fd6509e1954cb30f3b5143ff22897318065973e79f7d1116bf14be21:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzdmZWRjOTU1NGU3N2UwOWRjZDhhMmE4NTk4NDIzMTY0ZmY5OWFhNjM2Njk0NzlhNDRkMTAyZTk5Yzk2NzA0MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDFkNWNiZTA0OWNlNTUxMzc1OTc1ZDRiZGJmNGQwMGVhMWIxZDAwMmEzYmQ4ZmQxNTdmMzc1YWU5OWZlNDY5ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWZmN2JmMTNiZGJjZWJhMjc0NGE1MDkwZjA3YjEwNGU2NDhiYmNjY2I0NDc5ZTYxMDY1OWVmZGY3NTI2MmVhZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_4953916e507643f885d9ff4432b7e014",
+      "statement": "启动横幅是项目里最便宜的复合断言：`Site:` 行证明 API 路径探测或显式 `--path` 生效，`Version:` 行在版本抓取失败时退化为 `an unknown MediaWiki version`（`csrf` token 分支的前置条件），`Auth:` 与 `Tools:` 分别证明登录模式与注册表规模。",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L239-L246",
+          "version": "repo-lines-v1:sha256:c258cf4e025839d8e644cc9c6ba197558eb56677f6625d46680635e08488ab76:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjI0NTVmZjE4Y2QwMTcyZTQ2YmYxNmY3ZmYyZmU1OGFiZGM3ZjBiZDNmN2Y1YmU2MWUzOWJiYTdkYjlhYjhlZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZmZmZhMTFmMTdlOGI3MmE1NWVmYzc5MGQ1MWE1MzdiMjExOTJiOWJjNzE5YTQ5MGY2MjU3ZjI4MGM5M2E2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzc1NGViYmZkOGVmZWE0ZDQ5ZWM1YzdhMzhiODcxNjA1Y2U0ZjMwYzk1Njc2ZDZlNTkxMGZjNDhmNTAzNDUxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTBmZjY5ZjE4N2MzMGQyMjA4MGUwM2ZlNjk1NDhiNmI2Yjc0YTU3YzIwMmZiYzgxMGQyNjc5MzBmMmE1Yjk2YyJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L386-L403",
+          "version": "repo-lines-v1:sha256:f1fd9f3d6d2e0ea184a3b0e8dfc4653688b45e63cdb7aaaba67e734f82b7c28c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkYTQ0NWIwOTA5NTQ2ZWUwOGZkOTZiYzk1ODFlNmIyMTBhOTQzNTY3OThiZjQyMDNhMzJmZDE4YWI2MzE5MjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTdkMTY4NThiMGM1OTgxODJlNmQ2Njc0MmFmNjZlZmI0N2ExNWYxODAyNjkwMmZiMDViODE2NGFiZmZjNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3ZTlkZWE1ZDNiMmVmOWNhYTViYjE2ZThmNDY1NDExNGU5NDY2MmEwYmVhM2Q4ZjBjZWI2YzA3NTk1OGExZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4NjJkMGI5MTg5MzY3Yjg0OTE5NDRmOTMyMzU5ZGM1OGVjM2UyOGZhMTMxZDYyNzk2NDYwMDFmYjM0YWU4MGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0b5e2f102f8d4599b43bc338ee6c71cf",
+      "statement": "上报的版本号在构建期被打包进 dist/index.js，所以只改 package.json 的 version 而不重建会产生只在运行时才可见的漂移——当前工作树就是这样：产物里是 0.2.3，manifest 是 0.3.1。",
+      "evidence": [
+        {
+          "resource": "repo://dist/index.js#L38-L41",
+          "version": "repo-lines-v1:sha256:864465308b3316464ebf15838703fe55678fda05eca882c7fb814f4deea697c1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGJhOWRlZDdmNDQ3Yzc3MzYzNjhjZWU5MmUxYjQ3N2U1MGI5Y2M2YjkwZjQwMzQwMjAzYWNjZjgzNWZkNzFhMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDk0MDNhYTc0NTg1OGVkYjYwNjU3MmE4MTA5MDk5MzkwZWQzMmY2MzVmMTdlYjQ1ZmZmYTI0NGQyNmY2YTc0YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGM1YzZkZjQ3MjJlY2Q2NDNmYjY2NmZjMGRhYjM0Y2NkMzA1M2M4OWE5YjBlYzVlYjFmYjcyOTM2NzJiY2QzMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGYzNTc3NjRiOThjMGQ3YWRkNjc0ODhkMTY0MGZjNjdjZmU1MDZmNjgxNWUzMDMwMzg5MDA2ZTY4ZjE0OWJmZSJ9"
+        },
+        {
+          "resource": "repo://package.json#L3-L3",
+          "version": "repo-lines-v1:sha256:b55c7dcab815bb7d232b37c8af07cea11c9081493703f1433591e0a25e444a9e:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjU1YzdkY2FiODE1YmI3ZDIzMmIzN2M4YWYwN2NlYTExYzkwODE0OTM3MDNmMTQzMzU5MWUwYTI1ZTQ0NGE5ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjU1YzdkY2FiODE1YmI3ZDIzMmIzN2M4YWYwN2NlYTExYzkwODE0OTM3MDNmMTQzMzU5MWUwYTI1ZTQ0NGE5ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjhiZmMwODM3Y2ZiOThiYzZmZDc3NWUzOTUwZWZkYTQ3YzQ0NmVlMTg3ZDk0ZjRlODU2Yzc5ZTljZDg3MjZlMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTQxOGI4NWNlZTRlOTJkNGFkMDZhYTQxODNjZDVjNDQwNmUwZmNmOTdkOTBiMTk0YzRiYzMxODNjNmIwM2YzZCJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L396-L396",
+          "version": "repo-lines-v1:sha256:e315660a86a1c6353d774002d4b434f836c34a8ce1406fbca96a9cd1b8418583:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTMxNTY2MGE4NmExYzYzNTNkNzc0MDAyZDRiNDM0ZjgzNmMzNGE4Y2UxNDA2ZmJjYTk2YTljZDFiODQxODU4MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTMxNTY2MGE4NmExYzYzNTNkNzc0MDAyZDRiNDM0ZjgzNmMzNGE4Y2UxNDA2ZmJjYTk2YTljZDFiODQxODU4MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDBhYjQxNjE3YzM0ODEyMjI3MGRhYTY4MGQzMmUxZWRhYmY4ZDNmMzQ3ODk4NGRhYjY0NDZjMWFmNGQwMDkwOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDA5MzE4ZGUwZmM1OTIzOTlmNTc4NWM3YThhYzdhZmRiOWQ5NzA2MjA3ZTUzNzM5YWViZjhlNDRhYjdjNzA2NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_7820055b850148d1ba1d5bb42b9f6432",
+      "statement": "`openwiki-update.yml` 只做文档再生：安装 OpenWiki CLI、运行 `openwiki code --update`、把 `openwiki/`、`AGENTS.md`、该 workflow 自身与 `CLAUDE.md` 提成 PR，不运行构建或测试，失败先由 `continue-on-error: true` 吞下、再由末尾的 `exit 1` 传播。",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/openwiki-update.yml#L29-L89",
+          "version": "repo-lines-v1:sha256:6e97d87b1d0bb60fa8be03daa9c0f6050945e7cf0660425373612ea5d4d6e01c:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2Y2UwYjBkM2IzODEyMmJjMjc1MTVhOGQ5Njk2MTVkOWUxMGUyODA2NDRmNzYxMjIxZDA0NDc5YWQyNTM5M2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2NzE4ZjA2N2I1ZTVjMWYwOTkxYTZlNzQ3MjZmZTJhMjNkMjY0MzQ1ZTA4ZTRlYWQwNGZhZjczYzI3ZWQ0NDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIzZjNiODgwMmIzMTBmZjJhZGQwMDI2YjgyZWUyZTllNTcxNTkxMmVhZjA4MWFmODZjZTExMGRkNjQyZmMxYTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_201bb04e9d1a4fab8e321ee300f28077",
+      "statement": "工具级套件用 vi.mock('../../common/nodemwBot.js') 把整个 bot 模块换成 fakeNodemwBot 的 createNodemwBotMock()，后者是一个 Proxy：已知方法返回贴近 nodemw 的对象，未知方法回落到“既是单元素数组又带对象字段”的 hybrid 结果，且所有回调都在 process.nextTick 触发，从而真实走一遍被 promisify 的调用路径。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/__tests__/fakeNodemwBot.ts#L305-L423",
+          "version": "repo-lines-v1:sha256:40a2d42ced31d931d1ddf33fefb08c75942f2222e2bf1ee33a635949ce6baad0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIyZGRiNDYyZTFhNGIzZTJjYjc5YWQ5NmMzMGEzMzIwNWI2NDc1MGNkYTdkZGM2OThhZjY0YWFkOTQ1OTAyMTM5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlMzRmMDM1NjE5ODA5MmE4MTAxZjExNzBiMDA3MTA2YWMyM2Q0OTkzZDYzNGY5YzhhOWNkOTQ5NTBiZjYzYmU5IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI1OThlMjk4MjdjYWQxNDNhMWE0ZjNjMjA4NDc2NGI4MjNiY2JlYWQ0YTA0ZjE1ZmJiZjQ0NGRjMzdjYTk5NzkzIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlMjJmYWE1MzViZDJlYTNkNTJlNzQxZWQ0NTQ0MzViN2ZlNDllODM1ODZlOTQzZDk4ZDgyYmJmYjI0ZDFmNWM1In0"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L37-L40",
+          "version": "repo-lines-v1:sha256:9c4198d694d2c4cf5517c41b370bea28a1b3d2111fd88dc7359c7ced5a1116cb:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzk5NmY4OTQ0NDExZjI1NThjYTEzNmZhMzI1MWU0YmQ0OTk1N2MzZjcwZDgyYjE5MzI1YTg5YWQ4NmFlYWVkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNkZGVmNzI0Nzg2YjRhZjQ1YWI3Y2FkODFkMzc3YWU1NDNiYjc4NDEyOTY1NjhmYjUyMjY5OThhZWMyMTYzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWIwMGE3Mzk3ZDZkNGYzOWZlNTBiZDA0NDRmNTYxMmZhZjFkMTk3NzVjZWUwYTMzYTNiYTBlYjk0MjExNmJlNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzVhNTQ2YTdmOWQwMmE1YTAwNTQyMDkzNGQxOGI4MmE2NzMzN2FhMjkyZjk1MzVlYmUxMzIzMmY3OWU1ZjY2YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_21aa1802b311441b80275a1b145b05b7",
+      "statement": "假 bot 的裸 API 调用由 fakeApiCall 按 params.action 回答 query/parse/edit/block/protect/undelete/purge/createaccount/move/emailuser/compare，其中 compare 的 HTML 片段照真实 action=compare 响应写入，因此 diff 解析器在工具级也能被驱动。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/__tests__/fakeNodemwBot.ts#L165-L303",
+          "version": "repo-lines-v1:sha256:b3016a25c9e7f29dbd5d8c1a0f4fa3abfc5383705e0904e4661b25278b399cb5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTM5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlNGNjNTdhOTEzMDVjMGM1YjQ3YTQ1YzQ1NDM5NmY1MDg1ZTQyYmZkYzU3YjQ2MmIyM2U4NjQ1NWNmNThiMTMxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlMjJmYWE1MzViZDJlYTNkNTJlNzQxZWQ0NTQ0MzViN2ZlNDllODM1ODZlOTQzZDk4ZDgyYmJmYjI0ZDFmNWM1IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIzN2YzNzMyYWJjNzE3ZTcyNzVkYjMyZmYxM2ZjNTg1NGQwYWU0Mjk3YjkwN2Y3M2ExNDRhZDA5NjUyMDRiNDViIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI2NTA1Y2M0YjhlNjg2YTEyOTAyOTAxY2VkZDM2OWI3OWM4Mjc3MjAwOGM4OGU3OTFiZThhYzhmZTNiNjgzYjU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_5217092fca40487e8ad0286dcb290a0f",
+      "statement": "守卫套件需要同一张页面在不同用例间换状态，因此假 bot 暴露 setFakePageContent、setFakePageMissing、setFakeLastrevid 与独立的 setFakeHistoricalContent，readGuard.test.ts 在 afterEach 里把它们和 clearReadState() 一起复位。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/__tests__/fakeNodemwBot.ts#L44-L67",
+          "version": "repo-lines-v1:sha256:f6fa545817c71cfe31ce01f09e142553f0bfbd979e114abb7da2eb0eefeb40d3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1ZDAyYWYyYWZhYjEzYzNlNDVkMTljN2UwNDA2ZWRkZTlkYjVjMjU3NjY0ZDZlZmFiNTQxY2IzOGQ3YzZhYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiZDRiM2JmY2NlZTE2ZWMyMTBlNDk2ODYyZDY2YjZlZTY0MmEwY2ZiNGRiNTVjNjJjZWU5ZDUyYzg5ZTIzMGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzN2NhMjYyMzZlMmY0MjM2ODQ5NDUyNjRlNTI1ZTVkMzc5NzZhNDljZThlYmEzYmVhMTM1OTc3YWRkZjgxZGQifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/readGuard.test.ts#L85-L92",
+          "version": "repo-lines-v1:sha256:13313409528ddff2ca750f68271f0cc7af98d80a414221409b6c2a5671f8a3af:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzJkOTAyZmM0YmUyMGU3MjM1ZGQzYWNlZDQ1YzBkNGYyYmNlOTE1YTQxNzA5NjVmMWM1MTFmYTFhZTMyMzJmZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTEwNTljOGNmYjVhMDcyYzZmNjRkZDNkMWJmZGJjMzU2ZmJlYzkzYWVlYzg4NzkxZGE3ZWRiYTg5YzA4ODVkZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTk5MzI4NDM2NjA2NmFmNGVmZDY1MThkNDdlYjZmN2IwNDJmMjA2MWEwMDRjY2JhYjRmOWRkMDAwYWFlMjc2MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWIzZDEyY2YyZTU5YmEzMjEyMTMyMTk3NGVhNDY4YTdkMWYxNjRhMjM2M2ZlYjU2MTI3OTc2ZmQ3OTFiZTkyZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c326acbb0768408091e32cf98d2155d5",
+      "statement": "upload-by-url 通过 src/common/safeFetch.ts 使用全局 fetch 与 node:dns/promises 的 lookup，所以 smoke.test.ts 把 DNS 固定成公网地址、把 fetch 桩成返回假 PNG，safeFetch.test.ts 则用 vi.hoisted 建 lookup mock 并逐个用例替换 globalThis.fetch、测完还原——两条路径都不会碰网络。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/__tests__/safeFetch.test.ts#L32-L37",
+          "version": "repo-lines-v1:sha256:3cc78de68ae180eb9db0ff1e14238359dab0f0783a121944091f899de356d718:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDc2OGY1YmY3OTYzZjhhNjljYjI0OTY0MzI1MzM2OGI4MzczM2EzNjc5MjBlOTZjNjMxNDE3ZTBiY2JhNzkxOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjgxN2M1MmExYTE3ZWEwYmU5ZjJhYjBhOGNhYTE1ODJlNmZlZGIyYzRjYmM2ZGFjMTIwNmI2M2M1MTZmZWMwMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTEzMTQyY2UwMzNmNjg4OGY3ZDA3ZTJlZmRlMmQyMjhmMDIzMGM5ZmMxMTUxYjI5Y2I1ZjYwZGRkYTlkYWE1MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzJlODgwM2M1NmQ2MzA1NWVkMzBhNDI2MDQ5YmE5NmJlYzkxMjlhNWJmMTk5ZjMyNDA1NDIyYjExY2RiNjMyYiJ9"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L42-L51",
+          "version": "repo-lines-v1:sha256:fe2eaee8f9c8a9d68a76ab4ef532aaf83c0a8ab926b652af54403a0afcee8441:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2MTRkZDUxMDE4NGRiMDhjMWRiOWU4ZWQyNDBmMWVjYWI5OTZkMzc0NDU4M2E1MTUxNWQ5ZTAyZWJiYmYzZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3ZjE1NzI3YTgzZTIzZWNlNzdhNDhmYmUwZGMzYWQ3ZDkyMjU5ZDBkYTFlN2E3NzkyNWJjMWUzYjI5NDVhYWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE4NzE4Yzg1ZGY1ZGNjZTgwMjFhZjM3MjYzNDA3YjdmOWU4ZjIyNTM5MGIwNmJiNmFiYjQ1ZmVkODhjNzQxYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRiMzY3ZTkxNWYzZWE2ZGQyZDRlNzMxNzZlNDc3ZGNmZGM0MTIyOTY1MjEyOGYzZmRmODQyNTQ3YmRhNzQxZjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d09482b1f15942eaa5433f533e4410f0",
+      "statement": "smoke.test.ts 用一张 TOOL_ARGUMENTS 表给全部 54 个工具各配一份最小参数，先断言 tools/list 的数量与名字集合，再逐个 callTool 并断言结果有 text part 且 isError 为假；漏注册或漏加参数都会让这条比较失败。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L140-L161",
+          "version": "repo-lines-v1:sha256:ddfd927a8e2130034ffcebcc431c23febfaaa57615809109e92a9523584a4c27:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2ZjJlOWQwYmJjYzdlOGZiOTlmNjFlN2QwYjZiY2ZkZDZkMDI2MDQ5MGZiMWRmMmY4ZjgxZTQwZTAwNzAyMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5OTMyODQzNjYwNjZhZjRlZmQ2NTE4ZDQ3ZWI2ZjdiMDQyZjIwNjFhMDA0Y2NiYWI0ZjlkZDAwMGFhZTI3NjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3NWUwMWZkMDllODQ2N2U3ZGFlMjdmYmI3NjEwNGU2YmU1NzNkYmRkYmQ5YjgzMDA5YjU3ODc0MmU1MzZkMmMifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L53-L115",
+          "version": "repo-lines-v1:sha256:9495d12553d22830e23dfba9c4de63b00b3bbd507bd64b02b03ac4872389ac86:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiYmJjNTIzZjBlYjkzNzczMDUwYzI1YTdjNjRmMzJmYjg5MDUyYTZkMjZkNGRkNDgxYzAzNGExOGM2MDRjNjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmZTExYTcxMmI4YzczYzA5N2U4YTFmMGFjYmE5YzQyMjYxNWMzYjllZTc3ZjdhNzBiMTZhZGYxMTk3MTNlMGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4YTM4NzdhZGE2Y2VlODhlZGJjNWIzZGFhMDJlMTVkZmEwY2U5NmZiZmQ0ZjE2YjA5OTdmNzkwMmQwNDU3MDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUzZGM1ZTk4MWU5MWNiNzljY2U4NDhiMTE3NzY2YmQ5MDZjOTgwMTI1YTJjMTc3ODY0ZGJiODNjMmRkY2YzMDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f4199361515940608b4838717bb914b3",
+      "statement": "annotations.test.ts 同时注册全量与只读两个 McpServer，断言工具总数等于 readToolRegistrars + writeToolRegistrars（硬编码 37 与 17）、名字唯一、只读集合是严格子集、每个工具的四个 hint 都是显式 boolean 且取值符合两个硬编码集合、描述长度大于 10。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/__tests__/annotations.test.ts#L106-L140",
+          "version": "repo-lines-v1:sha256:cbd85e1fa857fa1aedeeff6a74b4c0197cd460bcc8ae38fefe14bb8d3b9bcb45:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwNjg0YjllNTcyZGYyM2EzZjE3OTdiYjBkY2NhNmUwZWY2YjhmNGRjMDIxMjY2Y2ZmOGMwOWM5ODgxNzRhYjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjExZmFmODYwOGRhODA3OTM1OWU2ZjUwNzAyOTQ1Njc2NmYyYWU2MzUyYTZjNzIxMjhjMDZiN2RkOThhNmYzMzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/annotations.test.ts#L59-L73",
+          "version": "repo-lines-v1:sha256:f001126dc7072fd157a622fd6e9a98129d59166ca7c9a79ead3c340a804b2f74:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1NjY5YTlmZDlmZDg4NWE3MDJiOTViMzg2MTgxMjc3NmRiZjQzMTY3OWY1MjMwM2Q4NDlkNTYxOTQyOWI0MmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhiMzcwN2ViY2FmYzMzNjZmZTVlY2I1MDdkN2NmZmNmM2E3NmVjYWE4NDQ1N2Q4M2YzZDA5ZjI3NzA5MWZlYjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5ZjM0NzRjN2I5ZTU3NmU5NWEwOThkMjQ2YmE3ODU5ZmM3MGQwNjk4N2JjNjQ2OGJkM2JhNDRiN2I1ZWU2MWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6756e42feb634bb282d7a0b13db7a258",
+      "statement": "smoke.test.ts 里“成功结果的 isError 必须为假”这条断言同时是 outputSchema 的回归网：SDK 对每个成功结果校验 structuredContent，失败会变成 isError 结果，因此 handler payload 与声明 schema 漂移会让测试变红。",
+      "evidence": [
+        {
+          "resource": "repo://node_modules/%40modelcontextprotocol/sdk/dist/esm/server/mcp.js#L125-L141",
+          "version": "repo-lines-v1:sha256:799d56b25cdcab0797c972675a6163cd774a431eb896b974b871719f1ebdcad0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyOTg1ODcyYzdkNTY0MjkwYzllODkzZTQ0N2QxNWE5YTFjMTFiNzZlMGI5ZjgwN2RlMDM4MGM3OTQ5ODQwYzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyZDViYjA3MjFmNmU0Zjg5MTA5Yzg5Mjg2ZDJmZWQxYjlhNTBkZGY2NzliZmIyYzI0NDQ0ZjAwNGEzMjQ0NWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1MDA0MzBhYzhjNWE4NWQwMWRlY2JjY2RlZjI0OWRiOTUwZjA0ZDgzZGNhODVmZGFhOTI4YWQzZjJmYzg4ODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjExZDJmMDlmN2Q1MzZhZjczOGE2OTE3NzJkNGY2ZWJhZDc3NjU1ZWQ3YWE2NTVlZmQ3NGM5M2NiNjE5YTI1NjgifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L149-L161",
+          "version": "repo-lines-v1:sha256:95333a193ea5ce2b52020c73eb9d1b8507301d412a544357acf213bfbd229ef6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMxMzdiODBmNzA4NTM3OTA3MjQxNmY2ZWIzYmNmNDNlMTI2YTFmN2FjN2MwODA2NTU3OWVkNzgwOWY0Y2VlYzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY5ZDM2NDZkMjZlZDk3Y2Y4YzMyOWI5ZTBiN2E4Y2Y5ZmFhYjZiNmQxZTA2NWFmZmU3MTFiODU5ZGJhNWIyMDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3NWUwMWZkMDllODQ2N2U3ZGFlMjdmYmI3NjEwNGU2YmU1NzNkYmRkYmQ5YjgzMDA5YjU3ODc0MmU1MzZkMmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f5ade6e2495a4c13869d08c9c787e02e",
+      "statement": "readGuard.test.ts 通过真实 MCP 调用固定四条守卫不变量：局部读取（offset 越界、截断 maxlen、revision 参数、行窗口）不解锁写入而全量读取解锁；标题重绑与“会话内写过却被删除”被拒；revert 的 CAS 与 1/10 擦除下限；revert 不得调用 markAsWritten 而 edit 会。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/__tests__/readGuard.test.ts#L104-L214",
+          "version": "repo-lines-v1:sha256:4c04a11902aa3db7ec8c39939c87d7207a6c228137ea96af85c8c55cea5a38ed:eyJzZWxlY3RlZExpbmVDb3VudCI6MTExLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxYTdhNmFlODA5Zjg0NzNiMTI3NjNiMmI0NWNlM2E5NTEzZjczZTZkYTAwOWU3NmE5OGVmOGMzNzk1YTM4OTBhIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI5MTA1OWM4Y2ZiNWEwNzJjNmY2NGRkM2QxYmZkYmMzNTZmYmVjOTNhZWVjODg3OTFkYTdlZGJhODljMDg4NWRkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIzMTMxYmE4MmUzODBhMDkyNTRmMWM2NDhmNTg5ZGJlNDRmZDg5YjdlYTkzMjg4NzYyM2JjZjFhYjJmYWFjZmY2IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJhM2RkZWY3MjQ3ODZiNGFmNDVhYjdjYWQ4MWQzNzdhZTU0M2JiNzg0MTI5NjU2OGZiNTIyNjk5OGFlYzIxNjM0In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_ca7e7096b5064e2e82c31a605f1d0ad4",
+      "statement": "smoke.test.ts 断言 get-module-source 与 get-articles 会把修订时间戳写进读记录（供 basetimestamp 使用），并断言 revert 不得用自己的输出刷新这条记录——revert.ts 里对应的实现选择是不调用 markAsWritten。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L163-L190",
+          "version": "repo-lines-v1:sha256:e97b2cf89dcfde6db4b6f60898d4051f13873a69c5ce63c761686674bd661f17:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlYzdlMDUyYmYwNTQ0OTI1Mzg5NzkwZWFhYTgzYjgyM2ZmYmYwMzM3NzM2MDUxYjNmYTQzNGJmODg2ZjU4ZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNjNGY3MDFlNWZkM2M5MDI1ZTkwMDI0MDhmMTFlNjA0ZWEwODc5MDFjMWYyODJiNzlmMDJmY2M1NTIzOTNhNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/revert.ts#L179-L183",
+          "version": "repo-lines-v1:sha256:294fd1fe2ec93ca4227add9ec3df54472bd1260400b49195e93f8b8cdc048703:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjMxNmQ3ODczZTFmNzQ4YmY4MjU3MjE3NjY2MThiYjMxMjA3YmI0ZDY3NWI1ZDY3MGE3NjMwMjM3YzQwODExMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGM5OTlhMDMzM2U4YjFjZDA2NmM1OGUxY2Q5NDQxZmVmZmM4OWZmM2Y5ZjZjYjNiZDczM2E2MzFkNzA1MjkyMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGZhNzM5NjFkZjg1ZDNhYTczOGFiYzZiNWE3NWFmZjAxNWEzMzAyNmM4YmE5YzUxNWY4MjM2YTMzZDc4Yzg1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTliZDQ0ZmZhNGY1ZTFjNzMxM2M5NGIyZDUxNDk3NmNkMmU5ZWNiNDMzYmExMmMxMzc5ODcyNWQ5OTgzZjJjYyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d48a21b20b6848d68c53cc3226e6313d",
+      "statement": "safeFetch.test.ts 固定的是地址与下载边界：私网/保留地址（IPv4 回环、RFC1918、CGNAT、link-local、云元数据、IPv6 ULA/link-local/IPv4-mapped、畸形字面量）一律拒绝，非 http(s)、localhost 与 unix 伪主机被拒，重定向逐跳复检，非 200 报错，且 50 MiB 上限会中止下载。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/__tests__/safeFetch.test.ts#L39-L175",
+          "version": "repo-lines-v1:sha256:f0cccf79b64e1f236d0929e480dd95c0f2c94669baafdb7a2d54d175356749e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTM3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxMmVjYzg5MjcyMTM4MmZkODMzNzYyNTA2Y2ZlMjZjYzYwODkyNzY3NTc3OTk3Yjk5NmJlNmQ0MTFiZGYxYmZhIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI5MTA1OWM4Y2ZiNWEwNzJjNmY2NGRkM2QxYmZkYmMzNTZmYmVjOTNhZWVjODg3OTFkYTdlZGJhODljMDg4NWRkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIyMjIwNzI4ZDIwNzFkMmY0NDFjZGFmOGZkNTA3YjZiZGVlNmNhZWExYzQzYmU4OWMwNjcyZjg4NjViMzI2YWFkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJhM2RkZWY3MjQ3ODZiNGFmNDVhYjdjYWQ4MWQzNzdhZTU0M2JiNzg0MTI5NjU2OGZiNTIyNjk5OGFlYzIxNjM0In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_48a50a163b264fcab90f774a33104662",
+      "statement": "namespaceCache.test.ts 用真实 siprop=namespaces 与 siprop=namespacealiases 的形状固定解析规则：canonical、本地化与别名大小写不敏感，负 id 伪命名空间及其别名被跳过，别名来自独立的 namespacealiases 列表而非内联字段，内联 alias 数组也兼容。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/__tests__/namespaceCache.test.ts#L43-L112",
+          "version": "repo-lines-v1:sha256:bd9abd120243d4c68e9b07197fd00895081939aa799d1471ad8a9b75485319c7:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzNmZhODFlMWRlOTJkYjUxYjZmYWI5N2I1YjVhOWM4M2FkNzRhOTI1MGYzMzhiZTdkZjY5YjYwMDY4NWIxYmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmMzZiMzc2NzY5NWMyMzk2MjNjMDY2ZWIyNjgxM2FkNzA1MGY4Yzk0NjQxNWI1NTNhNTI0YzMxNzNlZjc2Y2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ccef359dacc44323b8b0c6cb1d0cd5db",
+      "statement": "两个输出解析器套件用真实响应形状做夹具：compareOutput.test.ts 固定 action=compare 的 HTML 到逐行 diff 的映射与字符预算截断，parseOutput.test.ts 固定只把 error/errorbox 类元素当作解析错误、实体解码、样本上限 3 条与 160 字符。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/__tests__/compareOutput.test.ts#L53-L139",
+          "version": "repo-lines-v1:sha256:9686e5b3785afa677a250082d3e35927f5ee460ba1ee299c37fd5c8803af3b51:eyJzZWxlY3RlZExpbmVDb3VudCI6ODcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyMjhlM2MwMmQ3ZmM2YjA3YTNhYjY3ZjZiNDY0NzE2NjUyNWIzYWJkZmJjNDkwZTY1M2RkZWQwNGUzNDRmNmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjMGYyNTExYmM2YzgyZTU0ZTE0NmJkMTg3ZWFmNDc3MmI5MDQ0MTNjZmM3YmJiNjYyYWI4YmI5OGExMGE4MjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+        },
+        {
+          "resource": "repo://src/common/__tests__/parseOutput.test.ts#L32-L95",
+          "version": "repo-lines-v1:sha256:e87d9509006071a524ba344e5a2497ffd7e8e7ec39840910c3a5ca3a73dbb307:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhNTQ2ODI4ODk5YWQzZTk3ZTU3MjhhMDA2MDk5MjVlZTA2NzYwZTc5NDNlYWViYTQwYzkyMTdkN2NjMjM5M2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjNzI3MzZjNmEyNDcwMDM3ZmM2NzlhYTM2YTQwNzU3ODkyYTNiOWJlMmU1NGJlNThhNTIzZWRmOWYwZTU2YzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3a921a3c273249849042258ab3548d33",
+      "statement": "pageState.test.ts 固定时间戳契约：toMwTimestamp 去掉毫秒，conflictGuardParams 在从未读过时返回空对象、读过时给 starttimestamp、只有记录了修订时间戳才加 basetimestamp，markAsWritten 同样盖读时间。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/__tests__/pageState.test.ts#L38-L77",
+          "version": "repo-lines-v1:sha256:fa429c048858dcea92f6ae0ea140a1ef72412e2286fef86b296a7df5c48dfd0c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0Nzk1ZjAwNGE4MjQ0MmExNGQ2NTkzMWU4NTRhM2E0YjQ2NTMwYzk2OWJlNGVlM2ZlMWRhZmNjZTczMjM4M2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkZjk0ODA0MzAxOTdkYmRjZDM0NDdkNzEyMWRhZmU1ZDg0MmNmODczYmVhMGViNGE5NTNmMmNmM2VjNDFmYWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c9d59b55df9f40ad87d640f4e7c7fade",
+      "statement": "utils.test.ts 固定 errorResult 的注解行为：英文与中文编辑冲突都追加含 get-article 的恢复提示，登录过期追加重新连接提示，无关错误原样返回。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/__tests__/utils.test.ts#L36-L59",
+          "version": "repo-lines-v1:sha256:57fffd346a2a0ef82646909bc1e4a872e2c54b4293425132663a55782455aba3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkZTdhYWRjYTM4NWJlYTIwNjlhZjAwYmM0YmMzYjJiZmU5MTM0ZmYzODg0MzhhYzA1MzUyNDg2NDFmYWUwMzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU4MDRlY2ZjZDg3NGIyMTE4M2U4OTBiNmU3NWJhMzNmYWQxNzZkZTc4YjMxMjliNTdhYWJhYjY4MTM0OGYwY2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f8fd8574c465459584a6d01dda787f7e",
+      "statement": "`npm test` 是 vitest run（一次性、不进 watch），仓库没有 vitest.config.*，套件完全靠默认 include 从 src/common/__tests__ 与 src/tools/__tests__ 发现，同目录的辅助文件 fakeNodemwBot.ts 不被当作测试文件。",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L18-L26",
+          "version": "repo-lines-v1:sha256:1a22f453318341ab35a467c086ac5d180fbd7f9a46191afa797c39bda953c99a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTg0MDY5ODRiZGVmY2EzNGRkNmJjOTAwMjdmMWQxMWFiY2IxNzAzNGM1MjVjOWE1Y2VmYTFkODRmY2NkODFkMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBjOTQ5ODU1MjZjMWM1N2VmMDBjMDBkM2Y0ZGM5MDYxNTY3N2EwYTM2YThiNzk1ZGZmOWFmZmQ1MGZlOWY1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDAyNGMxOWVmMDgzYjZhYmEzMDYzOTQzNmVjMTE3NDhiOTY0OTRhYmI1ZjhjNDIwOGM1Mzc3YTIxNWNlMzU3NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzcxNjI0NzdkOGQ0MGM1MjQ4MTJiNmVkMzJiMmFjYjgyYTQ5NTdkZDFiZmQzZjI5ZWYzZGUxMWU3ZTllYjgwMSJ9"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/fakeNodemwBot.ts#L386-L423",
+          "version": "repo-lines-v1:sha256:8ce63f9d18f51b566ef2b2a694c3cce55ae6065a50dea0b25af1daeb8153ead6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2Y2Y5MDk2OTczYTZmNDYwMjU5ODFiNmUxYWYyZWI1NjQwM2JjZWE3NDk3ZTAyNjhmNGZlYThkYWVkNDk0MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzNGYwMzU2MTk4MDkyYTgxMDFmMTE3MGIwMDcxMDZhYzIzZDQ5OTNkNjM0ZjljOGE5Y2Q5NDk1MGJmNjNiZTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjNWI4YzMxNzZjYzUzZWFjNTZiZGQ5NzcxYzRhYWQ5Mzk0NDc0MzQ5YTQ4ZTU0ODliMDgxZWMwNmE0ZTE2NTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L29-L35",
+          "version": "repo-lines-v1:sha256:0a063d97fd77ce2f9c5edabe867d29731bfbc4a22a96f3e091084c5edb8bac46:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGUwYWJjYzhmMTM3MGFkZmVmMmI3YzI3YTE3YzY5NjZhY2RhZTE2ODRjMzg0MmVhYWRmYzYyYzdlYzFhYjk4MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzJhY2M4MTk4OTg3OWQyNDE4ZjczMzBjMWEyMzY5NWRiNTdiNDI1MzAxOTBkNGE4MWY3NTZhZDI2NDgxYWE4MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWQwNDlhOWYyMDQ0MGY3MjVmYmY0OTliNzM1YzRiYzg2NGI1NWIxN2FlZjZhMDY0ZWFmYmViYzhjNmQxMjY4YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzE5YjI5NGJiYmUyMTZmZTNlYTg4Y2YwZWQ3M2ViMDkxNDU0MDllNjNkMmU2ZTU0YjNmMjI3MGZiZTBlNjM2MCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d87c57a9fabb43448f63649152a4ad97",
+      "statement": "eslint.config.js 提供可加载的 flat config（@typescript-eslint 的 recommended 规则加两条 warn 级覆盖），所以 lint 不再因缺少配置而失败；但它没有类型感知，且 lint 的覆盖范围受 npm 脚本里未加引号的 glob 限制。",
+      "evidence": [
+        {
+          "resource": "repo://eslint.config.js#L8-L29",
+          "version": "repo-lines-v1:sha256:f21070e67d4dedd3b656034c01bdaa063ffd300fd8440a7950ae3ded1ccc9776:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzMjJkNjRiN2EzNGUzNDE3YzViYWVmN2FiNTRhYmYwMjhiMDRiYzFjOTRkNjYyYTYwMzVhYzFmMDQzNzE4ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4NzRmMDU1MmU4NmYzNzJjZjI3MzRlOTgxYTM0ZWUzZGQ1ZTgyNTc3ZTc3NmQ3NWJkN2Q0M2E5MzRlNjQ3Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzNGVlODI2ZDhmNDhlZWI4ZmUxNDkwNGUwNGYzNTRhM2NiZjA2ZDRjOGY2ZmQ2N2IzOGNlZmNjZDhjOTA2MGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ4YzNiMzRjMDkxMzRmOTc3MGU5OGMzNTBmZjJiNjE2YmRjNjQ0MTgzOWQ2OGJiZjRhYmQyMjkzMTZlN2Y4NzkifQ"
+        },
+        {
+          "resource": "repo://package.json#L21-L21",
+          "version": "repo-lines-v1:sha256:a3d37da4f068035c023f3beaa4185e5ca4bb9ffe7eb075a9c9fb9c87c95efd15:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNkMzdkYTRmMDY4MDM1YzAyM2YzYmVhYTQxODVlNWNhNGJiOWZmZTdlYjA3NWE5YzlmYjljODdjOTVlZmQxNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNkMzdkYTRmMDY4MDM1YzAyM2YzYmVhYTQxODVlNWNhNGJiOWZmZTdlYjA3NWE5YzlmYjljODdjOTVlZmQxNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjU2MWJmMDk1MDc5MmIzMjIxNjM2MGIxNzBiYzA5NWI5YTkwNWQ2ODU3NjlhZDg4Y2YzZmY0MTgxMmQzYzFkZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzY5YTQzNGQ1NDJhZWY3NTZhNzgxOGViYzY2MTBmMTA4ZjhmYTkzNjRhMDg1NDMxM2JkODg5NzcyYWEzNzIyMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ffccc992311541d3858359993682ab36",
+      "statement": "write 的四个 intent 体量阈值没有任何自动化用例，有覆盖的只是 edit 与 revert 各自的 1/10 擦除下限。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/__tests__/readGuard.test.ts#L199-L213",
+          "version": "repo-lines-v1:sha256:6770435afa46a9b5425587d610e1fa8633725b64b6ca9aba430e21c98bea14d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ZGEyZGVhZGZiMzc2YjZjOTllZTAwYTcwODJjYmFmMmEzMDg0YTQ3M2I2ZjAzMTg2ZDg0ZDVmYjMyNTI5OGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM5OGI1MGEzNWFiMzk0ODk0ZTMzMDZmZWNmZmFkOTFjYzYxNTQwNmI2NjM4Mzk5MDlmMWRiYzJlOTkzNGJhMDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU3YmI4MTg3MjY5ODU5NjIzN2VhNzBkZmI5NTIwYTkzMWZjM2FlZTcwY2I0MWZkNjgzNGVlODQ0ZTI1ZjRmODAifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/edit.ts#L140-L149",
+          "version": "repo-lines-v1:sha256:8e1836a62427f69d4c60232af34b43e849aff52ee85d5162e1f37efb0cbbf4a4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiMzg3NzM0MWFiNWU4YjhiYTBkY2Y2Y2JkMzJlNmVmNDAwYmVjNjkzZWQxNGNlYTFlM2E3NThkYTMxMGI1OTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiOGE2NzY4YTVjYmY0M2MyZTcxYWJhZTA2ODZhZGYzYWJlNmYzYzFlYWM0NDUyODg1MTAxMTVhMmI3NDM0ZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdkNzE2NDBhZmY5MmEwYjE1ZDYwZDIzNGQ1MzkzZmQyZGE3ZmFiMzJhOGE4ZTk4ZTIwYzFmMjk4NjIwNWJiZGEifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/write.ts#L86-L131",
+          "version": "repo-lines-v1:sha256:32327e356ba9e681469cf32c91dc3d647095e4c92d512a4a0772d804c6b05cd9:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxZGRhNzJjMmU1NjYyZWNkODhiNTliZjg4MTUxMmQ1NzQzZDkwMzJkNDZmODc0ZDUxY2RiZDVlZjM4NmYwNGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlhOGQ2NjBjNmQxOGVmOGVlNGY1OWY5NDZiYmRiYmQ3NzFkMDI5ZTJmOWVhNGZmNDAwNTYyNTczZTI0YzNiNmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBmNzk1YWI3MjAzNTk0OTNlNjdkNmIwNjRhNWY2MDFiMjZlZjEzMzVhN2ZlMjA2MGQzY2NkNTA2ODI5MDczZjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_96d95b811bd14c919bad2c088fff0c25",
+      "statement": "现有守卫套件把观察点放在 MCP 客户端返回的 isError 与文本片段上，只有不变量本身是状态传播时才断言 conflictGuardParams 这类内部状态；需要断言“某函数没被调用”时用 importOriginal 做局部 mock 保留真实实现。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/__tests__/readGuard.test.ts#L50-L102",
+          "version": "repo-lines-v1:sha256:34bd808e57ede67d323bb3902f5794305a73899b1b38ebf036c23fd786057be4:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4ODc1NWU3YjNhMmNlNThjMTg1NWJjOTk0ODUyOTg1MDA1OTIyYzVmOTZmZjQ0YWNjOGI1ZjQ1OGY3ZGZlMWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE4NzE4Yzg1ZGY1ZGNjZTgwMjFhZjM3MjYzNDA3YjdmOWU4ZjIyNTM5MGIwNmJiNmFiYjQ1ZmVkODhjNzQxYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE4Mjg4MWMxOWMwYTBiMDZlY2Q0ZjhkNTJlNDAxMmVjMjBjODg3YmU4ZDg3OGE2NWRmN2FiZTU1YzEwYmYwMDcifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L163-L190",
+          "version": "repo-lines-v1:sha256:e97b2cf89dcfde6db4b6f60898d4051f13873a69c5ce63c761686674bd661f17:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlYzdlMDUyYmYwNTQ0OTI1Mzg5NzkwZWFhYTgzYjgyM2ZmYmYwMzM3NzM2MDUxYjNmYTQzNGJmODg2ZjU4ZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNjNGY3MDFlNWZkM2M5MDI1ZTkwMDI0MDhmMTFlNjA0ZWEwODc5MDFjMWYyODJiNzlmMDJmY2M1NTIzOTNhNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6f95023c2b5d407d9697bc4a5b3af22e",
+      "statement": "新增工具时必须同步三处测试契约：smoke.test.ts 的 TOOL_ARGUMENTS 条目（否则目录数量比较失败）、annotations.test.ts 的 37/17 计数与幂等/破坏性集合、以及假 bot 的 METHOD_RETURNS 或 fakeApiCall 分支（否则回落值会让测试断言你对响应形状的猜测）。",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L36-L45",
+          "version": "repo-lines-v1:sha256:beda0bbf0246dc53373dd78bd73e503917044159c1d07b9820103384c293b46a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzYmQ3NDI5MDFlNDk2NDVhYTVlMjA2MzdlNjAwOTM5OWQxNjViYzM1NmQzMzM1ODljNDI5YjdkZmE0YTgxMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2OTRmOTA0NGM0MDJlZTRkMjBjMTVmNDkyNTNjYWJmOGVjNDUwZGZlMmNmYmE3YzE5YjhiZTc2ZjM0NWU2YmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIzMzQxMTU3ZWI0ZTcwZDE3NWU0ZDhiZjQ1YjA5OGY5NTU1Njk1NDRhMzRjYzlhMmY4M2RlMmU4MzBhZDljZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViMWJjNWJjNGEyMzdmNTc4ZTZhZjRhNDE1ZDA2NDdmOTkxMGIwM2IzNjRlMWUyN2MxZjFkYmFhNzQzZDAzYmEifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/annotations.test.ts#L106-L116",
+          "version": "repo-lines-v1:sha256:d4c60175d143645441b7ee48ed69c45864410a6e33b278c6b0e314dafb4786e5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwNjg0YjllNTcyZGYyM2EzZjE3OTdiYjBkY2NhNmUwZWY2YjhmNGRjMDIxMjY2Y2ZmOGMwOWM5ODgxNzRhYjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjExZmFmODYwOGRhODA3OTM1OWU2ZjUwNzAyOTQ1Njc2NmYyYWU2MzUyYTZjNzIxMjhjMDZiN2RkOThhNmYzMzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk2MWM0MzlkNjE1YTBhZDE4OWJhZTQ1YTQ2MzMwMjM0NTZkYTFkMzc1OWFjZWIyMzFjMTM5NjU4Mjk0NGU2YTMifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/fakeNodemwBot.ts#L305-L384",
+          "version": "repo-lines-v1:sha256:d987166f849c4a006453e1ce82409f4ff6793c63ca986dae987b9f7ed67a2384:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkZGI0NjJlMWE0YjNlMmNiNzlhZDk2YzMwYTMzMjA1YjY0NzUwY2RhN2RkYzY5OGFmNjRhYWQ5NDU5MDIxMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5OGUyOTgyN2NhZDE0M2ExYTRmM2MyMDg0NzY0YjgyM2JjYmVhZDRhMDRmMTVmYmJmNDQ0ZGMzN2NhOTk3OTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzNjJjYjQxZjI4YWE0ZTIxZDI0YmE2YWEzZmIzMzhhYzhiOTViNjY2ZjM3ODVmNTVjNzdmMjkyNjExMGVmMTIifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-30T18:16:46.462Z"
+  }
+}

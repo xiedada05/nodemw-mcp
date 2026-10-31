@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:89ea05ea1f3b9f38ac67c2c01dff534f765529291433bbd353fb1e4886518171",
+  "claims": [
+    {
+      "id": "claim_90cddcdcfdb949e48e1732895f585785",
+      "statement": "Runtime configuration is resolved exactly once at startup: parseCliArgs returns a { config, pathExplicit, debug } triple, autoDetectPath overwrites config.path before initServerConfig stores it whenever no path was supplied explicitly, and initBot then builds the single nodemw Bot; there is no reload path and no environment re-read afterwards — the only periodic post-startup activity is the 60-second login heartbeat, which re-checks whoami and flips the authenticated flag but never re-reads configuration, so any configuration change requires respawning the process.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L202-L220",
+          "version": "repo-lines-v1:sha256:ca7e088b99dc6c05800efe5b8470ae0246a00bb53e580a96a4f74c80af115979:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjNmZlYzlkYTVhMTNkMzE3OWY2ODQ4ZjE5MzllOGFiNTVkYThiZmQzMmU3ZTlkZTRlNWZlNzEyN2I0MGVhNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjNWI4YzMxNzZjYzUzZWFjNTZiZGQ5NzcxYzRhYWQ5Mzk0NDc0MzQ5YTQ4ZTU0ODliMDgxZWMwNmE0ZTE2NTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE4MmYxM2Q0MGY0NDlhOTA4Nzc5NWEzY2IwZWRhNWM5NzY3ZDExZWUyMzIwYmQ3ZmRiN2E4ZTBkOThjZTFmYWQifQ"
+        },
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L94-L123",
+          "version": "repo-lines-v1:sha256:d018b5e81f72d1fd7984032d3c27cca857083b18c6ae4e5a0cf0f3d007329e4c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmNWM2NmRlNTgzNzliYTA1ODg5MDlkOWFlNjQ2NjMxNWU2MjI3ZjQxNTQwMTgzMWQyMzA4NWQ4MDQxMmMzYzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU0ZjY0MTcwMTE2NTcwYzhhODA3ZWE4ODRlNDQ3ZDg2Mzc0NjRkYTllMzYxOGNhYTZjM2Q3NTZkMGYyM2VlZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUwMzI4YmU5NDBjZmJhNGYyYjJkNTJlMzAwNGEyNGIyZTc0MzY1YmJiMDQxOGQ1ZmJlNGZmZmY3MmQ1ZTg4NzEifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L48-L142",
+          "version": "repo-lines-v1:sha256:c34c383bfc2d651edc7a08435e1906452ffcdc66c475748ae8128b75a1b71aa7:eyJzZWxlY3RlZExpbmVDb3VudCI6OTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhZTBhY2VjODQxOTQ2MDY2MTNjM2Q1MDRiNmZmYmYyYzRiMDllMWJjZjBlNzVmNTNjOGI4ODQ3NDViNzVhYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4M2RjOTkwNzY2MmMxYmNiYjUzOWJhNzZlNWRkOTkzZGM3YzYwYmNlZmUzZjJmYzY1ZDFjNjA3OGI1Mjk4ODMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlMWYzMzMyODEyYWE2NWJmNDliMWFkZmUyYjljMGEwYmU3MTYxOWUzY2Y4Y2JhYzhlNWIxYTM5ZDYxY2M2ZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYxNThmMDQ5MTNmNmNjMDQ0ZDlhNDdjNzRlY2I1YTM0MDAyZjRjMWQ2N2Y3NDJlMDgxODQ1YjhkZDBhNDdhYzEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f73cf00346b44cdc9f6e2e4d595cc3fa",
+      "statement": "Configuration values merge with nullish coalescing in a fixed order — argv flag, then positional argument, then NODEMW_MCP_* environment variable — so a flag always wins but cannot unset an environment value, and conflicting sources are not diagnosed (an explicit -s plus a positional is accepted with -s winning, --path beats --endpoint).",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L66-L67",
+          "version": "repo-lines-v1:sha256:85634e9bb8c27fb6cc6f0ce7f3de6693114b13bd8a2a16085a52c1f2d761939d:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWIzMTZlZjYxNjFjYmI1N2RjMjBiMDI2YzJmNDQyN2NiYTQ3YzgwODgyMmFhYThlNDgxNmI5ZjEzNTkwMzlhNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODkyZDM2MmNiZWY4MjI5MTkzNWY2MTM4MDMwZTI3ZDNhYmZhMDEwZGU2OTkyNmM4NGZlMTQwZmNhZDZiNDI3NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGYyNzY5NGVjZWJjMDVjY2JkYmMyYzFiNzY1MWM2YjkzZDUxN2RlZGUzYjI3OWY2OTFhMTVmNWJkMzliMDQ4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTg4MzA5ZDZmZDhiNWNmMGNhYThiNGMwODg0OTljZDU0YjEzYjUzN2E5ZDIxNWViNmZiMTgzYzljMjBkNWIzZiJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L95-L107",
+          "version": "repo-lines-v1:sha256:bb6653ba553fbe7dc3ebc0133795056509a2364594a11ed7d1c790674e721ad0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4NjYyYjM1NDQwNjExMGEwOTk4YTg1MGI2ZjFhYWU2YTI5NTkxZTFkNmExYjA0ODA5Yjk2MTIyY2ZkMDQwZDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlNmI3YmU5ZTJhYzlmZTAzMTY4OGY4MGQ2MDkxMjdmYzhiY2RkNzU4OTRmMGJmYTk0ZjY0ZGM0ZDk1ZGJhZjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNkYjhjZTZmYmVlMzk5OGI3ODdmNTFiMGQxMTRkMzUxMjkwMmVlNDMxYWQ3ZWM0MTRjNmFkNDNiMWYwYjkxNTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1N2JjYzkzZDZhZjdiZGQ1M2E5ZTFiMWIxYjQ1YWVjMjU4NTliODZiNzgyZGJmNTNkOTA3YmUwZGRiOTM1NTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_840d26816c1142f8aa05d238d3c4934f",
+      "statement": "There is no configuration-file support: createBotFromConfig always passes an options object to the nodemw constructor, so the client's own JSON-config-file loading path is never used, and the CONFIG variable exported by test-server.js is read by nothing.",
+      "evidence": [
+        {
+          "resource": "repo://package-lock.json#L4047-L4064",
+          "version": "repo-lines-v1:sha256:d8b96cd38e6217c6552aa302ae9d797770c5b18b79dc9428502172d87c15a2e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4YmY0NTU4Mjk0YTIzMWEzZGQ0MmE0NGI2NzM0ODllNGY1ODEwZjY0NWI5NTE3ZjE4MGNhNmFmMmM3NTY5ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4NzRmMDU1MmU4NmYzNzJjZjI3MzRlOTgxYTM0ZWUzZGQ1ZTgyNTc3ZTc3NmQ3NWJkN2Q0M2E5MzRlNjQ3Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc1ZWU0MWJlODhkYjgxYTkxZTkwYWFlODkxOTE4NzE2MDkxMTJiNzYxMTJiMTRiZjliMTdmYWJmNjVjYjYzMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyZmVlYTRjZDUzMTJmZGYwOGY0NjI5Mjk4Nzc2ZTZhYjg1OTgzOTJjZjQxOGZjMzdkMGU3MzhjOGRhMmM2NDcifQ"
+        },
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L133-L174",
+          "version": "repo-lines-v1:sha256:f668c07f28ac5219776d07fd242fbb5148d5eef975630c9175f8173d3d4a0f00:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlNTI2MGEzMDc0MTAxNDU3MzZiZmFjNTMxM2RjYjYyN2QxMTNiM2YzMmEzNTQ3Mjg0YzYwNWM3ZGMzYTY0NTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjYjVmZTA2ZTZlZjdmNTRhMGQ2ODY4ODVlZmJiM2Y3YjUyNjEyZWNhNDYzODVlNmNkZjk5Y2U5MzcxNTFmMDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzNmM4OWQ5MTEwZmNkMjM4YzVkZmZiM2MyNzI2ZGI2MjM5M2Y1MzUyNzNjYjViZTc2NGI5NzA4MmVmYjBkYzQifQ"
+        },
+        {
+          "resource": "repo://test-server.js#L22-L25",
+          "version": "repo-lines-v1:sha256:cf665e668dbb9df1616701f9c9a441a3776aeaac547494e6908239b10a8f6fb9:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjJiYWZmZjhiMjQ3NmE3NjI4NzY5YjkwZWE2MzExMjlmZWU4YTM2YTYxOGEwNTIzYWM1YTI3YzA0Yjc3ZGY2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNkZGVmNzI0Nzg2YjRhZjQ1YWI3Y2FkODFkMzc3YWU1NDNiYjc4NDEyOTY1NjhmYjUyMjY5OThhZWMyMTYzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjQzYjQ1ZjQ4NzYzZGM2YzQzZWJjN2E1NDM2YTNjYWEzYWVkZTFhN2MwYzFmOTEyNzFhNmEyZDIxNWYxYmViOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjVkMDI0ODRmZGFmYzQ0MTFjMDNhZmQ3NzAwNGE3OGI2MTEwMjZmNzJmNWU3MDE2N2ZmY2U5Nzg2YWJkMjJkNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a09b1b544afa4fd69804027a62cfe691",
+      "statement": "The target wiki is resolved as --server/-s first, then the first positional argument, then NODEMW_MCP_SERVER; exhausting all three is the only parse-time fatal error, printing an Error line naming all three sources and exiting with code 1.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L66-L71",
+          "version": "repo-lines-v1:sha256:028efb515a1447e85237d0ff24a7380e7c22e8f990e6682c4436a36ca6acfa58:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWIzMTZlZjYxNjFjYmI1N2RjMjBiMDI2YzJmNDQyN2NiYTQ3YzgwODgyMmFhYThlNDgxNmI5ZjEzNTkwMzlhNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGYyNzY5NGVjZWJjMDVjY2JkYmMyYzFiNzY1MWM2YjkzZDUxN2RlZGUzYjI3OWY2OTFhMTVmNWJkMzliMDQ4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWY1ZjRlMTNkMDE4NDk1YTA5YjRlY2E5ODU0NzA3N2I4ZDliMTIxZDYxOTY1MGNiMWM0ZjRkZGM3MzNmNmRlZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_54fc7abde881417c88e0fa72b74e93d8",
+      "statement": "A target starting with http:// or https:// is parsed and reduced to hostname, protocol, and port, discarding any path segment which is then re-derived by auto-detection; an unparsable URL falls back to the raw string as host with the protocol left unset, and a non-default port reaches nodemw but is omitted from the endpoint string embedded in the agent description.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L243-L244",
+          "version": "repo-lines-v1:sha256:9a57ff218f611336458153e1dbf8882437597342655ee6a5710538f712cef807:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTA3NjlhYjI2MWMzNDBmNDI4ODI5MmE5YTBmYTdmNTU3OThmNTlmOTI1MWNiZjc4ZjU4MDViOWExNzA4YmRlYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYThjMTM1N2NmODhhOTAzYWMxZDZmOWU5NmI1NmVjYWNiNjc1Y2FjN2Q5OWIzM2ZlZjViYzZhYjE0Y2U0ZmZmMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDk0ZWQ0OWUwMDlmNDkzNjAyY2E2Nzk5MmY3YTIwY2IyZGI5ZjA4NTkxZTg0NDQ4NjM2MjQ2MjllNDZlZDQzOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGI4NjZlZmRhYTY5MTlmODA5OTdhMjYyN2RlNDljMGNlM2JhMjM4MmQ5NDA2MGNlYjg5Y2Q2MGFiZjA1OTk3NiJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L76-L89",
+          "version": "repo-lines-v1:sha256:a7b0bac277bfc8f1fd0659f687ff07cbbed2440978131a301fb605cca8382954:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MmI0MTRkNzJiMjI3NTg3NDZlYjQ1MDM2NTQ4OGIzMTFhOGEyNDY5Y2E4NWM0ODhkOWIxNzVlNDcwODM0MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIzMTBjZWRjMGJhMGQzODg1YzMzMjY5ZGVhYmZkZWE1NzUxM2EzNmNiNDU1MjMwMTEyZDliZTJhZDQ5MDAwMjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU3YzUxYWRiOGZlYTg0MzBjZDBmOTc4YWViOWVkZDk3NTU0NWI0NjRlNzdkMjQ2MjE0YzA4ZTRiYTMwMGIxOTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a62b3c5f3e2c42489105eb4e4c2afe1c",
+      "statement": "The API script path defaults to /w in the returned config, but that literal default is unreachable: when no explicit path is supplied, bootstrap calls autoDetectPath before initServerConfig and overwrites it, so the resolved path is either explicit or detected.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L131-L142",
+          "version": "repo-lines-v1:sha256:d6ab92c1e2826e78d10c9dccf712aaafc864503ac0081db2a85567cfb4fbcb5c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjOWQ5N2QzNGFhYTlmZDY1ZDI2NTViYWY3YzM5ZDg4ZmQ4MmIxMTI2NTJiZGZlYjYyYzliYjEzNjRhNmM5NWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4M2RjOTkwNzY2MmMxYmNiYjUzOWJhNzZlNWRkOTkzZGM3YzYwYmNlZmUzZjJmYzY1ZDFjNjA3OGI1Mjk4ODMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUyNmRhZTcyYWI5YTJiM2Q2ZDJkNzliNTRmMzE2Nzg5YTZlMzhiZTFkMzEyYmEwZDliYmU4ZDg4MjhiZWMxZTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYxNThmMDQ5MTNmNmNjMDQ0ZDlhNDdjNzRlY2I1YTM0MDAyZjRjMWQ2N2Y3NDJlMDgxODQ1YjhkZDBhNDdhYzEifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L100-L100",
+          "version": "repo-lines-v1:sha256:8adc208f490e3dca7e693e88ac757010b9f2093f98a92b18864be712e492cfce:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGFkYzIwOGY0OTBlM2RjYTdlNjkzZTg4YWM3NTcwMTBiOWYyMDkzZjk4YTkyYjE4ODY0YmU3MTJlNDkyY2ZjZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGFkYzIwOGY0OTBlM2RjYTdlNjkzZTg4YWM3NTcwMTBiOWYyMDkzZjk4YTkyYjE4ODY0YmU3MTJlNDkyY2ZjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjdkODRkYzYxMDBlNmQ2MTE4MzhhY2U1MGI2Nzc2ZjlkZGZlYzlhMDZjNjAwNjQxMjQwZDlmNDc2YmU2NjdmMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjVhMTUwYTRjMmQ4NjEyM2FiMGFkMmI1NGUyOGU1NTJiZWY3MzhmNjhiN2M4NmEwYmQ4MzU1Y2ZmNTM4OTg0OCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e61a4cfebeab4d24abefe5d423b9b3f7",
+      "statement": "Path auto-detection tries the /w prefix and then the root prefix, each by constructing a throwaway anonymous Bot and calling getSiteInfo(['general']); credentials are configured but never used for login during probing, so a wiki that hides api.php from anonymous clients can fail detection while accepting the later authenticated session.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L185-L200",
+          "version": "repo-lines-v1:sha256:0745a9fe4c86de224b00400bea8eac340da48a1efb0b4cfaa263512c4eb552c5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5NDhlZjliMDkxMjA4NWYxZGQyMWEzMThkZDNlM2M4YWM5Y2UzNThiOTY1Yzc0NDQ4YzJmN2EzYjI5Zjg5ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5YjAyMjAwNzkxODdkZmIyNmExY2UxOGVjYzBiMTIzMTM1MzJmN2E1MTc5ZjY5YmFjOGNhMzY5YjNlY2VmODMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0OGMyMjQyZDkyYjZhZDZhNDg0YTMxYTlhMzg5ZWI1ZjQ2NWMwMGQzOTZhNGYzMWM1ZjQwZjgxMjVlYTY3MjYifQ"
+        },
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L202-L220",
+          "version": "repo-lines-v1:sha256:ca7e088b99dc6c05800efe5b8470ae0246a00bb53e580a96a4f74c80af115979:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjNmZlYzlkYTVhMTNkMzE3OWY2ODQ4ZjE5MzllOGFiNTVkYThiZmQzMmU3ZTlkZTRlNWZlNzEyN2I0MGVhNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjNWI4YzMxNzZjYzUzZWFjNTZiZGQ5NzcxYzRhYWQ5Mzk0NDc0MzQ5YTQ4ZTU0ODliMDgxZWMwNmE0ZTE2NTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE4MmYxM2Q0MGY0NDlhOTA4Nzc5NWEzY2IwZWRhNWM5NzY3ZDExZWUyMzIwYmQ3ZmRiN2E4ZTBkOThjZTFmYWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_dcecb2f073e745ae87a4c20cce79be00",
+      "statement": "Path auto-detection is skipped only when --path, --endpoint, or NODEMW_MCP_ENDPOINT_PATH is truthy, so an explicitly empty path such as --path \"\" cannot force the root mount even though the auto-detection error message recommends that spelling; if both probes fail, the thrown message names both URLs tried and bootstrap exits with code 1.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L195-L199",
+          "version": "repo-lines-v1:sha256:91cef8f40ef528bb3e9d81cebf0bc639c59822c57b19236ad7311aec37b46ebe:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjI1ZThjNWQ1MWQ1ODA3MmJkYzIxZTBjNThkY2Q0ZjBmNWQyY2JiY2UzN2FlNzRkYjBkMTk3NjdjZjg0ZDU1NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWE3MWQ5ZmI4ODBlZWNkY2JhNTMyNzUyZGEyMzdhNmU4YjYzMmUxY2VjZmU1MzZkOGZlOTJiOGZkMDk3MmJjNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGI1NjQzMDA2ZWM1MDg5MGNhMjNlZTE5NTQxOWEwNGY3YjNmMzRmNjcwOWFhN2U1YTgwZjc5NmIyNWFkMTJmOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzBlNjBlM2Q4MDY3Y2U2OWNmZmNiZDljODgxMzFjZTU0MTE0OTIyYTVjMWUxYzliOWY0MTk4NzhkZmI2ODFkNyJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L131-L140",
+          "version": "repo-lines-v1:sha256:a41023367cbcb42d3bc997dda3b4eb5a319b0fc98583405216c2b378ff529a2e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjOWQ5N2QzNGFhYTlmZDY1ZDI2NTViYWY3YzM5ZDg4ZmQ4MmIxMTI2NTJiZGZlYjYyYzliYjEzNjRhNmM5NWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUyNmRhZTcyYWI5YTJiM2Q2ZDJkNzliNTRmMzE2Nzg5YTZlMzhiZTFkMzEyYmEwZDliYmU4ZDg4MjhiZWMxZTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4M2I5YTQzNDRkMjk5YTQxOTljOTU0ZDk4YTM4ZTQ2MGI4M2NlMWNmOTcyNTJkMjYzN2MyNTFlZmE2MGQ1OWUifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L91-L92",
+          "version": "repo-lines-v1:sha256:5d69ab22e1f98e1c8929bcec5f617d4285d29b1dc4fbb8b5bfd7376d687e30c2:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmRmNGY5OTRmMzBmZTJkZDMwMWNjN2FlZWFhZGU2MDE0NjgzY2Y2OWM4YzE2MTRiNGZmMzA1YzYzYjlhNjliYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDkwZDMxYTMxZDEwMmYzOGU0Mzg5ZGUwYzg0NTQyMTJjNTA3MjMyNWNhYWM2YjAzZmZmN2YyNjA4ZTJkOWZlYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjZkYTllZjFhODE1NDEzNzI4NDMxN2YzNGE2M2VkMDdmMDRjYjU5MGQ4ZjBkMjQ0Mjc2YjVhYzcyZjRhZjNmZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzU0MDQyNjE1NjkzNTUxZmJkOWQ2NmZlMzJjZjVkMjNjNGRlZTQ0MWUxM2MyN2JlZmUxMTU0OWI0OWQ5MzJhZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_55c8dcfb52d8416b87ed942e01540e99",
+      "statement": "Login is attempted only when both a username and a password are present, and the authenticated flag set inside the successful logIn callback is what registerAllTools receives, so guest sessions register only the 37 read registrars while authenticated sessions register all 54 (37 read plus 17 write); a half-configured credential pair silently yields a guest session and never starts the login heartbeat.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L202-L220",
+          "version": "repo-lines-v1:sha256:ca7e088b99dc6c05800efe5b8470ae0246a00bb53e580a96a4f74c80af115979:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjNmZlYzlkYTVhMTNkMzE3OWY2ODQ4ZjE5MzllOGFiNTVkYThiZmQzMmU3ZTlkZTRlNWZlNzEyN2I0MGVhNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjNWI4YzMxNzZjYzUzZWFjNTZiZGQ5NzcxYzRhYWQ5Mzk0NDc0MzQ5YTQ4ZTU0ODliMDgxZWMwNmE0ZTE2NTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE4MmYxM2Q0MGY0NDlhOTA4Nzc5NWEzY2IwZWRhNWM5NzY3ZDExZWUyMzIwYmQ3ZmRiN2E4ZTBkOThjZTFmYWQifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L348-L349",
+          "version": "repo-lines-v1:sha256:ff413f35dd52ebcca8ce01aeec66939fc430313ed5d83092837f7c53c6cb50f4:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTgxYjg3MWEwODY4MDM1ZjIzM2IwOTIwNDA1NWFjY2YyZjZlOWZlMTBhZDkyMzlkNWMxMGYxMmFlYjRkNjJlNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2IwMjNhYWJhZWNjZTcyMjlmZGY2Y2UwNzVhZDZmMmY5ZjllZTk2ZmRkNGFjNDRkNmE1NDE5YzQ0ZDUzMjE2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTRmYjZiYTY2MThkNWY1YWViOTNjZjIwMzc0OTdjM2UyNmQwYmYzOGZmZjc0N2RlY2I4YTdkOWQ4ZDEwYmNkMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmNlNTUzNmFlODA4ZWU4MTM5YzIyNTZkNDZlYTljM2IzMjNlMzgxNTQ0ZDZjNWU4MjIwMjg5ZjI2NDg1ZWZmOCJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L373-L384",
+          "version": "repo-lines-v1:sha256:06cc4b7733419e7179cc459fab1e65512faf47ecbb1eeb91742c14a2ede84fb4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlM2M2Yjg1MGEyY2IxMmRjNjY0NTJlNmVjOWE2MjQ0ZmRjZGVjOWVlYTUzMjIxMGUxYWY4NDgxODJjNTQxNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwYmJhOTRmNzU4NzQxZTRmMjU1YTVkYjYxMGY2NmY3YTI4YTBlZWYxNmI0OGE0N2JjYTQwODZlMjE4OTQ5ZTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2YjA1YTZmNmYxZDk5OTM4ODllMDQ2ZTFjNzFkZmMzYjExYzYyZWZhOWY0MmFjNGIzMGQxMjVlMjdiYjRmZjEifQ"
+        },
+        {
+          "resource": "repo://src/tools/index.ts#L89-L162",
+          "version": "repo-lines-v1:sha256:b3db9df1efe06bd042f94c5e7063e19ae027c1f37506cead9a0b22a5d4554309:eyJzZWxlY3RlZExpbmVDb3VudCI6NzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3YjMxNzM1MjIwMjNmZWM2ODQ2YjZlOTkzYjRkZTRiY2Y2NTU4ZmYxMDJiNWFkMDQ3MDMzYmUyNmVhYzc2M2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzYmE5YWY0NmU4NGMzN2E5OTEzZmExNGZjMDg4MTYzMThhZmZiYzgxYzcxOWFjYjU0ZWYwN2QwODFkY2VjMWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0YmZkYzRkYmNhYWM4YzI1YTU4MzM5N2E2NzExODEzMjJmZGU5MWZkODk2Y2E4Y2IxMmVjNjM4YTYxMTVlYWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_78e3de55a09048afbd8654f69ab14fc6",
+      "statement": "--token is a CLI-only knob: it is parsed into ServerConfig but never forwarded to the nodemw constructor and never used to authenticate, and the README-documented NODEMW_MCP_MW_TOKEN is never read from the environment, so a token-only deployment starts as an unauthenticated guest session with no write tools and no warning.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L37-L37",
+          "version": "repo-lines-v1:sha256:678ac2fbcee53d7060c8603bad10ecd87fb50dcff25b0b715775668ba0b7ce36:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjc4YWMyZmJjZWU1M2Q3MDYwYzg2MDNiYWQxMGVjZDg3ZmI1MGRjZmYyNWIwYjcxNTc3NTY2OGJhMGI3Y2UzNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjc4YWMyZmJjZWU1M2Q3MDYwYzg2MDNiYWQxMGVjZDg3ZmI1MGRjZmYyNWIwYjcxNTc3NTY2OGJhMGI3Y2UzNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjUxMzc4YjE5MWVmMTA3MTM5ZmNhMzFlMDkyNGY2MzJhZDYxMDgwNWYyZWY2NmZmOTAyMWY4ZjJjYWFjZTIyYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjM2YmQ4MTliMjAzZGM0OWIyM2RkY2RkZTdjMjUyMDE2OWNmNmUzYzU5YzczZjM3ZTEwOWExN2YzOGVmZGYyZCJ9"
+        },
+        {
+          "resource": "repo://README.md#L78-L78",
+          "version": "repo-lines-v1:sha256:8a6e469c71967334ffd94b5f157acb5dcff0f0903cb447ad89eb18f7f4ad1259:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGE2ZTQ2OWM3MTk2NzMzNGZmZDk0YjVmMTU3YWNiNWRjZmYwZjA5MDNjYjQ0N2FkODllYjE4ZjdmNGFkMTI1OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGE2ZTQ2OWM3MTk2NzMzNGZmZDk0YjVmMTU3YWNiNWRjZmYwZjA5MDNjYjQ0N2FkODllYjE4ZjdmNGFkMTI1OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjBhNmUyODExNGMxYWI5ODFmM2I1ZjBmY2Y5YmM0NTNmZjdjNmEwNDdhZmY5NDc2ZWYxMmRmNDg4NzYzYWM4MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTVlODM0M2RiYjZiZmQ5MWIyMWNhNmQxMDEyODMwZjZmYzVjZmMwN2JiODRjNTQ2OWIxMDEwMzFmZTZmYjAyMyJ9"
+        },
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L133-L174",
+          "version": "repo-lines-v1:sha256:f668c07f28ac5219776d07fd242fbb5148d5eef975630c9175f8173d3d4a0f00:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlNTI2MGEzMDc0MTAxNDU3MzZiZmFjNTMxM2RjYjYyN2QxMTNiM2YzMmEzNTQ3Mjg0YzYwNWM3ZGMzYTY0NTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMyODZiZWM2ZGE1NDY3NjQyNzE2NzEzOGJkMDQwNjBlYzI0NTBkNDhjMjdmYjc4MzVmYzZkOTRkNzg5ZWYzOTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzNmM4OWQ5MTEwZmNkMjM4YzVkZmZiM2MyNzI2ZGI2MjM5M2Y1MzUyNzNjYjViZTc2NGI5NzA4MmVmYjBkYzQifQ"
+        },
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L205-L217",
+          "version": "repo-lines-v1:sha256:c665e7967b48cd4881e4585ca1d228fd9d396fb13a00fcdc491adf66cb4fbc7a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZiMTlhZWU5NTVlYWJlODA5ZmYwOTEwYTYxZjljMTU5Y2Q1OTdkZjE3ZWRhNTdjMDNlZDllY2YzY2FlYjE4MTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNhNzAyYjM0NmU2MzA1YzcyMGI3NDRiM2RhNWU3OWMzMjVkMDc1MTNmNjdkNTJmMzNlY2IwNDgzMjczYTNmZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4ZWVmYjMzNDFhNzY2MjZlNjBkNTBjNTY4MTZiZTk1M2MxODg1NjY5M2FhOWIxMzg0MWZjNWFlOTFmZWZmN2YifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L103-L103",
+          "version": "repo-lines-v1:sha256:f10c3d70ced8baab4db51863949d1a68c3cd43d5d820c25ea3b4dd963f830f5b:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjEwYzNkNzBjZWQ4YmFhYjRkYjUxODYzOTQ5ZDFhNjhjM2NkNDNkNWQ4MjBjMjVlYTNiNGRkOTYzZjgzMGY1YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjEwYzNkNzBjZWQ4YmFhYjRkYjUxODYzOTQ5ZDFhNjhjM2NkNDNkNWQ4MjBjMjVlYTNiNGRkOTYzZjgzMGY1YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjQwZTE5NmMyYmMzMTQwYjZiOWQ4MzIwOTVhZmFlYzg4OTI5YzgzZjk5NDVhMjIxOWVhMjI3YjBhNTczOGI4ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzg4Mzk4ODc3YWYxNWQ0ZmNmNDI3NWZhNGY1MmY0YzlhODVhMjMzNWM5MDRkMDg0NTU5NzI5M2Y3NTZkMmFlZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1522307b6f1a40b094f587b5d6beac91",
+      "statement": "The agent-facing guest-mode instruction tells the operator to start with --username --password, which are neither declared parseArgs options nor read anywhere (the real flags are --user/-u and --pass/-p), and because parseArgs runs with strict: false a mistyped or undeclared flag is silently accepted and ignored.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L274-L276",
+          "version": "repo-lines-v1:sha256:713707ea8e778cf711ba419e479a3b70d5a8dabb2bb605d567e1ec6e886cc30c:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWY0MmEyYjJkYjZiOTY4MTU0NDIwNzk2MTkwYTIyOTI2ZmE1MGJhZTM3NTllY2Q3YzFkNTFiOGMwNGVjNTVmMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjA5MzUxMmM1NTBlYjVkNGMwMTExM2MzNGM2ZGYwYjUyNjc3MGRhZmM2ZDZjNzg4YzFmNjgzMjgyMDNjYmJhMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGFjOWU2ZDllYzBkYWY1MjZjZjZlMWZlOTIzMWZhYTIzODc1ODQ5NmUxZDY1ZTE5YTU1NDQ1ZjU4ZjgzZDQ3OSJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L49-L64",
+          "version": "repo-lines-v1:sha256:3279a0d187515a052c68695a785b4d9fdc5e13ea3669758676bfe54bc798d388:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4MzZiYTNlZjA4YzM3YjhiOTYxY2ZhMjIzZWY2OThmOWY4ZmYwZmM0MjYzZWY2ZTQ1Njc4ZmY4NDhkMTRmMDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5N2M1NzZkZmQzMTRlMjkxY2ZiNmE1ODAwMDM4NjM2MmQ0NDNhZTg5NGQxYzFmZDA1NzgxMjNiMWZlMDZmYWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIxY2I1M2NmMmZkOTQ4ODU4ZjVmMTgyZDg4Mjc5MTk2Y2YwOGMwYTI3MzcxNWNjZDViYmM4MWVjOTUyZGMyNWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_526a2beeb10348199435ff33d0708a7f",
+      "statement": "User-Agent resolution is three-way: with a custom value and userAgentAppend the result is DEFAULT_USER_AGENT plus a space plus the custom string, with only a custom value it replaces the default, and with neither the default is used; the append flag alone is therefore a no-op.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L150-L157",
+          "version": "repo-lines-v1:sha256:5126341d2a9b279bb660fdbd82326bd6777cbec108482911b68cd13a9bfa59d6:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzg0MGRjYmQ2NDFkY2UxMmFjMTk5NmIzNTQ2ZTY3ZWQwOTNmYjM3OGIzNjUwNDBiZmMxZjc0OTgyOTUxNjlmOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjdiM2Y5MzM0YzM5NzA5ZGE2OWU4YzJkMjIwMGJhMmM5ZGUyOWFjY2FmNmJkOTU4NmExNDE0MmQzNjVjNzY1OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTRlYTczNTg2N2FlY2VjYjIwZTU2NDYwNjY0OTVhZThhZGEyN2E2ZWRmYTJjYzk2ZWFkYTU5YmE0N2QxZDA5ZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5b60dd2c153c43cdaf00fce3cdaf406e",
+      "statement": "DEFAULT_USER_AGENT is assembled in src/server.ts from the installed nodemw version, the Node version, platform and architecture, this package's name and version, and the @modelcontextprotocol/sdk version resolved through createRequire.",
+      "evidence": [
+        {
+          "resource": "repo://src/server.ts#L33-L37",
+          "version": "repo-lines-v1:sha256:657a4bd94026e9998ffa38dd36773cc557fa58c9b784773138d18754ff815d3b:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjFlYzhhZjNiNTNmZDkxOWRhZTk1MzIyZjYyOTE0MjM0MmU1MzNkNzRmOTYxODU5OTZkMmFiODBhZGEyOWNhNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzgwY2UwMzMxZDQwN2E5NjNkNmRiOTUwOTJiODc1ZGY2MzFkNTQzYzcwN2ZmZDg0MzcxNmRhM2Y5ZTI3NGRiYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjA3ZDZjZTdkOTczNTY3MTFlOWE2ZWVkMzI5MTUxMjdjZDZmYmJmYTJkMGZkMDNjZWM3MjIwMGM2YTFhNDg3MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDNhNzFiNzlhMTZiNmM4YWEyMTM4MTA0NGJlOWVjN2EyOGYwMDViOWQ5OWJhNDBjODkxNWQyODdkNWEyODliMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1346529250fc412899b589945a51871e",
+      "statement": "Debug mode is enabled by --debug or NODEMW_MCP_DEBUG=1 and has two effects: bootstrap prints [DEBUG] getSiteInfo and getMediaWikiVersion response dumps to stderr, and the flag is forwarded as the nodemw debug option, which in the pinned nodemw 0.26.0 activates a winston console transport that writes to stdout — the same stream carrying JSON-RPC frames.",
+      "evidence": [
+        {
+          "resource": "repo://package-lock.json#L4047-L4064",
+          "version": "repo-lines-v1:sha256:d8b96cd38e6217c6552aa302ae9d797770c5b18b79dc9428502172d87c15a2e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4YmY0NTU4Mjk0YTIzMWEzZGQ0MmE0NGI2NzM0ODllNGY1ODEwZjY0NWI5NTE3ZjE4MGNhNmFmMmM3NTY5ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4NzRmMDU1MmU4NmYzNzJjZjI3MzRlOTgxYTM0ZWUzZGQ1ZTgyNTc3ZTc3NmQ3NWJkN2Q0M2E5MzRlNjQ3Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc1ZWU0MWJlODhkYjgxYTkxZTkwYWFlODkxOTE4NzE2MDkxMTJiNzYxMTJiMTRiZjliMTdmYWJmNjVjYjYzMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyZmVlYTRjZDUzMTJmZGYwOGY0NjI5Mjk4Nzc2ZTZhYjg1OTgzOTJjZjQxOGZjMzdkMGU3MzhjOGRhMmM2NDcifQ"
+        },
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L159-L173",
+          "version": "repo-lines-v1:sha256:ee11d699f86694e190894d7f88e65ea2c47d8a80bae98cf3dc5e06fd7a619340:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhOGM4ZmNhZTQ5ZDAxYzY5MjExNDU0YjcwNjg0NGY5MDQxODMyMDAzNzNjNTg1Y2MzOWViM2U3YTdiMTc0ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3YjhmZmZhNzM5YTgxODA0ODBiZTVkYTZiMzVhMDk2YzQ1ZTU5ODVjNTBjZjkwMjQ4ZDJmYzA0YzgzOTVkZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMDllNTI2ZDBkNGJkNTk3ODU1OWU5OGE0ZDZhMTIxNzhjMDM2ZGVlNjMwMTdjZjc0NDdkZDI5OWQyYjBlMDkifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L167-L167",
+          "version": "repo-lines-v1:sha256:ece3fad94e80597179be5581cfc72e13bea695c4f2ce4b65714972c438650765:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWNlM2ZhZDk0ZTgwNTk3MTc5YmU1NTgxY2ZjNzJlMTNiZWE2OTVjNGYyY2U0YjY1NzE0OTcyYzQzODY1MDc2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWNlM2ZhZDk0ZTgwNTk3MTc5YmU1NTgxY2ZjNzJlMTNiZWE2OTVjNGYyY2U0YjY1NzE0OTcyYzQzODY1MDc2NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTg1ZjlmNTY3MTVmZDc0YjRhZTZjOGM4MzUwYjUxNDcwMWEwYTczY2JlNWE5ZjA4ODE3MmUwOTUwNjg3OTU0YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGM4ZTc3ZWU5MjViM2Q5ZTZjYzIzMDkxZmU5NWY5Y2M3YzQ0NDQyZjNkY2EyOGE1MDJkNzMwYWMxYjg5MThjZCJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L212-L212",
+          "version": "repo-lines-v1:sha256:20aa78bcbd83213b03a2b22adf12c1a179a24ec87fac97e3886b517ae3f40c4c:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjBhYTc4YmNiZDgzMjEzYjAzYTJiMjJhZGYxMmMxYTE3OWEyNGVjODdmYWM5N2UzODg2YjUxN2FlM2Y0MGM0YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjBhYTc4YmNiZDgzMjEzYjAzYTJiMjJhZGYxMmMxYTE3OWEyNGVjODdmYWM5N2UzODg2YjUxN2FlM2Y0MGM0YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGYwZGMyNWY3MDlhYWMwNjc0NzRmMDVlMWM5YjAzOGRlMTM2NTA0MzIwNDJkNGNlOGVkNmZmMTk1NzQ4NTI1ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDYxMTI3YTExNjMyZDkwNjRhYTUyZGQ1ZDU3OTk4NjdkYTg5ZmIyZjRjMjYzZDlhZWEyMjQ5NGRlNjY2YjI3NSJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L93-L93",
+          "version": "repo-lines-v1:sha256:6fb15c96e8a7d0433137b2b24589a03f3e1a569ea3f5b132fc56b4b722016e38:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmZiMTVjOTZlOGE3ZDA0MzMxMzdiMmIyNDU4OWEwM2YzZTFhNTY5ZWEzZjViMTMyZmM1NmI0YjcyMjAxNmUzOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmZiMTVjOTZlOGE3ZDA0MzMxMzdiMmIyNDU4OWEwM2YzZTFhNTY5ZWEzZjViMTMyZmM1NmI0YjcyMjAxNmUzOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTdjNTFhZGI4ZmVhODQzMGNkMGY5NzhhZWI5ZWRkOTc1NTQ1YjQ2NGU3N2QyNDYyMTRjMDhlNGJhMzAwYjE5MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmJkYTU1ZDAzYzM3ODcyZGMzZmM5NTU5YzYzYmNkNjNhZDYyYzA2MDlkODgwZDlkOGVkNzQ0NDdhNDc0ODA4YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_571bd58b642f4b6b91c6b851729a7723",
+      "statement": "Dry-run is passed to the nodemw constructor as dryRun behind a @ts-expect-error because the published BotOptions type omits the field, and the pinned client also honours DRY_RUN=1 from the environment, so dry-run can be enabled without any flag.",
+      "evidence": [
+        {
+          "resource": "repo://package-lock.json#L4047-L4064",
+          "version": "repo-lines-v1:sha256:d8b96cd38e6217c6552aa302ae9d797770c5b18b79dc9428502172d87c15a2e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4YmY0NTU4Mjk0YTIzMWEzZGQ0MmE0NGI2NzM0ODllNGY1ODEwZjY0NWI5NTE3ZjE4MGNhNmFmMmM3NTY5ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4NzRmMDU1MmU4NmYzNzJjZjI3MzRlOTgxYTM0ZWUzZGQ1ZTgyNTc3ZTc3NmQ3NWJkN2Q0M2E5MzRlNjQ3Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc1ZWU0MWJlODhkYjgxYTkxZTkwYWFlODkxOTE4NzE2MDkxMTJiNzYxMTJiMTRiZjliMTdmYWJmNjVjYjYzMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyZmVlYTRjZDUzMTJmZGYwOGY0NjI5Mjk4Nzc2ZTZhYjg1OTgzOTJjZjQxOGZjMzdkMGU3MzhjOGRhMmM2NDcifQ"
+        },
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L171-L172",
+          "version": "repo-lines-v1:sha256:4d2f1265e1acea0877b35b7ae46e4e7e949c142bf9d47e0e6883b9fa423b8945:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTZmNjU5MzRkZjFlYWI4YTM4MzZlODI5ZDQ2NjZjYzlmZmJmZTNiNzcwODE2MDRjNzQwZWYyOGI0MDhhYjIzYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzE1ZjAzYTk5MzZiYmFkYzI5NDcyZDZmM2Y0YmE2MDJlNzZhODAwZjkxNGI0MjQwMDgzNzhkYTFkMGFkYWY4ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWRlYmEwNWJjMDg2NWZkMTg5ZWViNWE4ZWZkMWJhNzRjMjgxNDJjZWNlMjZmNjc1MDNiMTllZTRkMzQzMDViOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTdjN2QwYjk3YmJkMWQyYjI0NzU3ZWNlMTVlODVjMzY5NGJlMDYzMTc3MmE5NDAzZDQxNDA0ZWEwNGU3ZDMyMiJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L104-L104",
+          "version": "repo-lines-v1:sha256:958350b314eb97db87600045e2436faa496bbfb0d94a44c04413400d2f3bd2a6:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTU4MzUwYjMxNGViOTdkYjg3NjAwMDQ1ZTI0MzZmYWE0OTZiYmZiMGQ5NGE0NGMwNDQxMzQwMGQyZjNiZDJhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTU4MzUwYjMxNGViOTdkYjg3NjAwMDQ1ZTI0MzZmYWE0OTZiYmZiMGQ5NGE0NGMwNDQxMzQwMGQyZjNiZDJhNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjVhMTUwYTRjMmQ4NjEyM2FiMGFkMmI1NGUyOGU1NTJiZWY3MzhmNjhiN2M4NmEwYmQ4MzU1Y2ZmNTM4OTg0OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTExM2FmNjRjY2U2OGZiYzExNmQzYzlhZmVmODc4OGIzNTMxN2UzNWEzNDllMmVmMTY4YWVmZjJkZjZlZDcwMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_81bbf2eb8b8f47b78fa2667501ed82c0",
+      "statement": "All dry-run enforcement lives in the nodemw client rather than in this repository: its guarded methods — doEdit (which also serves revert), delete, move, purge, sendEmail, upload and addFlowTopic — refuse with an error that surfaces as an isError tool result instead of a simulated success, while block, unblock, protect and undelete call bot.api.call directly with a hand-fetched token and create-account uses the unguarded nodemw createAccount, so those five tools still write; upload-by-url performs its remote fetch and is only stopped at the guarded upload step.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L169-L173",
+          "version": "repo-lines-v1:sha256:d084c752dfdabbdde5d9c125d7908a1c27f8214cf36902c61f7f0dc418c8303d:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjlkNzRjNzE2YjQ0YzE3NmRiOGIxYjhhMGY3YWZlODI1MDdlZGU0YjgwZTJmNDBlZThkMDNhNGEyMzk3Y2VhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTEwNTljOGNmYjVhMDcyYzZmNjRkZDNkMWJmZGJjMzU2ZmJlYzkzYWVlYzg4NzkxZGE3ZWRiYTg5YzA4ODVkZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzMzNzYwNDE3ZGZjMDQ0MzJhYjI3MmE1ZGZlM2YyYmRlYzBhZDlhNzk4NWI3ZWVhNDQxZGJiMTE5MDk1Y2FlYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTAwOWU1MjZkMGQ0YmQ1OTc4NTU5ZTk4YTRkNmExMjE3OGMwMzZkZWU2MzAxN2NmNzQ0N2RkMjk5ZDJiMGUwOSJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/block.ts#L94-L128",
+          "version": "repo-lines-v1:sha256:e069a24316140c438e072bbda99cce67334a1e45a2749e13c0cdddf6ba193402:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxZjJmYTMyMjUwMzM1N2ExNDI1MWMzMzUzOGYzZjEzNDMwMWZkNmZhNDAxNDcwMTAxODAwZTMwMzJkNjAwYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmYWE1OTEwZjJkMWQzNmUzODgxMGI3OGUxZWNlZTU3MzFmYTFkYmQxYjQ3NGUzMWY2MGRiN2ZhOWI1MzY0OWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYxZmVmM2U5NzI3OWRjNDVkNDE5ZmMyNTdiM2NmNWU0NWRlYjczZDU5ZTgxZDNmOTExNDRkY2M1NjEzY2RiYWYifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/create-account.ts#L64-L72",
+          "version": "repo-lines-v1:sha256:cb5450b761e0b1749f34859a53404d87af8ce40dd59bf969a0725a5208cf2da1:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTYyYjQxNGQ3MmIyMjc1ODc0NmViNDUwMzY1NDg4YjMxMWE4YTI0NjljYTg1YzQ4OGQ5YjE3NWU0NzA4MzQwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWE5MGY4MDM4N2VmODdkMjViZTZjMDg0MTY5NzBiODI2YWQwMjdkYzAyNmFhZWIwMGQwODYwZTgyMGQ1ZDg3YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTJkNTgwMjBiYmRhOWZlNjY0Y2U3NTE0ZjNlYmU3ODAyMmQ1ZGIxMjcxNDhiMTcxODg3YWJmM2M1OWUyNzU4ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWMwNmVjMjA1YWFlOWJlNTA5OTkzOGMxZWZlYzY1NTIzMzAyNjI3MmJmNmM3ZjUyMjJhYzM1OWM1ODRiOWY2MCJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/protect.ts#L82-L116",
+          "version": "repo-lines-v1:sha256:ef5b2068fb51cd3a35dcdaaf92229b5c4a80e91ae8ecd10e698fbe5e395d19bc:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxZjJmYTMyMjUwMzM1N2ExNDI1MWMzMzUzOGYzZjEzNDMwMWZkNmZhNDAxNDcwMTAxODAwZTMwMzJkNjAwYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzMDQ0MjZkMWM5NTAyYmNiOWU1ZTNlZTY1OWMzYzJkZWIxZmMwNjdlMTljNmIxYmU4MmUwMGVkZmRmMGZlMWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhOTAwZjE5Zjg1OGE1ZDA0Yzc1OGY3ZDEzYmQ0MTliOWU4NjhhZmRmMDI0YTIyNDI3Njk5MmFjOWNkZjFiNmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhNjFlMDY5NWI4MmM5MDNiNjEzZmJmODlmMmI0Zjk4ZWNiN2JiYWZiM2UyOGIyOWY5MWNjMzgyYWUwNjI1NTYifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/revert.ts#L159-L177",
+          "version": "repo-lines-v1:sha256:0c39ade7c41d0453726bf1247b7ab7072c028d075928d4833d5c2cc43fb6f81a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1YTEzYjljZTVlZjk3MTI4OWI3ZTZmZTJkNjJjMjBkMjE1ZGVkMmM2ZjZmNTBkMWE0MTA5YmNhNTE5NTU1MjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhOTBmODAzODdlZjg3ZDI1YmU2YzA4NDE2OTcwYjgyNmFkMDI3ZGMwMjZhYWViMDBkMDg2MGU4MjBkNWQ4N2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhMjBmNzMxMGViMTQyZmNlMDg4MjQ2Mjc0MmU1MWQ2OWM0NjkxN2E4N2Q1YjA0ZTc4ZDczMTJjZDcyM2M0YWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmOWJjMjA4MTk1NmM0N2IxYmMyZTU0MjVmMDU1NDVhMmIxNzAyN2E4YmZmNzVlMmQ4OGY4NzRlYjUxYjgxZTYifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/unblock.ts#L74-L98",
+          "version": "repo-lines-v1:sha256:8c8293b9eb811814b3c2f1590cf34bad6cd97fda3f137a38026bb356801402c9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4MmE4YTY0NTE3YTU1YzNkZDJkZWQ5YTJmMzdlZDZhNzgxM2QwNmRjMzZiNjI1ZGRjZTIwZGQyOTU4MjQyODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzZDkyNzA4MDg0NWIyOWMzMzQ2NDQ0MzgwZjc1YWIzYTc5NDMyYWM1YmZmMjMzYzE2NjVjZWQ2M2RiMDI4YzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA4ZWEyYmQyNTBjYzgyNzhmYTBjMTRjNjRjNjc3NzVmNzA3MWQzYjQyODY4M2U3OWRmMWQzYzEyMmY2YzcyMWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhNjFlMDY5NWI4MmM5MDNiNjEzZmJmODlmMmI0Zjk4ZWNiN2JiYWZiM2UyOGIyOWY5MWNjMzgyYWUwNjI1NTYifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/undelete.ts#L69-L91",
+          "version": "repo-lines-v1:sha256:483f83e125a6558ed056931eba327406231bd4d674093554bc460d875fbb1d0c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxZjJmYTMyMjUwMzM1N2ExNDI1MWMzMzUzOGYzZjEzNDMwMWZkNmZhNDAxNDcwMTAxODAwZTMwMzJkNjAwYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzZDkyNzA4MDg0NWIyOWMzMzQ2NDQ0MzgwZjc1YWIzYTc5NDMyYWM1YmZmMjMzYzE2NjVjZWQ2M2RiMDI4YzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdkZDI3M2Y2ZDFlNjY2OGQyOTZiNDMwNTE3ODI5YTY1YTk3ZDU1MWMyNzQ0ZTBjNTc3MDI2N2Q4MmE0ZGY0MDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhNjFlMDY5NWI4MmM5MDNiNjEzZmJmODlmMmI0Zjk4ZWNiN2JiYWZiM2UyOGIyOWY5MWNjMzgyYWUwNjI1NTYifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/upload-by-url.ts#L90-L102",
+          "version": "repo-lines-v1:sha256:00c8b41e1a672188b25c3e2f12b66b8a5fd34d3120803beacd5ac49b1737b99e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1ZDI5OTk4YWM3ZDc5NGRlYjgxNjc0YmEwNjJkOTcyOGRkMzU0M2EzNjIzYTdhM2EwYjhmZTMxYTNmMDU1MmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhOTBmODAzODdlZjg3ZDI1YmU2YzA4NDE2OTcwYjgyNmFkMDI3ZGMwMjZhYWViMDBkMDg2MGU4MjBkNWQ4N2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVlNTg1MzM1NGNlYzU3OWQyYWI2MDIyZGU4ZTc2NTRmNzc2ZjM3OWYwMTY3MzY2ZjY1MjA5MDZkYTgwN2NkMzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU5YmQ0NGZmYTRmNWUxYzczMTNjOTRiMmQ1MTQ5NzZjZDJlOWVjYjQzM2JhMTJjMTM3OTg3MjVkOTk4M2YyY2MifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4a384d9cffc848cea65518b8e853527b",
+      "statement": "NODEMW_MCP_USER_AGENT_APPEND and NODEMW_MCP_DEBUG are compared with === '1' (so true, yes, and 01 are all false), there is no NODEMW_MCP_DRY_RUN, and process.env is read for exactly seven NODEMW_MCP_* variables in src/index.ts.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L91-L107",
+          "version": "repo-lines-v1:sha256:b42a16fe8ace40f2bddba17e230db6c88e8889d8905db1c47bfb61b8cdf4d688:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkZjRmOTk0ZjMwZmUyZGQzMDFjYzdhZWVhYWRlNjAxNDY4M2NmNjljOGMxNjE0YjRmZjMwNWM2M2I5YTY5YmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlNmI3YmU5ZTJhYzlmZTAzMTY4OGY4MGQ2MDkxMjdmYzhiY2RkNzU4OTRmMGJmYTk0ZjY0ZGM0ZDk1ZGJhZjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2ZGE5ZWYxYTgxNTQxMzcyODQzMTdmMzRhNjNlZDA3ZjA0Y2I1OTBkOGYwZDI0NDI3NmI1YWM3MmY0YWYzZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1N2JjYzkzZDZhZjdiZGQ1M2E5ZTFiMWIxYjQ1YWVjMjU4NTliODZiNzgyZGJmNTNkOTA3YmUwZGRiOTM1NTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d5fce9157e12479bbdad81d97d4d8636",
+      "statement": "proxy, concurrency, and domain exist on ServerConfig and are forwarded to nodemw but are never populated by parseCliArgs, so they are reachable only by embedding the runtime and calling initBot with a literal config; initServerConfig stores the config and a getServerConfig accessor exists, but no production code reads it back, so the stored copy stays write-only in practice.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L125-L131",
+          "version": "repo-lines-v1:sha256:403b44348c82887d273a99e141edb6c25f638403e61a7196cbe043bbaff6ea3a:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjYzZjYzNGNhNTFlNTVhNWM0NDU2MjE2N2Q3YTQyZTEyZGFiNjdiMDM1ZDFhY2I0ZjZkMjM2NzViNjM1NTYyOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTliMDIyMDA3OTE4N2RmYjI2YTFjZTE4ZWNjMGIxMjMxMzUzMmY3YTUxNzlmNjliYWM4Y2EzNjliM2VjZWY4MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODNkYWQ0MDNhNzNkYzgxOGM3ZDQ3YTMyODkwODQ3OThmZDZiYjM4OWM5MzZkZDQ4ZTE2YjYwYjQ1YTZlZDM1YSJ9"
+        },
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L159-L173",
+          "version": "repo-lines-v1:sha256:ee11d699f86694e190894d7f88e65ea2c47d8a80bae98cf3dc5e06fd7a619340:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhOGM4ZmNhZTQ5ZDAxYzY5MjExNDU0YjcwNjg0NGY5MDQxODMyMDAzNzNjNTg1Y2MzOWViM2U3YTdiMTc0ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3YjhmZmZhNzM5YTgxODA0ODBiZTVkYTZiMzVhMDk2YzQ1ZTU5ODVjNTBjZjkwMjQ4ZDJmYzA0YzgzOTVkZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMDllNTI2ZDBkNGJkNTk3ODU1OWU5OGE0ZDZhMTIxNzhjMDM2ZGVlNjMwMTdjZjc0NDdkZDI5OWQyYjBlMDkifQ"
+        },
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L32-L47",
+          "version": "repo-lines-v1:sha256:33b72ad8c0340736862164863bdab769ecb6d30893aab83a5c970b9433767b72:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmYjU5ZDUzYTBiNTg3YjI5ZTcxM2U4ZDg5NDg4OGRlNWI1NTQxZDlmODQyYjk3ZGI0MjA3Yzk5NGRmOGZkN2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg2ZTQxM2E4OWQ2MDE5ODM3YzAwOWU2MzY4ZjFmOWZmZjQwZDU2NTNlYmZmNmFmMjE4Njc5MDgxZDY4MzVjYzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk4MzNkMzRjNzI2Zjk0N2NkNGExYTM5ODkwNjk1NjkzZDBjOGRhOTMwZThjNzU1NmNlODRhMmM2NjJkZjU4MjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7629b6dc56744116bd3e809d0e01e1f6",
+      "statement": "The startup banner on stderr is the authoritative confirmation of effective configuration — reporting endpoint, MediaWiki version, auth state, and tool counts — but its tool counts come from registrar array lengths rather than successful registrations.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L386-L403",
+          "version": "repo-lines-v1:sha256:f1fd9f3d6d2e0ea184a3b0e8dfc4653688b45e63cdb7aaaba67e734f82b7c28c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkYTQ0NWIwOTA5NTQ2ZWUwOGZkOTZiYzk1ODFlNmIyMTBhOTQzNTY3OThiZjQyMDNhMzJmZDE4YWI2MzE5MjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTdkMTY4NThiMGM1OTgxODJlNmQ2Njc0MmFmNjZlZmI0N2ExNWYxODAyNjkwMmZiMDViODE2NGFiZmZjNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3ZTlkZWE1ZDNiMmVmOWNhYTViYjE2ZThmNDY1NDExNGU5NDY2MmEwYmVhM2Q4ZjBjZWI2YzA3NTk1OGExZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4NjJkMGI5MTg5MzY3Yjg0OTE5NDRmOTMyMzU5ZGM1OGVjM2UyOGZhMTMxZDYyNzk2NDYwMDFmYjM0YWU4MGMifQ"
+        },
+        {
+          "resource": "repo://src/tools/index.ts#L149-L163",
+          "version": "repo-lines-v1:sha256:72af8cecac2edfb28cd19e0c9d3c0f772c2d774584c41ae0f0ac3ca1daf5c980:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlODUwOWI3YjVkZTE1NGMzMzZkMmYxMWRjMTIxNWYxZDJmZGQ3MTYxZGZlNTU5YTMyMmJlZDAwNWY1NGYwYWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyMWYzNzdiMTFiMDhmMDExMTJhYzNmMTI3OTZmNjUwYjgzYzE4NDQ0YTI5OWEyZWFjNmExY2ViNThiZGQ3OTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a50ba5c244c845f4a6080e9eff77c5cc",
+      "statement": "Adding a new configuration setting requires four coordinated edits — a parseArgs option, an environment fallback in the config literal, a ServerConfig field, and destructuring plus forwarding in createBotFromConfig — plus the two README tables; the token field is the existing example of a partial edit (declared, parsed, stored, inert), and any setting that changes the advertised tool directory must be resolved before registerAllTools runs because that directory is frozen at registration.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L72-L81",
+          "version": "repo-lines-v1:sha256:d1029beee7905d4dac07f759f54043ae81aad858e7dbec8cf61a87ebec098853:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3YmY0Zjk1ZjIwOTgzMWIxOWYzMGEzN2U2YWFhNDdlYTk3MGE5M2U3YzQ1YjU1ZGEyYmJhMTNkNzdhZGI3MTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyMTZhMjRhYTJjNzQ1ZjE0MDEzNjczOGUzYTY5MzJlMDI2MWE2YmFiNGI4YTBkNmRkOGYwNTUzYjVhODkxZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzYzUzNWE2OGI5ZmJiMWFhMWE0MjRlMzdlODI1ZTkwZWEwNWE5NTRlNDA5ZTNkYzVhNDljZGQ1YTdmZDg5YWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdkZmRiZGUzMjZiMTcwYjIxYTE5Yzg3MjhkZjk5NDhhNGNkZDY4ODYzMWVlOWFkYzdlYzAzNTc1NjFjYThlYTgifQ"
+        },
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L133-L174",
+          "version": "repo-lines-v1:sha256:f668c07f28ac5219776d07fd242fbb5148d5eef975630c9175f8173d3d4a0f00:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlNTI2MGEzMDc0MTAxNDU3MzZiZmFjNTMxM2RjYjYyN2QxMTNiM2YzMmEzNTQ3Mjg0YzYwNWM3ZGMzYTY0NTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMyODZiZWM2ZGE1NDY3NjQyNzE2NzEzOGJkMDQwNjBlYzI0NTBkNDhjMjdmYjc4MzVmYzZkOTRkNzg5ZWYzOTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzNmM4OWQ5MTEwZmNkMjM4YzVkZmZiM2MyNzI2ZGI2MjM5M2Y1MzUyNzNjYjViZTc2NGI5NzA4MmVmYjBkYzQifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L348-L349",
+          "version": "repo-lines-v1:sha256:ff413f35dd52ebcca8ce01aeec66939fc430313ed5d83092837f7c53c6cb50f4:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTgxYjg3MWEwODY4MDM1ZjIzM2IwOTIwNDA1NWFjY2YyZjZlOWZlMTBhZDkyMzlkNWMxMGYxMmFlYjRkNjJlNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2IwMjNhYWJhZWNjZTcyMjlmZGY2Y2UwNzVhZDZmMmY5ZjllZTk2ZmRkNGFjNDRkNmE1NDE5YzQ0ZDUzMjE2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTRmYjZiYTY2MThkNWY1YWViOTNjZjIwMzc0OTdjM2UyNmQwYmYzOGZmZjc0N2RlY2I4YTdkOWQ4ZDEwYmNkMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmNlNTUzNmFlODA4ZWU4MTM5YzIyNTZkNDZlYTljM2IzMjNlMzgxNTQ0ZDZjNWU4MjIwMjg5ZjI2NDg1ZWZmOCJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L49-L111",
+          "version": "repo-lines-v1:sha256:3541001920a7469a01c382b16ef8a4c410e9e7e85d92729cd81454290e942389:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4MzZiYTNlZjA4YzM3YjhiOTYxY2ZhMjIzZWY2OThmOWY4ZmYwZmM0MjYzZWY2ZTQ1Njc4ZmY4NDhkMTRmMDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzNGYwMzU2MTk4MDkyYTgxMDFmMTE3MGIwMDcxMDZhYzIzZDQ5OTNkNjM0ZjljOGE5Y2Q5NDk1MGJmNjNiZTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5N2M1NzZkZmQzMTRlMjkxY2ZiNmE1ODAwMDM4NjM2MmQ0NDNhZTg5NGQxYzFmZDA1NzgxMjNiMWZlMDZmYWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3MzJlMDI1NjE1YjYwNzdmOTMyZGU5Yjc3ZmJhYjIwMjdlMWFiMDBjNTZmZWRjMWE5MWFmZjdlMDg4OTg3MDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c1d33771b173428cabb2e80434aa941d",
+      "statement": "钉住的 nodemw 0.26.0 在构造函数里自己读 process.env，因此 DEBUG=1 会像 --debug 一样抬高 client 日志级别、DRY_RUN=1 会打开干运行，两者无需任何 CLI 参数即可生效；这些变量从宿主环境继承，无关工具的导出值会静默改变本服务器的行为。",
+      "evidence": [
+        {
+          "resource": "repo://package-lock.json#L4047-L4064",
+          "version": "repo-lines-v1:sha256:d8b96cd38e6217c6552aa302ae9d797770c5b18b79dc9428502172d87c15a2e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4YmY0NTU4Mjk0YTIzMWEzZGQ0MmE0NGI2NzM0ODllNGY1ODEwZjY0NWI5NTE3ZjE4MGNhNmFmMmM3NTY5ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4NzRmMDU1MmU4NmYzNzJjZjI3MzRlOTgxYTM0ZWUzZGQ1ZTgyNTc3ZTc3NmQ3NWJkN2Q0M2E5MzRlNjQ3Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc1ZWU0MWJlODhkYjgxYTkxZTkwYWFlODkxOTE4NzE2MDkxMTJiNzYxMTJiMTRiZjliMTdmYWJmNjVjYjYzMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyZmVlYTRjZDUzMTJmZGYwOGY0NjI5Mjk4Nzc2ZTZhYjg1OTgzOTJjZjQxOGZjMzdkMGU3MzhjOGRhMmM2NDcifQ"
+        },
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L159-L173",
+          "version": "repo-lines-v1:sha256:ee11d699f86694e190894d7f88e65ea2c47d8a80bae98cf3dc5e06fd7a619340:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhOGM4ZmNhZTQ5ZDAxYzY5MjExNDU0YjcwNjg0NGY5MDQxODMyMDAzNzNjNTg1Y2MzOWViM2U3YTdiMTc0ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3YjhmZmZhNzM5YTgxODA0ODBiZTVkYTZiMzVhMDk2YzQ1ZTU5ODVjNTBjZjkwMjQ4ZDJmYzA0YzgzOTVkZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMDllNTI2ZDBkNGJkNTk3ODU1OWU5OGE0ZDZhMTIxNzhjMDM2ZGVlNjMwMTdjZjc0NDdkZDI5OWQyYjBlMDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3aeddc5040ea483c9141ab27cdb65a6a",
+      "statement": "依赖层的日志还有第二个副作用：仅当入口脚本同级的 log/ 目录存在时，nodemw 才会额外挂一个文件 transport（--debug 时为 debug 级别，否则 info），把日志写进该目录下的 .log 文件；目录不存在则不落盘。",
+      "evidence": [
+        {
+          "resource": "repo://package-lock.json#L4047-L4064",
+          "version": "repo-lines-v1:sha256:d8b96cd38e6217c6552aa302ae9d797770c5b18b79dc9428502172d87c15a2e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4YmY0NTU4Mjk0YTIzMWEzZGQ0MmE0NGI2NzM0ODllNGY1ODEwZjY0NWI5NTE3ZjE4MGNhNmFmMmM3NTY5ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4NzRmMDU1MmU4NmYzNzJjZjI3MzRlOTgxYTM0ZWUzZGQ1ZTgyNTc3ZTc3NmQ3NWJkN2Q0M2E5MzRlNjQ3Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc1ZWU0MWJlODhkYjgxYTkxZTkwYWFlODkxOTE4NzE2MDkxMTJiNzYxMTJiMTRiZjliMTdmYWJmNjVjYjYzMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyZmVlYTRjZDUzMTJmZGYwOGY0NjI5Mjk4Nzc2ZTZhYjg1OTgzOTJjZjQxOGZjMzdkMGU3MzhjOGRhMmM2NDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8841934bef5b4000b3c40ec46ad90bba",
+      "statement": "The .mcp.json present at the repository root is a local-override example that wires the server through NODEMW_MCP_SERVER, NODEMW_MCP_MW_USER and NODEMW_MCP_MW_PASS only — it carries a real site and a plaintext bot password, and omits any endpoint path so each spawn pays for API-path auto-detection; the file is gitignored, so clones do not carry it and its secret values must never be reproduced in documentation.",
+      "evidence": [
+        {
+          "resource": "repo://.gitignore#L147-L148",
+          "version": "repo-lines-v1:sha256:59ae8034f6436b36df5f2faa4151c9de1fa67c0a90f6408b6c0fc5deb2a850dd:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjA1ZjRhZjY5ODQ0YjQ0NDhmYWI5MTlkYWU3M2FmODAxODExZDE1M2M0NzMyYTQxMmM5ODg1NTgyMmNkZjhkZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTlmZTljYzJiOTNiMmM3ZTFhNTU0NjExNTAzZTUzNmFiMjFiZmM3ZDI4NDY5Yjg0N2NmNzMyZDQ2ZWZmMGU1NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTRhNWI2MzM4NzJhNTFlNzE2MDdiMjE2ZDQ3ZjRkMGU4YzQxM2VjMGI2MGY2NmIwNDM4NTFlNzE0NjVkZmRlNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWQ5OWQxMTE3NGQ1YmI2MThiNzIzNjBhMmRlYjE4YzhlYmY3OTM1ZDc2MjBjMzNjYjlmZTc3MTIzMmU0YzdlMiJ9"
+        },
+        {
+          "resource": "repo://.mcp.json#L1-L18",
+          "version": "repo-lines-v1:sha256:c94acdfe6b50f5ff803f03dae87504b088c059449884890c2c72e2cd94f8df16:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZmIwOGZkYTFhY2I5NTdiNjExNmJkMzc4MTFhMWZlNDFhMDE2MTFjMDYzMWVkYmY3ODZkNjg4OWEyN2E1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-30T18:16:46.462Z"
+  }
+}

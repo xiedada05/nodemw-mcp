@@ -1,0 +1,428 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:615e046f3b3e63ef25fccec44163273b36c6f1c43dae24f1ce97af03366c3576",
+  "claims": [
+    {
+      "id": "claim_e0517329d7d541d6abbb0739f0132009",
+      "statement": "isRead(pageid) is only readState.has(pageid), and requireRead never compares the page's lastrevid with the stored revid; revision freshness is delegated to conflictGuardParams (basetimestamp/starttimestamp) and to findStaleWrite's explicit revid CAS.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L193-L195",
+          "version": "repo-lines-v1:sha256:1d1401160f36c0f128a94bcec1c74eae6bf86c4a9bd9a4b72ebfcd7cc09c5e4e:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzhkYTMwYmQzNzY4MjA1Y2ZmZTBkYTZmYzQ4NjFkNTc1YzEzNTVmOGVmZDllYjZjOGZkYzUzYjRmNTI3YmNmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2M2NTU4YjYwY2Q2ZGIxODBiMjkxZTg0ZTA4YTA2ZjllZjQ0ZTY2YmUyMDYzYWIxN2NhOGU0M2VmMTMwOTI1ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODY3ZjE2NWQ4OTAzYzhmYjgyMGQ3YzllNzllZjI1NTgwOGE2M2I4NzMyMmRhMzc3OTBjYmRmNTczOGIwZGJkYyJ9"
+        },
+        {
+          "resource": "repo://src/common/pageState.ts#L256-L266",
+          "version": "repo-lines-v1:sha256:11a649c45d0bd7744176d6cd560d701655202c3f2e9e93eb21333e23bbad4b95:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmZjAwYzY3MTliMjI2N2MwY2FjODM2NGJkOGY3NTJkNWY0MTAwNmM3ZTk4MGUzZTJiOGNkNmZiOGMxMzY4YjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5MTE0NDU5MTNmMWM5YmY3YThkNDU2MTg5Njc0NTMxYzFmMjc2YmJiZTY2Mzk3MmFlMDQ1OGM2MzczNzc5ODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5Y2Y5NmRlMzc1MGUyYTU2YjcyMTQxZDYwYjNlNWQ5NThhYzA4NjVmMWQ2ZDBjYjY0ZTUwYmRhYWM1ODg0YzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2YTQyYTVhMDI4MzA3NmQ2MGI3NjI2OTBjMWJjMDM0Mjc5MGFiMjM5ZWMxZGYyYmI3ZGE0MWFmODgxZTIxYmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ef7e0370ff1043c2ab7de0a441a54bed",
+      "statement": "requireRead(title) always re-resolves the title via getArticleInfo(title, { prop: 'info' }); it returns 0 on an empty result, throws a 'no longer exists' error when the page is missing but writeCache holds the title (clearing the cache first), throws 'moved or recreated' when the resolved pageid differs from the cached one, throws a 'has NOT been read' error when pageid and lastrevid exist but isRead is false, and otherwise returns page.pageid ?? 0.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L210-L267",
+          "version": "repo-lines-v1:sha256:1737c3487e2e1b1e407e368b9e6031c659881b5b40c9dc7f944f43e8f46a38fa:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzYjE2YWI1YTI0MzYwMTE4NDQ1N2E4MzNiY2NjNTc4NDZmY2U0NWMxYmIwMGZjNWVmMjJmM2U2ZTU0YWJlMmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIwNjUxMGNlZTkxMjIxZTBhN2YwOTBiOTY5YTA4YzAyZTBkZGE1YmNiZDJiNWNhOTAyMWUwYWQzMDJhMWExY2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3NmZkNGRmNjQzNTJiNTJiMDkwZjc5NDU5M2E2OWJmNDUxNTgxMmEyODhmNjZjNzQxZTZmN2IxNjhhMzU0ZTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bfcbdfbf2c254b348a37baa6d7b49e5d",
+      "statement": "requireRead tests page absence with page.missing !== undefined rather than a truthiness check, and a title that resolves to no pageid returns 0, which lets write/append/prepend create a new page without a prior read while edit passes the guard and then fails on its own getArticle re-fetch with 'Page ... not found'.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L224-L238",
+          "version": "repo-lines-v1:sha256:c6adef4a80812c20414a040df0ee2403e3a7d46e9b6f2b247253eb449be26ee0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmZGI2ODY2MWMxODQ4ZDI1OTIwODAwZDhhMTU3ZmRiZWU5MWVhMDU0NWZjOTBiZjBmMjEzM2NhZThkZDA1OWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0ZjRhMTIwYWFiODliMzE0MTQ0MWQzYzJjZDk4MmFkMTU3ODUyMDE3ZGY0MzQzMWM1ZDA2NjczNDk3NWRiN2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBiY2Y2NjEyZjA5MjRhNjZiZTJlM2I1NGM2Yjc3Y2M1MmQ3YzY0M2IyYzZkYzk1OTdmZjExZDI1YzA0ZjkzNDYifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/edit.ts#L95-L109",
+          "version": "repo-lines-v1:sha256:31d344eda368fa5941e5ab7e11ae68c72d21bfc12eb24e6136c469e9739adfde:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4MThmOGUyNjNlMWVjOWNhYzM3MDFkMTgxOGI2M2FjYTQyN2I1NGFjNjJlMDcwZWQ0OTRkNWU1ZTZkZTViMGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzNWRiODU3YmRlYTUyZTRlMjhmNTQxMGFiZTZmYTBjZTEwMGY1MTQ1YzZkNWE5NmExODU5NTVhYmQ3ZDMzYTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3NzAwNmFkOTE4OGYwNTdlODAxOGViNGUyYmY5ODgxZmI5NWY3YTdlZDJhYTFkM2ZhNTEyYTVjMmRlYzI2NGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_446f2ef588d54d73987e7792527d925d",
+      "statement": "Four read tools leave read evidence: get-article (via recordReadFromApi), get-article-with-lineno, get-articles (per page in the batch) and get-module-source (whenever main-slot content is returned); no other read tool satisfies the guard.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L189-L196",
+          "version": "repo-lines-v1:sha256:3bd4b42b75b2838dd4167037f133ebcba8398b92d5b76d10eeebe56da71d688b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI0OGJlZTNkNzAyODI4MWE1MmY2M2Q2YjEzMTMzOGE3MGJkNmVhMTZlNzM1MDRlYThkZTcwMGQ4YTBmMzEzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzJiY2NjNDk0Mzg4ZmQ0ZTJhMzBiYzczYTFkZGU1ZDExN2U5MzJiZDc4YTdmMDAyMDE0MTk5NWQ3MWIxYzFhNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmUyOGZlYzFmMjJhNGQxMWJiMTIxYmViYmU1MGY4MzI1ZmIxYTcwMWQyOGIyZDNhZjQ0NWMwN2E0YzdkNTI3ZSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L34-L42",
+          "version": "repo-lines-v1:sha256:b59d06a8119f0e54c379f5d55b49bef48972f19de632275ef8ba25be618e3047:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzcwZDY1YjkwYzc5NzUxNGI3ZDQyMjgwMDE2MmNmYmMwOTQ5YTMyZjAxZGQ2MDBkNGRmMTUzMTZiMzJkNmY3NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzIzNzk4Yjc3NTAxODE3YzcyMDhhYWU5ZjUxZTVjNmE4N2JkMmNjYWNjOGI3YTI1MmQ3NzIxNjE0ZmRkOTcxMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTA2ZDExZThiYzgyZWExYzJjNjVmODJjYmNiYjgzMjk1MDViZmY4Mjg3MDM0NmM2NDFlMGFlY2NkZWU1ZDQ0NiJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-articles.ts#L138-L141",
+          "version": "repo-lines-v1:sha256:cde0ea1440dcfbec1907fe96bffd43c1a7fea87a51e22a39e81ba9a1bbf0c116:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhNzlkNGM2ZTE3NjYzMDU3NjJlMTQ3ODk4ZjkzNTE2OGUyM2I4MDAyOTlkNTk1MGZlZmNmMjZlYTAxMThkMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzlhODU3MmI4ODhiMDhmNzk3OThhMTlhY2FkMWVmZGFmZWQwMjcwNDI1YTNlMWMyMmQ4ODhkMTA2ZDY1NjgzYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWEyZmU4NjFlNGRlOTY3ZWQ0YzMyNzNmZjlhODNjMjZkNDM2MmFkNzM2ZGI5NGJiNTMzNzdiMzM2NDVjNTE5YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzhhYTAxNWY1YzZiNDU5YTVjYzk5ODRjMDJjYmY0ZmUyMTFkM2JhNzFkYjc0OTZkYmNmZDYyNzY1YTYwZDY4OSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-module-source.ts#L127-L130",
+          "version": "repo-lines-v1:sha256:8ad931fc76968bf55424e5b565cc843fd77d90bf7871071e14d06796e971beb1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjczOTQ0NDFjZDg3YWM2ZmFjYzE2MzI3ZTcwMzYzOWExOGFlOThjOTVhNGIyYWJmYzE2OTMyMjg5NTUyMjU5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjdkNTE0NDk4OGYxM2U5OWFlYTA0MjU1MTExZWYzNDZmOGVkODYzYWY3ZDY2NzZkNzZmZTdhYjA4N2VjYTE1NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTI5MDA1NDNlMTFiMTE2OWM1Y2E4YzdmOWRiYTAzZjlhZjhiMGMwODczODdkZWNmMWE5ZjE5NmMyMTNiYjk1MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8dc2aa9a22364d3d954d2b6da39e55bc",
+      "statement": "get-article records read state only for full-page views (isFullView rejects offset > 0 and a maxlen that truncates the content) and only on its successful id-only, redirectInfo and plain-title paths, each delegating to recordReadFromApi, whose empty catch turns a failed revision lookup into a successful read with no state recorded and a subsequently rejected write.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L100-L103",
+          "version": "repo-lines-v1:sha256:9ce717345c4241e8bed03fed131d5d4426fd0f777209a7b7300c78699b32b90a:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2QxYmFjM2NjODljNzFhY2NiOTgyYzNlNGQzZmExZWMwNjA4NjdiYmM4Y2M2N2Y5MjhmZTEwYzNmM2MxMjcyNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjQzY2JmMWJhZjgxMTBmYmNlN2MyOWI0ZmRlMTdjYWY1YWZhMGVkYTFmNzY4ODFkNzNhMDBiNzQ5ZGQ0OWVjOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDFmNTI0MGU0MTNiNTM1NDc1OWFlZWU2YjIyOTk2OWEzYzlmZDdlNzFiZGIxMDg0MjU0MmMwYmI3ZDQ2YzQwYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDc4YmNlYmM1OTE5OTYzNDhhZWZhMGQzNmQ1NjIyYWRiYmMwOTYzNjUxMmM4Zjc5M2FhZjNlMmU4MjhjNDkwMSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L193-L195",
+          "version": "repo-lines-v1:sha256:9d81c9fa3647acc18ceb690428819bb160d6767439952bcb4f0d28a89004d448:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmE2Mjk3MjEzYWY5ODgwMTBkNWE1ODc4NjA4ZjFjODM5Mjc0MTAyNTQ1ZjY0YzYyMWFiNmM2Y2VkNDlmNGFkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzlhODU3MmI4ODhiMDhmNzk3OThhMTlhY2FkMWVmZGFmZWQwMjcwNDI1YTNlMWMyMmQ4ODhkMTA2ZDY1NjgzYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2I4ZjlkNGRhMWRkMjBmMWZhMzlkYjAyMzQ5NjM1OGNhZWM1YTQ2YjQwYWUxYmNiZDNjMjM2ZWIwMzM3NjUwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjk0ZmUxZjcxZmE1MjgzMzMxNTFjYWZhZTJlYTFhMzU3NGRhZWJmZjA0OWIwNTUwZTNjZjM2MDJiN2FhM2E4OSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L226-L228",
+          "version": "repo-lines-v1:sha256:df36109454d9b05ea809d80b8148f588383a74bd823b1e8e7f842a6c4f0aa617:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmE2Mjk3MjEzYWY5ODgwMTBkNWE1ODc4NjA4ZjFjODM5Mjc0MTAyNTQ1ZjY0YzYyMWFiNmM2Y2VkNDlmNGFkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzlhODU3MmI4ODhiMDhmNzk3OThhMTlhY2FkMWVmZGFmZWQwMjcwNDI1YTNlMWMyMmQ4ODhkMTA2ZDY1NjgzYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzQxOGI0MGE1NmU4OGMyN2Q4NDMyMmU3MGU5OTZiOTk4YWY2YmRiNzc3ZDlkZDE3MzE5YjkyNzZjM2I5MTlmYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTk5OGUyZTQ1YjEzNmU0ODEzNDNmMmRhYTBmNGYxZTNjNjYwM2FiOTdlYjk5ZTMxZjRlYzBmZDNmYmZmNjQzYiJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L36-L54",
+          "version": "repo-lines-v1:sha256:43b68c663ab4243179723c12ae9a1628eed25149b8c4d1610a44957f9e51a877:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1OWZmYzhlZmRmMDQ0ZGIxOTJiN2U0NTFiZDZjNzAwMjgwNjg0NjUzNjgxMGQ5NDdmYjhlZTVmOTcxMjcyYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwMTcwMWI5YTQzNmUyNzE3MDIxYmZlNzY0NGQ5OTBmYmFmZDliNzA1NmIxNjZhZmQxOWQ0N2VkMzk4ZDY1ZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2ZTJlNzBmY2U5MGVmMWIzMzQwM2Q3ZjI0M2Y4YTI1NDdkNDVmNWJhZjQ4NzIxOWQxMDk1Y2M4MmY5NmMzZjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5c701f409f164a8691a4d22f769a9354",
+      "statement": "A rejected guard never reaches the transport: the thrown Error is caught by the write handler's try/catch and returned as errorResult, whose text channel carries { error: \"Failed to <action>\", details: <guard message> } with isError true.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/utils.ts#L136-L148",
+          "version": "repo-lines-v1:sha256:9707db5657b6d1d2b63d5a115d755014b20a67aa82325b4daae8cb47c2e2ff10:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2NzU4ZjUwYTk1ODE1MTIyYzExMDNkZmI1NDE5YzA0YjUzMDIzZmY2OWY0NDQ0YjMyZjIwZGJkY2JhMTJkMDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2M2UxNjljNzc0YzQ5MjMxNDgyZjU1MjhhY2ExODBlMGJiZmYxYzBiMDMyN2IwYTI5MGM1MmYzZWYxMWYzNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/edit.ts#L182-L184",
+          "version": "repo-lines-v1:sha256:c2038ecb605d73f50b2279234ae0f912c5f011f9d19de1e4bd21c4a32fde8f03:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdlZTU1Mzk0MTNkNDM3MjMxNzg4OTJjNTM4NDE5MGYwNTUxZjAzY2ZjNTNkNjAzMTNmM2VhMmE4ZmE5MzFmNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDVlOTY0ODA3ZjIzOGY4MWIzMjkxNjRhNmNlYTdiZWExMjJiNjRjOWZjOTc4M2QzMzJiMjIzN2Q3OTY5ZjFjMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6c0d3ad235a74daeaeead0ce6e6c6266",
+      "statement": "Nine of the seventeen registered write tools never reference pageState — purge, block, unblock, undelete, upload, upload-by-url, send-email, create-account and add-flow-topic — as observed coverage rather than stated policy; undelete is structurally immune because a deleted title resolves to no pageid and requireRead would return 0 anyway.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/editing/add-flow-topic.ts#L62-L77",
+          "version": "repo-lines-v1:sha256:60b1fecd7b47d738c1dba12d3608201d0c359add202054bf50a3f9e018452ddf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5NzY0NTkyMTFjZjMxMmI5ZmI0OTlkMzdhMDE2M2VhZTUxYzI3ZTRhOGVmNjRlMGViMjk4ODczNDhmNjJlNWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3NjcxYmIyOGQyYWQzNWZmMmJiZGFmYTE2MzA1YWVjN2U3N2U2MWZiNzMwNjQ0ZTk1ZDZiNGQyOTAxMDBiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFjNzU5YjkyYTY3YTBhM2EwMDYyMGM2ZmIwZGY1Njc0NDVmMmY0NDlmYjZmNzY5ZmFkOGYwZWZiZDI4NGJjYTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4YmFmMzVjNTYxNTg0NDI5MWEwODIwZGZhYzJiYTdmNWVmZTJmOTFmZmI1ZjI1NzgwNzM0NGFjYmViYWFhYmUifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/undelete.ts#L59-L84",
+          "version": "repo-lines-v1:sha256:ae5cb89a7decde39e94cbc8b998c25e6f0d18f987bf4ebf27355ff75360ab3a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4NWJkNjA2YzFlODM0MTNlMjI3NmI2MzdlMWViMDg0Y2U1ODY1ODhkNzhhNzI0NzZkODUzYzk3ZDI0MDIzYWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0OTE2ODZiNzRkZWYwYzFlNDQ4YjgwYTRhNmRiMDcyYjQ0MDI0YjNjNDBmMjU5MzJiNWQyNjA4YTNlZmJjNjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk0ZDk4NTIxMzNhOWY0YzFhODA5ZmJhM2MyZjQzODQzMDMzZWU3ZTAwMTJkMTQ4ZDVjYzgwMTZjNDFkNzE5ZjgifQ"
+        },
+        {
+          "resource": "repo://src/tools/index.ts#L129-L147",
+          "version": "repo-lines-v1:sha256:460c8d3b77ef03ad71261be506a4eec76db1159a5821536c4ca61047a614bc65:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5YTg5N2Y0ZDRlODVjMWRmODJmMjY2ZGYxNTFjOGEwNmM5OThhNTk5OTdhODYzOWI3NjI4MGM1NGNmYjczMjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4YzNiMzRjMDkxMzRmOTc3MGU5OGMzNTBmZjJiNjE2YmRjNjQ0MTgzOWQ2OGJiZjRhYmQyMjkzMTZlN2Y4NzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1MjFkMWUwNDg5ODBkNDJhNzE2ZWYwNzA1MGM3OTNhNWYzMzU2ZWJjMmVkMjc5ZGU3MTM0MmRjMWRiMjM4N2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1MzU1OGFiOTY4YWU3YjAwNTI2NjkwNTM0YjZkMzZhMDBkOGUzOWFjMTc0NTBjNTJjMjRlMGNiMzU4NWNiNmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_453e8e244eb842b795ee6c55a43b46e7",
+      "statement": "The read-before-write rule is delivered as prose in the generated server instructions (including a SESSION NOTE that the process starts fresh per client connection and read state is therefore per-connection), and the same text is registered as the operating-principles prompt for clients that do not auto-inject server instructions; both are advisory, and enforcement exists solely in the eight write handlers that call requireRead.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L286-L294",
+          "version": "repo-lines-v1:sha256:ecc8e9859b1862ddb0a3b73d0d2f2377d4f0897f8ff6246d90f6df4b4bf6a9c8:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjhkYTg3Mzc3MDVkNGY3M2E4NDkwMjM4YTFiOTE0Yzg4OGQyZWNiNGEwNDU3M2ZhYzhmNmM5ZTFmMGQ3M2FiNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTRjNDRkZGJlOWM4NmI1YmNiMzk0MjkxMmZkNzFkODZhZjY1YmZhN2U5ODEyMWZjOWJkMGZmMzgwZWQyNjE3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWM3OTE1Y2JkZTRkYWYyOGRhY2NhNTNlMGUyZGNjMWI4YThmOWNlZWQyMjU1NTkxZTc1ZjMyNjUxZmQxM2MxZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGE4MjZiY2ZhYzRkMDkxZGZlNjdiNDBkYWUyNzY3ZjBmYjJjODc5OTEyNDZmMTU3OWRiYjZlZjRmYzUwMjE1NSJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L351-L364",
+          "version": "repo-lines-v1:sha256:5c79cebc5189e47c3ede9c0f561eb474c55ecd525766e33d5d956a4984c1d4bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1YjFlZWEyM2ZlMGZhM2NjNThiNDc2ZjZkMTYxOGE4MDc5ZmEyMmRlNTRmMzk0NGI2ODgzOWVhOWUzZjhkYjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhNzFkOWZiODgwZWVjZGNiYTUzMjc1MmRhMjM3YTZlOGI2MzJlMWNlY2ZlNTM2ZDhmZTkyYjhmZDA5NzJiYzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM0N2FkMzA3Y2MwMjFjNzI5MjRkOTcxZGQ3NTg1ZWY3Y2RiYWUzZWY4YjRlZDMwMDQwMjNiMDZkMWM0NzNhMDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA4ZTEzYzVjZmY5ZWNiN2YyMjg2NmUzMTQ0YzQ4YWUxZWRkYmEwYTIxOTEzNGM3MTk2YmE0MWUyYzQ1NDc1MDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3ca7810426f54fbfac4808b267b89f54",
+      "statement": "recordReadFromApi's followRedirect argument keeps read identity aligned with delivered content: a redirect-following title read sends redirects in its own resolution query, so the recorded pageid/title belong to the resolved target page, and get-article appends a note telling the agent to pass that resolved title to edit/write because action=edit does not follow redirects.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L74-L99",
+          "version": "repo-lines-v1:sha256:01c3e8348a50dd043ebad6cc6a6fb8aeaf690b08a7fd213209f03dc108241599:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyZTNhZTFiMjI1MjRjZDBlMjI3Zjg0ZmQ0NDk2NjNjZDQwYWU4Y2FhYTZkMzg3YTg0NjA2ZDY4Njk3YmQ2NTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3NmUyNWVhMzMxZTY5NTI1NTFjYTBhNjliNDQ4OGVlMGZkZjY3ZGQxOWQ4OGYzYmE3MGY5MjNhZjYxZmEwM2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhYzI3MDQ2M2U5YWU1ZTUzZDJjYWRlYzVmNWY3ZGYzZjJmYmQ5YjRhMGNmYTA5NjZlMDNkNjk4OWMxNjc2YTUifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L246-L258",
+          "version": "repo-lines-v1:sha256:1b3568f6b37093ab7a6d08b3e49f4873337d7a4c8e48f2ac624af54e4e5437c9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4MWMyNjllY2I1YzI0YmU2NTk2MWI1YTM2ZWQyODVmNzZhMTI4NTc5NTdlMzZkZTllYmQ1OGZhNDUwZjljY2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2NzhiYWU3MjU2OGYzNTI0YmZmNmNlMTZiMjMzZjdjMTZlMDYwZDg3ZTY4YzYxYjYxMmYxNjY0YjkyZDZjNmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5Y2Y4OGMyNWEyNjQxZTI5YjAxMWViYzY3OTQ3ZDI0YzVmOTRiNzBmMzE1MjQ5ZjJkYjQ0N2VkZDZmNDVlMTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiN2E0NGFkYmJmYzg4ZTY2N2M1OTJhYzFlNGJhODc0N2I4YTFmMzdmNzIzZjYzZTFmMzNkNzJjMjU0MTJhZTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9292d6dd4ed54cf89339e6911e82c715",
+      "statement": "Staleness mitigation is uneven across the eight guarded handlers: edit re-fetches current content, demands a single exact old_lines match and enforces a 1/10 near-total-wipe floor; write re-fetches content and checks byte ratios against its declared intent; write and revert additionally run the revid CAS; append/prepend carry basetimestamp/starttimestamp but re-fetch nothing; delete, move and protect pass no version parameters at all.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/editing/append.ts#L89-L94",
+          "version": "repo-lines-v1:sha256:d4585a7f24f19de612ebe42ab3976afe8b881c80c0463ca00e4e8de023ab0b4f:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTkwNmRlYjc2MGJkZjdiZDc3ZjMwM2MxYTE2NDcxNTM3ZWZjOTI0YWY0YTZhZTk4NjEyMGZhMjA3YmJmMWZkMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzlhODU3MmI4ODhiMDhmNzk3OThhMTlhY2FkMWVmZGFmZWQwMjcwNDI1YTNlMWMyMmQ4ODhkMTA2ZDY1NjgzYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTQ0NTkyNzAwYWYzY2MyMDVlNGRiYTc0MmZjZjEzNmU1MmU1ZDQ3MzljMzQ3NzZmNzg4ZTY1YjllYmZlN2FkOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODIxMmMwMGM5MmI1ZGRiNzlkODdlMThkZjBlOTQyOTExODEyZjVmNTA5NzQzNDE5Y2JmMjM4NmEyOGExZjg1ZSJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/delete.ts#L66-L69",
+          "version": "repo-lines-v1:sha256:86e1ba9e0fd2ed54ba8662f0f9c296155c1af533db79cb21699ec52a643543fa:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTYyYjQxNGQ3MmIyMjc1ODc0NmViNDUwMzY1NDg4YjMxMWE4YTI0NjljYTg1YzQ4OGQ5YjE3NWU0NzA4MzQwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjEyMDlkYzEyMWFkNzhhN2YzYWZhNmZjYWM1M2E3MTFhZDY0MmQ1YTQ4NDBlZjNjYTVlMjY3YWI5ZjNmZGFkMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWM0ZjRkYzA0ODNhYTM1MjlkOTUxOTE4MDNjNTFjMzBkNmUxNWE0ODQ0MGJlZTVlNjM5ZWU3NWQ1N2Q3NDI0NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDA5MmQxZTdiNTRiYTM2NTQ5MDhlMWQ1NGJmYmMyNWM0Yzc1N2RlYzU3MmU2ZmU1MzcxMDJiMzhlNWM0ZjA1NCJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/edit.ts#L95-L149",
+          "version": "repo-lines-v1:sha256:0fd30b009e181683c04d0456a0e4cdeadaa8809f6ff1f676f724ff594b35043a:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4MThmOGUyNjNlMWVjOWNhYzM3MDFkMTgxOGI2M2FjYTQyN2I1NGFjNjJlMDcwZWQ0OTRkNWU1ZTZkZTViMGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzNWRiODU3YmRlYTUyZTRlMjhmNTQxMGFiZTZmYTBjZTEwMGY1MTQ1YzZkNWE5NmExODU5NTVhYmQ3ZDMzYTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdkNzE2NDBhZmY5MmEwYjE1ZDYwZDIzNGQ1MzkzZmQyZGE3ZmFiMzJhOGE4ZTk4ZTIwYzFmMjk4NjIwNWJiZGEifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/write.ts#L85-L139",
+          "version": "repo-lines-v1:sha256:dadd496daaad3f03de70d9d4247198eeb5e0ce6b5eec94a01169cd8bc60ebd94:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0YWMxYWExZmQxYTA3NjFlNTUwM2M2MzAzOWE0YzlhNTEzYzY4Y2ZlNTY0ZWI1MmM4MTJkOTg0MTVhOTIxNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlMzQzMDAxY2UzNGE2ZjI5OTBiYTA4MzhiNjY4OGY2YWFkN2FiMDYwYjEyNmNhOTZmMjMwNGZlYzFlZTFkMjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxYzE2ZjM2NmRkOGRiNzg1NjY3MzhkMmVlMjQxODI3MDEzZTI0YmZlZTBiYTk5MTM3NjkwYzFlNWQ0MTU3MDUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_be876cbe49f6449aa3b2ccadfafa672b",
+      "statement": "Guard failures fail closed when the API throws, but when the info response has a page object lacking pageid or lastrevid the throw condition is false and requireRead silently skips enforcement and returns page.pageid ?? 0.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L256-L266",
+          "version": "repo-lines-v1:sha256:11a649c45d0bd7744176d6cd560d701655202c3f2e9e93eb21333e23bbad4b95:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmZjAwYzY3MTliMjI2N2MwY2FjODM2NGJkOGY3NTJkNWY0MTAwNmM3ZTk4MGUzZTJiOGNkNmZiOGMxMzY4YjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5MTE0NDU5MTNmMWM5YmY3YThkNDU2MTg5Njc0NTMxYzFmMjc2YmJiZTY2Mzk3MmFlMDQ1OGM2MzczNzc5ODYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5Y2Y5NmRlMzc1MGUyYTU2YjcyMTQxZDYwYjNlNWQ5NThhYzA4NjVmMWQ2ZDBjYjY0ZTUwYmRhYWM1ODg0YzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2YTQyYTVhMDI4MzA3NmQ2MGI3NjI2OTBjMWJjMDM0Mjc5MGFiMjM5ZWMxZGYyYmI3ZGE0MWFmODgxZTIxYmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2a221540f7b54d4894bcad0986833965",
+      "statement": "Empty content is recorded inconsistently by get-article's direct-API paths: when revisions[0]['*'] is absent the tool returns \"Page ... is empty.\" with isError false before recording, whereas content === '' passes isFullView, is recorded, and is rendered as (empty page).",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L184-L198",
+          "version": "repo-lines-v1:sha256:f4c970bc7a288077599284972b78c9b2b1b94c3192bd571feca34791333b78e8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1MDBhMDQ1MTJlOGMwZTZjOGY4ZDUyYjZiOTY0NzZjNjA2NWIyOTA2M2FlNjdkMGRiMTBiZGMwMTZlMmQ0NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5NjBiYTUwZmVhZDE0NmY4YTUwNzMyMDEzYWY1MWU5YjE2OTYwOGU4MGQ3YzIxMDUzZGZiMDk5ZmQ4MjVmYTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3MDMyMDMzOWU5OTgxNjgwNjdiNWFiOTA5Njc4ZjE0NmFkYzZlYzZhZDdhMWUyNTJmMGRjYzZkNWIxNDExZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkODdiZDJmZmRhNmQ3OWIxMTUwNjQ3NWZlNjA0OGMwOGY5Mjk0ODczMzQ1Y2M2N2JlNjE0ZDhkMTY1NDBhYTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2c6c23e7dcdd48dfb580b8ac72effadf",
+      "statement": "The guard's state is two module-scope maps in src/common/pageState.ts: readState is Map<number, ReadRecord> (pageid to {revid, revTimestamp?, readAt}) and writeCache is Map<string, {pageid, revid}> keyed by title; clearReadState clears both but is only called from tests, so per-conversation isolation depends on the server process being restarted per client connection rather than on any session-scoped code.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L269-L272",
+          "version": "repo-lines-v1:sha256:2a8fe18b02d27ae7f496dc46cd1bf51dcd4e300b99b4c3d0a947410414113196:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODdkNjg3YTQyODMzYmNhMTYwMjEzMjU4YjdlNDEyZWEzMzY0ODUxMGRjYTc5ZjE2ZmNhNGViMmFmMjRmYTFiMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzI5YWRkOGYzY2RjMDhiYTNjNDFjYjRjMmFkZGM0YjkzMGNjNTA1NjJiYzJjZjczZGEzNmUyNjM4NDMxMWY1YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/common/pageState.ts#L38-L49",
+          "version": "repo-lines-v1:sha256:a619f8e1ce35a5d638da6e1b860d16cfe91280ef8ee6b9f45793922e750ada33:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlZDg2NzY3MTE5YmJiZDExNDM5NGQzZDZkN2Q0Yjk4NWI5ODNhYjQ4MTI2MGY3MTY4OTZlNzNhMTQzNDJiMzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiMTk5ZmQxOTY4ZDc0OWEwODk3OTRjMWVlYzdiMTc5YzdmMGFhNmI4M2Y5MzI4NzE0M2U3YTBhZGU2YzI2ZTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVhOWUxY2UyYmM2MWE1OTQ2MTI3ZjhlYjViM2JkOTcwNjhmMjllYmVjZjM0ZjFkN2IxZjc2NjhhYTBiM2MyY2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImExYzhlNjg3YTM4YjE0ZTU3Y2NmMDQ2YjhiZmQ0MDBjYTNiYzgwMjE4YWFkNjc2NDU4MzM0NmUxYjIzZmRmZGQifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L290-L294",
+          "version": "repo-lines-v1:sha256:8baf54d08bbb1a4f4ab557ff6353fdd35f7970c832b6c065e59a5069c547709e:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjVhOTY5MjRkYzVmNmYyNzM5ZGRhM2UzZWRkOTI5ZmNjMTQ2NTVmZWQ3ZjcxYTg5MWZjMjM0NThiYmMwYTI1YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTRjNDRkZGJlOWM4NmI1YmNiMzk0MjkxMmZkNzFkODZhZjY1YmZhN2U5ODEyMWZjOWJkMGZmMzgwZWQyNjE3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTIwOTk0ZmM5MjJjYWM4YjNjOGM5MjdkMzhkMmRhZjhkMDFiMDU1NTJhOTZiZGNjZWFjZmU5MDU3OWM5NWY1NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGE4MjZiY2ZhYzRkMDkxZGZlNjdiNDBkYWUyNzY3ZjBmYjJjODc5OTEyNDZmMTU3OWRiYjZlZjRmYzUwMjE1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_770457c093274518b3d63bae0afe43c4",
+      "statement": "recordReadFromApi resolves the page's current revision with a dedicated action=query&prop=revisions&rvprop=ids|timestamp request (pageids for numeric identifiers, titles otherwise) and marks that pageid/revid/timestamp as read, so reads by page id also record evidence and the recorded revision is the page's latest, not the revision the caller displayed.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L74-L104",
+          "version": "repo-lines-v1:sha256:7e450daaa0b4bbd97ce3659ae8c1685e564794a29521e51be6cb937f7d37b3f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyZTNhZTFiMjI1MjRjZDBlMjI3Zjg0ZmQ0NDk2NjNjZDQwYWU4Y2FhYTZkMzg3YTg0NjA2ZDY4Njk3YmQ2NTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3NmUyNWVhMzMxZTY5NTI1NTFjYTBhNjliNDQ4OGVlMGZkZjY3ZGQxOWQ4OGYzYmE3MGY5MjNhZjYxZmEwM2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMWU4YTcxNDg0NTdlMjVjNWU1ODhhMThiY2ExNjE4YWE0YjYwNWFkNzA4M2IzNGM0NmExZDMyY2VkYmJkZmMifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L135-L198",
+          "version": "repo-lines-v1:sha256:87aa605da3c18adb36220ac06424ac4e998bc2d74b1c10303756a2311e9f49e2:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhZTEwZTQ2Mjk0ZDIzYjdkNGViZTY0Zjk2ZDQxNjQ4OTJiNTRiMDFlYWZkNTJhYTdhY2EwNzQ4OTJlYjYyODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5NjBiYTUwZmVhZDE0NmY4YTUwNzMyMDEzYWY1MWU5YjE2OTYwOGU4MGQ3YzIxMDUzZGZiMDk5ZmQ4MjVmYTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlYjhiMWI3MDk2ZWFmYmI5YzExOWRkMWRlYTg0Y2U2NGU4MjYwMDU0NGYxZTJlODQzNzM3OGI3MDA4MWI0MmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkODdiZDJmZmRhNmQ3OWIxMTUwNjQ3NWZlNjA0OGMwOGY5Mjk0ODczMzQ1Y2M2N2JlNjE0ZDhkMTY1NDBhYTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cc0fb2fe01da42de84080c9d5b934d1a",
+      "statement": "Partial and historical reads are deliberately excluded from read evidence: get-article records nothing on its revision-parameter path, rejects offset > 0 and truncating maxlen via isFullView, get-article-with-lineno records only when offset is 0 with no limit and no maxlen truncation, and get-article-by-revision never records because it does not import pageState.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article-by-revision.ts#L87-L95",
+          "version": "repo-lines-v1:sha256:c3f48127b2bb2349119945ca2980c8404f34bd72c2208840cf8d12959d91360a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2U3MDhlZWY5MTZhYTlhM2Y1NTQ1YWE1MjQ4YTU5YjgyNTMzZWJhYzhjOGMwNTVhMzBiNWY4ZjgyNjBhMWQxMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjkwMWExMWYyZDgxNzIwYzAyNTVkNWUxNTIyMmIxMTg1MWZhMmY3ZDEyM2NmNzQzOTJkZmQ1ZGY2YWVhMGZhZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTgxMmYyOWQwYjE4NDM2ZWI5ZTZlNGY5YmY1MDA4NDM4YWFhY2U4ZTNlNjkxODA1YjQ2NDVlY2RhYzM4NGQ0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzBhZjVhOTJkNjA0ZDQxYWZkYzkxYTZjYTJkOGExYjhiYTZlYTZiNzYwNGY4MzMwMzljNDk3Y2I1MTRjZWNiOSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L186-L196",
+          "version": "repo-lines-v1:sha256:e55d47742a98aadbe9b69ddbd5bf7d5ad3ea4b1259e2785a5c4aa674d5374c1f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4NTM1NTQxMDc0OTY5MWZhN2ExZmE1Y2QzYmU0NjVmN2E3ZDE2MzgyODNlYzcxYjEyZjBlNzNhMzU2NmE4OTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3ZWFkMTMyZGNhZDA3ZWQ2ZTQ3NGExOTM4MzcwZWM2YjliNTg5ZWM0Y2Q3YjljZWE2YmJkZjFjODllNWNkOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJlMjhmZWMxZjIyYTRkMTFiYjEyMWJlYmJlNTBmODMyNWZiMWE3MDFkMjhiMmQzYWY0NDVjMDdhNGM3ZDUyN2UifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L163-L182",
+          "version": "repo-lines-v1:sha256:b06d23f311fded7d9f7f1717e8d79534e6a0a161a27d3b2ab70f530cac36f265:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1MTcyZTY0OWQwMzc5Nzc5YTNlMTQxM2QwYzcwMTgxNTlmYWUwYzI0Y2FkZDkxM2FhMDQzZmI2YTYzODdiMzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5YTg1NzJiODg4YjA4Zjc5Nzk4YTE5YWNhZDFlZmRhZmVkMDI3MDQyNWEzZTFjMjJkODg4ZDEwNmQ2NTY4M2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3MDMyMDMzOWU5OTgxNjgwNjdiNWFiOTA5Njc4ZjE0NmFkYzZlYzZhZDdhMWUyNTJmMGRjYzZkNWIxNDExZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImExOGFkZTYyZDM4MGU5NjRmZjdhZDUxMzljZTZlMzYwZWU4MjRkNmM3ZjUzM2VlM2U3Yzc5YzY4MDEzYTY2OWIifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L44-L54",
+          "version": "repo-lines-v1:sha256:41febbc74d22cb6cd48c2abfde9149591d2bab5b590b7daac5a2abc81e5b0e30:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZDVhYmFjYTIyNjgwYWU5NTMzNjcwMGRmNzY2MzYxOTdhN2NiNmMwMDRmNGNkNzlhYzFiMWZkMmYwYWM0YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVhMzBjNDM5NzQ1NzNlOTFmNmFlZDc2ZTU0YmRmMzk2YTAwZjU4OGY1YzA3MTA2Zjg3MDJhZDMyMTMzODYwZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2ZTJlNzBmY2U5MGVmMWIzMzQwM2Q3ZjI0M2Y4YTI1NDdkNDVmNWJhZjQ4NzIxOWQxMDk1Y2M4MmY5NmMzZjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a0e2f3ec7ec749a091a35f342fa359e0",
+      "statement": "Eight of the seventeen registered write tools begin with await requireRead: write, edit, append, prepend, revert, delete, protect on their title and move on its from title only; write, edit, append, prepend and revert feed the returned pageid into conflict parameters (and write/revert also into the CAS), while delete, move and protect discard it.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/editing/edit.ts#L91-L95",
+          "version": "repo-lines-v1:sha256:2d5cbce2c8a9811567e45beb49ea1d5d302d3b0b0bee1dc48b9c992a31c71110:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTYyYjQxNGQ3MmIyMjc1ODc0NmViNDUwMzY1NDg4YjMxMWE4YTI0NjljYTg1YzQ4OGQ5YjE3NWU0NzA4MzQwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTgxOGY4ZTI2M2UxZWM5Y2FjMzcwMWQxODE4YjYzYWNhNDI3YjU0YWM2MmUwNzBlZDQ5NGQ1ZTVlNmRlNWIwYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTYwZDc0MmQ1M2ZmMjdlNzYwZmVkYjQ5MjRhMWEzODg5ZDNlMzFmOTFjMjBhYjliMjhjNWI5NzU5ZTQxYTZlOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTg4Y2YxY2U2N2U1YTVlNDk4MmQ4ZWExYTE2YTNiYWRiOTkyMjc0YjU5ZTljZDI4NGYyZTAyMGM3MTViZjczNCJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/move.ts#L67-L70",
+          "version": "repo-lines-v1:sha256:5af45d73ab2671fa6375b875057c0399a27f26490d901ddd885e2d892a591bb6:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTYyYjQxNGQ3MmIyMjc1ODc0NmViNDUwMzY1NDg4YjMxMWE4YTI0NjljYTg1YzQ4OGQ5YjE3NWU0NzA4MzQwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2NjMDliNDdjN2EyMjdhYzY2MDYyYzQ2MzM2ZTBmNzUwNDM1MzI5YWNjM2UwMTM0YTYyMmJhZDA2ZjUzNTBlZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzg3YzczYzU1NTIxOGI5NjczYTZlNTA5NGZiZjJiZGMxYTExYTg5MWIxMzRkYTQzZjBkYjkxMjMyNjcwMTQ0ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGFmOGU2NzA3Mjk2NjQ3YjhlOTJlYjIyZjI5ZGM4MDc2NjFjZjE4OTJiNTlkZmE4YmU1MGU0NDQ3MWU5MTM4MSJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/protect.ts#L78-L81",
+          "version": "repo-lines-v1:sha256:edf4fcd00b35de170d756ea6f536523d8d0d1037c4516d2255a23562bf1b9ec7:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTYyYjQxNGQ3MmIyMjc1ODc0NmViNDUwMzY1NDg4YjMxMWE4YTI0NjljYTg1YzQ4OGQ5YjE3NWU0NzA4MzQwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmQxZDA5ZjRlZGZiYjRmODRhNmFmZmFkMDAyOWJkN2NiYmE5M2RkNWQ3YjQxMWFiNjUwYTIyOTcxOGUzYmI0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTlkM2NlMTYyNTNjMDZjMTY1Y2M0MTBjOTdhOWZmNTQzZDI5ZmQ0MGMyYzVjZjg4MDUyNGFlMzliNDIxMDZjMyJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/write.ts#L81-L90",
+          "version": "repo-lines-v1:sha256:933a303d453a3c11620f6bae605c23652dfea2d4d03dea0cf241b31925408090:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MmI0MTRkNzJiMjI3NTg3NDZlYjQ1MDM2NTQ4OGIzMTFhOGEyNDY5Y2E4NWM0ODhkOWIxNzVlNDcwODM0MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZhOGJlNjIxMDJmMDkzZTU0ZDA2MGNjZGY5ZDI3ZTNlM2ZiMzQ5OTk1MzMwZTIxMTA0YTQyYzQ1NGI0OGI0MGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3NGYzZjdhOWM4MzFmYWNhZWQyYjcxNmY4ZWU5M2QwNTlmZDlmNzExZjMzMDNmNTRjMGFlMjhlOTVhNjA1NmMifQ"
+        },
+        {
+          "resource": "repo://src/tools/index.ts#L129-L147",
+          "version": "repo-lines-v1:sha256:460c8d3b77ef03ad71261be506a4eec76db1159a5821536c4ca61047a614bc65:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5YTg5N2Y0ZDRlODVjMWRmODJmMjY2ZGYxNTFjOGEwNmM5OThhNTk5OTdhODYzOWI3NjI4MGM1NGNmYjczMjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4YzNiMzRjMDkxMzRmOTc3MGU5OGMzNTBmZjJiNjE2YmRjNjQ0MTgzOWQ2OGJiZjRhYmQyMjkzMTZlN2Y4NzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1MjFkMWUwNDg5ODBkNDJhNzE2ZWYwNzA1MGM3OTNhNWYzMzU2ZWJjMmVkMjc5ZGU3MTM0MmRjMWRiMjM4N2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1MzU1OGFiOTY4YWU3YjAwNTI2NjkwNTM0YjZkMzZhMDBkOGUzOWFjMTc0NTBjNTJjMjRlMGNiMzU4NWNiNmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_008b58f8711d4b53b0f24fc469297e04",
+      "statement": "conflictGuardParams(pageid) produces the first conflict-protection layer: starttimestamp from the read time whenever a read record exists, plus basetimestamp from the recorded revision timestamp when known; these are merged into action=edit by the five doEdit callers, but MediaWiki's native check is a three-way merge that only rejects overlapping changes, so a clean full-page overwrite merges successfully and is not caught.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L122-L138",
+          "version": "repo-lines-v1:sha256:9bc677d4c3d19e0d4c02aa8654b804561a4d9f0bb4fd1f9163474913de0f0140:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZDVhYmFjYTIyNjgwYWU5NTMzNjcwMGRmNzY2MzYxOTdhN2NiNmMwMDRmNGNkNzlhYzFiMWZkMmYwYWM0YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmZjdjMzJlYmFiMTZmOTZkNzhhNzI1OTExMDU3ZmEyM2EwZGQ1Y2FlNTI4NWQwMDY4NjlkYTFiNTcxNjE4YjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyZDI4MTRlMmJkOTc4MTcxYjU4NWVkZmI1MmIxY2VjYTUzN2ViMWRmY2JlMTIzMDAxNTUyNjI0OWExZjFhM2IifQ"
+        },
+        {
+          "resource": "repo://src/common/utils.ts#L104-L134",
+          "version": "repo-lines-v1:sha256:ca8c7b5ef1006a5cade788ffdf17c6fa44173f6de68b8ae0d17240d85d53ef84:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhNjlkNjFkZTFhZjc3MTIyN2FkMzdjZGY0MmJhYzVmODc4ZmE0NDk3NTdlZDI4NDdkY2I2NTUxZTMxNmYzZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2OWY3NjY2ZGY5MmM2NWQ5OTE4ZTc1YzE1NTU4OGQyNTE4NmExNGZlNWZiMTNkZTZhNWFmMGZjY2QxMzkwNDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3MDNjN2FiMGI3NzgwNWQzZmVmYzYwZWRmZDhkYTA5NzIwMTE5ODM1YTExOWRjZDgzMWJmNWMyYTlhODE5NDIifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/write.ts#L143-L163",
+          "version": "repo-lines-v1:sha256:59cdb6f6091a1d3e5a49f3c21d6901bba42ac26c7e9fd0ed1edf939be4b919f3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5ZDE2N2ZlYmZkNDE2Y2RlNmQ0MjU4Y2M5MjIzYWU3OTJiOTA2ZWRmYmU1NmZhZjhiNmRhYmM0NTM3M2U1ZGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhOTBmODAzODdlZjg3ZDI1YmU2YzA4NDE2OTcwYjgyNmFkMDI3ZGMwMjZhYWViMDBkMDg2MGU4MjBkNWQ4N2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUxYzE2ZjM2NmRkOGRiNzg1NjY3MzhkMmVlMjQxODI3MDEzZTI0YmZlZTBiYTk5MTM3NjkwYzFlNWQ0MTU3MDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc5NDNiMTU1YWIwMmI1MWIzMzUxMTJmODU2Nzc3ZDM5MzE1Mjg0MmFiNjA3OWE4ZTE3N2NiZWQxNTBiYWI4N2MifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_188ef14dad154f4ba8021d85fb2023cc",
+      "statement": "findStaleWrite(title, pageid) is the second, explicit CAS layer for full-page overwrites: it re-queries the page's lastrevid and returns a rejection message naming the read revid and the current revid when they differ; only write (after size validation, before doEdit) and revert (right after the guard) call it, each paying one extra getArticleInfo round-trip.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L140-L171",
+          "version": "repo-lines-v1:sha256:4bfb3fea9ca4004f3f9c67d92cf616f47b5749e97880c85273f555b1117b8813:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZDVhYmFjYTIyNjgwYWU5NTMzNjcwMGRmNzY2MzYxOTdhN2NiNmMwMDRmNGNkNzlhYzFiMWZkMmYwYWM0YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhZDI5OWQ3NjZlNjM0MzE5Y2EwMzhmZWY1MTJmZjJmMzRhOGNjYjVhNzJhYTRmM2ZjYmU4NTBkMjY2OWVlOTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYxNGMyYjlkMjhkM2UzYTFmNTY2NzFmODM0ZTA2MTE3NmQ0Y2Q2YzQwMGUwZTg0YzI1MjExMTYyZTI4NDk1ZTAifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/revert.ts#L82-L89",
+          "version": "repo-lines-v1:sha256:dbf04db817057c2ac0a5b6a11ef40392c3d1df31868f7850eac20f54460a9954:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjM5YzZkM2VlYTQwNTM1NjgzODlkMjQ3NzM3MTVlODg0MTE4MGJhNjUxMDkxMGY0YTE1MDk3NWQ3ZjFjYTkwYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzM1ZGI4NTdiZGVhNTJlNGUyOGY1NDEwYWJlNmZhMGNlMTAwZjUxNDVjNmQ1YTk2YTE4NTk1NWFiZDdkMzNhNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGQ1MTBmZjhlNzkyN2IzODAxNjM1ZGRlMDZjMWFjMDI3OWI2NTFiZDVhNmVhM2U1YTEwYTc0NTk2YjgwZGZmOCJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/write.ts#L133-L139",
+          "version": "repo-lines-v1:sha256:80c3d44cc8733751878e8f7a6f961ec539cb3376c85f9f8958d5b009a2974134:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2Q3OGZmODYxYTBhOGE0ZmRjYmRkZDA5ZjkxOTExMmQ5ZjIxNjY1OGJiYzA0Yjk4MGZiODM4NWE4NDdiMDNkNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDNkNzNjNjZlZjViYThhZmY3Zjc0ZjBhMGIwZDgzZDg0ZmI3N2IwNTZiYWUyMmQ4NmY0ZDIyODM3NjU5MTgxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTFjMTZmMzY2ZGQ4ZGI3ODU2NjczOGQyZWUyNDE4MjcwMTNlMjRiZmVlMGJhOTkxMzc2OTBjMWU1ZDQxNTcwNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c3a29037c8bb493fbc9fb5d45ea68e26",
+      "statement": "findStaleWrite fails open in three documented cases: no read record or a falsy record.revid (nothing to compare), an info response without lastrevid (page gone or info unavailable, deferring to MediaWiki), and a thrown lookup error (fail open because MediaWiki's three-way merge still applies).",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L147-L169",
+          "version": "repo-lines-v1:sha256:da0b73f14dde33e5df39fae2b7a505fa1c0bac027578310f47f4a391487d2145:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0MzY3OTM5MmU4ODY5MTdkZjYyNGM0YmZiOTQyM2EyOWQ2NjI0YThiZTRhMDAyNWUyNmRiZjk1OTBkZGE2YmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIyNTg3NTFjZTIzOTkyMDQ0NjNhZjgyNzkxZGEzM2RjNzAyNDRmZDFkMDE0NWZjOTIwNzRjMGM3MTA5ZjMyZjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU2M2UxNjljNzc0YzQ5MjMxNDgyZjU1MjhhY2ExODBlMGJiZmYxYzBiMDMyN2IwYTI5MGM1MmYzZWYxMWYzNTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f03b0dc52fa0418088fda0370f3acbec",
+      "statement": "markAsWritten(title, pageid, revid, revTimestamp) both re-stamps readState with the new revision and inserts {pageid, revid} into writeCache, so follow-up writes reuse the just-saved revision for basetimestamp/starttimestamp; edit, write, append and prepend call it only when the response carries both pageid and newrevid.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L173-L183",
+          "version": "repo-lines-v1:sha256:f2bede7f7e8206e0eef6f5e20231490f4dde0c730bdac44405e3a33212243191:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZDVhYmFjYTIyNjgwYWU5NTMzNjcwMGRmNzY2MzYxOTdhN2NiNmMwMDRmNGNkNzlhYzFiMWZkMmYwYWM0YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2M2UxNjljNzc0YzQ5MjMxNDgyZjU1MjhhY2ExODBlMGJiZmYxYzBiMDMyN2IwYTI5MGM1MmYzZWYxMWYzNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0MjUyYTdmODBkZjNjNTE5NDlmOTgwZjAwM2FkYmZiY2YzOWFiOTlkYWZkZjA4OGE2M2EzZTEyNWZhNmIzMTkifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/append.ts#L97-L100",
+          "version": "repo-lines-v1:sha256:64726d5136419b7a6312811740bb101b216791977b80f7958a33339147ba67e5:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWQ1NTUzNjBlMWM1OWEyNWE4NjNlMTQzZWJhYzE3NTQ3YWRmOWZkZmQwMGFhOWUwMGIyOTAxYjlhNzEwMTA3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGZhNzM5NjFkZjg1ZDNhYTczOGFiYzZiNWE3NWFmZjAxNWEzMzAyNmM4YmE5YzUxNWY4MjM2YTMzZDc4Yzg1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTUxMzNjMzAyYjQ3M2U2ZWQwMDQ4MzU0YTY2ZWFkMjljZjEyZjMwZjc5NDExYWE4NmQzODhkODVjNWJlYWRjYSJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/edit.ts#L176-L179",
+          "version": "repo-lines-v1:sha256:e3137ba0d507cb70e8b04eaeaba6023d8cca4208f838236dda44b2738037d42b:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWQ1NTUzNjBlMWM1OWEyNWE4NjNlMTQzZWJhYzE3NTQ3YWRmOWZkZmQwMGFhOWUwMGIyOTAxYjlhNzEwMTA3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGZhNzM5NjFkZjg1ZDNhYTczOGFiYzZiNWE3NWFmZjAxNWEzMzAyNmM4YmE5YzUxNWY4MjM2YTMzZDc4Yzg1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTliZDQ0ZmZhNGY1ZTFjNzMxM2M5NGIyZDUxNDk3NmNkMmU5ZWNiNDMzYmExMmMxMzc5ODcyNWQ5OTgzZjJjYyJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/prepend.ts#L95-L98",
+          "version": "repo-lines-v1:sha256:64726d5136419b7a6312811740bb101b216791977b80f7958a33339147ba67e5:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWQ1NTUzNjBlMWM1OWEyNWE4NjNlMTQzZWJhYzE3NTQ3YWRmOWZkZmQwMGFhOWUwMGIyOTAxYjlhNzEwMTA3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGZhNzM5NjFkZjg1ZDNhYTczOGFiYzZiNWE3NWFmZjAxNWEzMzAyNmM4YmE5YzUxNWY4MjM2YTMzZDc4Yzg1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTliZDQ0ZmZhNGY1ZTFjNzMxM2M5NGIyZDUxNDk3NmNkMmU5ZWNiNDMzYmExMmMxMzc5ODcyNWQ5OTgzZjJjYyJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/write.ts#L165-L168",
+          "version": "repo-lines-v1:sha256:64726d5136419b7a6312811740bb101b216791977b80f7958a33339147ba67e5:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWQ1NTUzNjBlMWM1OWEyNWE4NjNlMTQzZWJhYzE3NTQ3YWRmOWZkZmQwMGFhOWUwMGIyOTAxYjlhNzEwMTA3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGZhNzM5NjFkZjg1ZDNhYTczOGFiYzZiNWE3NWFmZjAxNWEzMzAyNmM4YmE5YzUxNWY4MjM2YTMzZDc4Yzg1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTliZDQ0ZmZhNGY1ZTFjNzMxM2M5NGIyZDUxNDk3NmNkMmU5ZWNiNDMzYmExMmMxMzc5ODcyNWQ5OTgzZjJjYyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_092525c9e4c54150b22cc56af028ee35",
+      "statement": "revert deliberately does not call markAsWritten: re-seeding read evidence with its own output revision would let a follow-up full-page overwrite skip the staleness CAS on content the agent never re-read, so the read record keeps pointing at the pre-revert revision and the next write's CAS refuses until a genuine re-read.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/__tests__/readGuard.test.ts#L183-L190",
+          "version": "repo-lines-v1:sha256:810e8c15ce6b199622379e90ab830846af0757ec51b10a5d2c90f696f75b5432:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2U1MWZlNWNmMDdjM2ZhZjQxYjlhZDI3MDMxM2VhNDM5NmNmOWY0MzUxNDhlNTY1YTNhODJiMmY1ODg5YTg2NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzc0Mzk4Mjc1ZjFkOGNjNDE0MWJjZDA3OWRlZjMzZDRjNTUyMDVmYzBkYmVhOWI3Mzg1NDJmZWFjMWRhNmI5MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDQyY2QxMDE3ZmJkZjllOWZmOTA2Njg3MzVjZDFkYzgxMmE2YWI3YTliMzI0YzE3YjNhMmNhNGFjZDZhYzA1YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjBmNTY1ZjAzMzFiZDQzYTkwOWFlODY5NjQxMTEyYzcwYTcwNmI1MjJlY2U4NjcxMTM4OTk4MTM3MjQ5MTdiYiJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/revert.ts#L179-L183",
+          "version": "repo-lines-v1:sha256:294fd1fe2ec93ca4227add9ec3df54472bd1260400b49195e93f8b8cdc048703:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjMxNmQ3ODczZTFmNzQ4YmY4MjU3MjE3NjY2MThiYjMxMjA3YmI0ZDY3NWI1ZDY3MGE3NjMwMjM3YzQwODExMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGM5OTlhMDMzM2U4YjFjZDA2NmM1OGUxY2Q5NDQxZmVmZmM4OWZmM2Y5ZjZjYjNiZDczM2E2MzFkNzA1MjkyMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGZhNzM5NjFkZjg1ZDNhYTczOGFiYzZiNWE3NWFmZjAxNWEzMzAyNmM4YmE5YzUxNWY4MjM2YTMzZDc4Yzg1NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTliZDQ0ZmZhNGY1ZTFjNzMxM2M5NGIyZDUxNDk3NmNkMmU5ZWNiNDMzYmExMmMxMzc5ODcyNWQ5OTgzZjJjYyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f6c60d40872e41ea97f30427d5ea53c5",
+      "statement": "Title rebinding is handled by invalidateTitle plus requireRead's cache checks: move clears the cache entry for its from title (now a redirect) and delete clears it for the deleted title, while requireRead independently rejects a cached title that no longer exists ('no longer exists') or that now resolves to a different pageid ('moved or recreated'), clearing the stale entry in both cases.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L224-L254",
+          "version": "repo-lines-v1:sha256:8c57d6bfec36a51a37313b3e43f4ad56f8680dad48a7a703b25feb895bf4653c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmZGI2ODY2MWMxODQ4ZDI1OTIwODAwZDhhMTU3ZmRiZWU5MWVhMDU0NWZjOTBiZjBmMjEzM2NhZThkZDA1OWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0ZjRhMTIwYWFiODliMzE0MTQ0MWQzYzJjZDk4MmFkMTU3ODUyMDE3ZGY0MzQzMWM1ZDA2NjczNDk3NWRiN2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5YTQyNzc5NDhkYzk1ZTUyNWRiZjFmNDIxMjJjMzk2ZmM4MjA5ZGQ4ZWYwNjI2M2E5ZTY1NTJlY2NhNjAxMDMifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/delete.ts#L81-L84",
+          "version": "repo-lines-v1:sha256:46d7487b1f9fd0e223659e86563dfe492102ab891a324f8089f71dae22695ceb:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzY0NzlhN2RlNWIxNjdiZjZiOWVmYjU2ZGFlNmQ0ZDllZGVlZmNiMjdhOGRkMDE3NjY3M2MxMDY1OTFkMmEwYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjJiM2NkNTAzOGI3Y2UzYTAxNTM5NTYxODI3ZTEyYTMwYjVlZGFlMzFhOWM4OGI2OTYxNGNkN2RjNjdkYTBmZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzE0YjcxNGU4ZDg0MDdlODc0ZGVhMDBjZGQ3YTE3MjlmNTU2MDhmMzkyYTcyNzY2YzMwZTFiYWJmNjlkZjVlNiJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/move.ts#L84-L87",
+          "version": "repo-lines-v1:sha256:b51f5294d01790e45391d649f108c31a85123c8845698a4f24750fea18585974:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjdjNGE0MTFjMDAxYWEzMWQzYjg4ZmY3NzBjMGQwMTMyZjkyYTM0YmNiZWYzMDAzYjViNWEzZWNiNGY0ZDM1MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDdiZDgwY2NkZDE2YmJiNmQ1NjNhNThjMjVlOGY4YmVkMTNkZmQyZWE4MWU4M2Q5MWEyOTVjOTA5M2UwMDc5MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2VmODM4ZmFkYTQwMDg5M2EzMjE0NWFlM2VmOTg0MTFiNWU3MjAyN2ZiMjk4NDFiMzA2MmZjZmZlNDhiOGVlMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0fc3532c8ed14ce084aa6a54bca4e73e",
+      "statement": "Read evidence has a second consumer besides the guard: diff-revisions uses getReadRecord(pageid).revid as its default from_rev baseline and returns an error telling the agent to call get-article when no read state exists for the page.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L111-L115",
+          "version": "repo-lines-v1:sha256:83d76389e5822ec45f1720b030479c7ba947be3cfafcfe720352073edfc543ce:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTBlZjg1YjA2MTY3MzI0ODVkMTQ2OTJjZThjMGQzMWNlZmU3ZmUyZGJhZjA4NDQ3YzUxZjcyNDc2MmI3MjY4ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2EyZWQ1YTY5ZDkwM2NhZjRjMjQ4ZjM1ZDk2MmNjNGFlYzg5ZmU5ZGQ1YjAxYmNmYTQ5Y2IzZGNkZDFmZGRiMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWM2ZDY3N2I3NTQ5MGUyZWI0Mzk1ODdkY2M5MDQ3NTFlZTQ2NjYyOTUyNDQ5NGJkNmRlZjkzNDAzNzE0NDMxZSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/diff-revisions.ts#L168-L179",
+          "version": "repo-lines-v1:sha256:b141c032ecdaead43127fd00f06e456966c04df725752358ffcafb61a2b4cf26:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzZDRmNmEzMzIyMGI4NDIwMTViOTVmODIxM2M2NTg3MGQ4YzRmYjUwZDgxZjk0YmZiOGU1YzJmYzViMjg1NDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdmNjg4NDkwYzQ5NDk1NWQ1MzBhZTFkOWQ5ZGJkOWY3NTIwM2IxNWU1ZmJjODA3NWM4N2E5MmVmOTUxMzJlNDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3MmE0ZGI0OGZjMTgwMjYxOTc3YTMwOTkxNDE3ZWNiNTM5MmIzMDk3YzExNTkxMzI1YTg3OGUxNDk4ZWQ5ZWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6bb13df1ff714975859fbc94e40edd6d",
+      "statement": "get-article-with-lineno's title path can deliver content without recording evidence: it falls back to pageid/lastrevid of 0 when its follow-up redirect-aware revision query finds no page, so the full-view condition fails and nothing is marked read even though the content was returned.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L125-L155",
+          "version": "repo-lines-v1:sha256:241ee50471e1a9fe650a3bf3c4937a7a2a3ce83b08a7f56707fcb402b080cad7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkZTJhOWIyODlkY2JmMzBjZTVhYWMxMjFkZmExM2ZhMGQ3MzEwNTEwMzk2NjhmMzViZmQ3Y2VhYjM0ODhkM2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzNGYwMzU2MTk4MDkyYTgxMDFmMTE3MGIwMDcxMDZhYzIzZDQ5OTNkNjM0ZjljOGE5Y2Q5NDk1MGJmNjNiZTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMzFiYTgyZTM4MGEwOTI1NGYxYzY0OGY1ODlkYmU0NGZkODliN2VhOTMyODg3NjIzYmNmMWFiMmZhYWNmZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxYWY3MjQ5YWFiMzE1YzVmZmMyNGUzMThlMzU5ZTFmMGEwYjE1MGZlYjI1MmM1ZGQyNDAwZDIwY2FmYTYxNTAifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L189-L196",
+          "version": "repo-lines-v1:sha256:3bd4b42b75b2838dd4167037f133ebcba8398b92d5b76d10eeebe56da71d688b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI0OGJlZTNkNzAyODI4MWE1MmY2M2Q2YjEzMTMzOGE3MGJkNmVhMTZlNzM1MDRlYThkZTcwMGQ4YTBmMzEzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzJiY2NjNDk0Mzg4ZmQ0ZTJhMzBiYzczYTFkZGU1ZDExN2U5MzJiZDc4YTdmMDAyMDE0MTk5NWQ3MWIxYzFhNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmUyOGZlYzFmMjJhNGQxMWJiMTIxYmViYmU1MGY4MzI1ZmIxYTcwMWQyOGIyZDNhZjQ0NWMwN2E0YzdkNTI3ZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_4742e7c8dd2d47b1bf3ac282ae09f2ae",
+      "statement": "The guard is covered by offline automated tests that act as executable invariants: readGuard.test.ts drives the real MCP surface against fakeNodemwBot and locks in that partial reads do not unlock writes, title rebinding is rejected, revert applies the CAS without re-seeding read evidence, and edit enforces the 1/10 wipe floor; smoke.test.ts asserts get-module-source/get-articles record revision timestamps and revert leaves the read record untouched; pageState.test.ts covers toMwTimestamp, conflictGuardParams and the readAt stamp.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/__tests__/pageState.test.ts#L38-L78",
+          "version": "repo-lines-v1:sha256:6af37ca494eb71ccfa24464653f797f8a9964650d143857abaf48478a6c76c03:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0Nzk1ZjAwNGE4MjQ0MmExNGQ2NTkzMWU4NTRhM2E0YjQ2NTMwYzk2OWJlNGVlM2ZlMWRhZmNjZTczMjM4M2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkZjk0ODA0MzAxOTdkYmRjZDM0NDdkNzEyMWRhZmU1ZDg0MmNmODczYmVhMGViNGE5NTNmMmNmM2VjNDFmYWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/fakeNodemwBot.ts#L40-L67",
+          "version": "repo-lines-v1:sha256:f11940a72e3ab975d871b57686b45cc4684110fb251edd6e37fa851b5597055a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmNjU4MjIxYmYxMDI5NmIxMGRjYjExYWI5YmYyZTU2Mjg0NzQwYTg0ZjBjMDFlNGVlYjg3ZDg4MjgzMDgyMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3M2ZiMjU0MDU4YzI4ZDhkNDAwN2ZjZGM1MGJjNzQyMTFhNDY1YTkxYzQ1YjRjNDg2ZDkyNzhiYmMwMTNiZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzN2NhMjYyMzZlMmY0MjM2ODQ5NDUyNjRlNTI1ZTVkMzc5NzZhNDljZThlYmEzYmVhMTM1OTc3YWRkZjgxZGQifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/readGuard.test.ts#L104-L214",
+          "version": "repo-lines-v1:sha256:4c04a11902aa3db7ec8c39939c87d7207a6c228137ea96af85c8c55cea5a38ed:eyJzZWxlY3RlZExpbmVDb3VudCI6MTExLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIxYTdhNmFlODA5Zjg0NzNiMTI3NjNiMmI0NWNlM2E5NTEzZjczZTZkYTAwOWU3NmE5OGVmOGMzNzk1YTM4OTBhIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI5MTA1OWM4Y2ZiNWEwNzJjNmY2NGRkM2QxYmZkYmMzNTZmYmVjOTNhZWVjODg3OTFkYTdlZGJhODljMDg4NWRkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIzMTMxYmE4MmUzODBhMDkyNTRmMWM2NDhmNTg5ZGJlNDRmZDg5YjdlYTkzMjg4NzYyM2JjZjFhYjJmYWFjZmY2IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJhM2RkZWY3MjQ3ODZiNGFmNDVhYjdjYWQ4MWQzNzdhZTU0M2JiNzg0MTI5NjU2OGZiNTIyNjk5OGFlYzIxNjM0In0"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L163-L190",
+          "version": "repo-lines-v1:sha256:e97b2cf89dcfde6db4b6f60898d4051f13873a69c5ce63c761686674bd661f17:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlYzdlMDUyYmYwNTQ0OTI1Mzg5NzkwZWFhYTgzYjgyM2ZmYmYwMzM3NzM2MDUxYjNmYTQzNGJmODg2ZjU4ZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNjNGY3MDFlNWZkM2M5MDI1ZTkwMDI0MDhmMTFlNjA0ZWEwODc5MDFjMWYyODJiNzlmMDJmY2M1NTIzOTNhNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-30T18:16:46.462Z"
+  }
+}

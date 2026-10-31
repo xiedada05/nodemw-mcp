@@ -1,0 +1,652 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:c336cf60b92c900517b9164c961d1255d2de9dafd81ae613c3ea80817819402b",
+  "claims": [
+    {
+      "id": "claim_4c6ef9c3abcd4758a6ccdbae177aa652",
+      "statement": "get-article 每次调用在两条传输之间二选一：只给 title（或 title 加 redirectInfo）时走 nodemw 的 getArticle（可跟随重定向，用手写回调取回 redirect info）；给了 id 或 revision 时改走直连 api.call，参数 prop=revisions&rvprop=content&rvlimit=1，id 形式用 pageids、revision 形式用 rvstartid。",
+      "evidence": [
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L377-L417",
+          "version": "repo-lines-v1:sha256:c488ad3fa62e1c31924566b1344d4802861aa350506543e89eca4713b6d5d811:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxOWM5MThkODgzZGIyNjlkMjMxZTlmYWQ1MTBmZjAwYzk3M2RmNTg5ZTkwMDVhMWQ2MjU1MDhmZTA1OGYwMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY4YTkzZTczNWYwYmNlNGEyZWRiYjYxZjI0N2E3MThhMzMwY2NhZTNiNWY0N2NmN2FiOWEyMDMyOTMwOTVjNTkifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L135-L150",
+          "version": "repo-lines-v1:sha256:eeb4f7906abad00289d74749178af85295e6a6b01e512f401d4607e0aec713a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhZTEwZTQ2Mjk0ZDIzYjdkNGViZTY0Zjk2ZDQxNjQ4OTJiNTRiMDFlYWZkNTJhYTdhY2EwNzQ4OTJlYjYyODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzOTJmOGI0MGQ2YTc5OWVlNTk4MDViNDk5MzQ2N2M1MTI3YmZkNmYwZjdjYjhiMmIyNjI0ZDBjNGJhNWIwYWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlYjhiMWI3MDk2ZWFmYmI5YzExOWRkMWRlYTg0Y2U2NGU4MjYwMDU0NGYxZTJlODQzNzM3OGI3MDA4MWI0MmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0MTBkNWE3Yjg2MWQyYTU3NDFkYzE2ZjgwZWE0M2Y2MzA1ZmE1NWVjOWVkOWJkYmEzMGViZjVlZmMzY2Y4YWQifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L202-L231",
+          "version": "repo-lines-v1:sha256:de32e943b169dc965e5390ba54a80bf6554dba2da84d740d42efc7f7cfeec85d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1ZWQ1M2NlNmQ0NzU3MDA3NzJhM2Y0NDdhNDI2MzU0MzgwZTZmZTBmMTk0NzlmMjUxYmZiOTc4NzEzMzZhNTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5NjBiYTUwZmVhZDE0NmY4YTUwNzMyMDEzYWY1MWU5YjE2OTYwOGU4MGQ3YzIxMDUzZGZiMDk5ZmQ4MjVmYTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkODdiZDJmZmRhNmQ3OWIxMTUwNjQ3NWZlNjA0OGMwOGY5Mjk0ODczMzQ1Y2M2N2JlNjE0ZDhkMTY1NDBhYTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1OTNkYTBkZjA2ZGVhNmE2MzFhNWNjYTgzNDkxY2I3OWFhNDJhMzgzOWIxYzM4MGFlOGI0MTZjMDAyMzFiZDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ca711efaec574b80a58726f8990681a4",
+      "statement": "Because get-article's direct transport ignores redirectInfo and cannot pass redirects when pageids is used, redirectInfo is silently inert whenever id or revision is supplied, and a missing page reached by id is reported with a synthesised identifier such as \"id 5\" instead of a title.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L135-L150",
+          "version": "repo-lines-v1:sha256:eeb4f7906abad00289d74749178af85295e6a6b01e512f401d4607e0aec713a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhZTEwZTQ2Mjk0ZDIzYjdkNGViZTY0Zjk2ZDQxNjQ4OTJiNTRiMDFlYWZkNTJhYTdhY2EwNzQ4OTJlYjYyODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzOTJmOGI0MGQ2YTc5OWVlNTk4MDViNDk5MzQ2N2M1MTI3YmZkNmYwZjdjYjhiMmIyNjI0ZDBjNGJhNWIwYWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlYjhiMWI3MDk2ZWFmYmI5YzExOWRkMWRlYTg0Y2U2NGU4MjYwMDU0NGYxZTJlODQzNzM3OGI3MDA4MWI0MmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0MTBkNWE3Yjg2MWQyYTU3NDFkYzE2ZjgwZWE0M2Y2MzA1ZmE1NWVjOWVkOWJkYmEzMGViZjVlZmMzY2Y4YWQifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L155-L161",
+          "version": "repo-lines-v1:sha256:531959c16531b44a1c1c4dc89d36ff9c36e0a12a617148f8428bb676eaa175bc:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTM5ZGZjY2Y5YTZjYmU1NDViNGM1YzVhNzBhM2MzMDJiYjZkMGFmMWNkODE2NGMxNmQxMmVlYmUzODNhNmViNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzlhODU3MmI4ODhiMDhmNzk3OThhMTlhY2FkMWVmZGFmZWQwMjcwNDI1YTNlMWMyMmQ4ODhkMTA2ZDY1NjgzYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWY0Zjk0MGI0NmU3Yzk5MDljZjhjZWYxZDRjOWViZjVkYzU4ZTRlYjhiOGNlZGQyNGE2YzViNjI2MzRjZTZkOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTJkOWU0YjlmMTMwYmQwMTQ1MTU0YTgzN2I0MWUzZGFjOWExOTIwYTNhNWViMzZlOTMyNjAyZjRkYjBlOGJjNyJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L202-L231",
+          "version": "repo-lines-v1:sha256:de32e943b169dc965e5390ba54a80bf6554dba2da84d740d42efc7f7cfeec85d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1ZWQ1M2NlNmQ0NzU3MDA3NzJhM2Y0NDdhNDI2MzU0MzgwZTZmZTBmMTk0NzlmMjUxYmZiOTc4NzEzMzZhNTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5NjBiYTUwZmVhZDE0NmY4YTUwNzMyMDEzYWY1MWU5YjE2OTYwOGU4MGQ3YzIxMDUzZGZiMDk5ZmQ4MjVmYTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkODdiZDJmZmRhNmQ3OWIxMTUwNjQ3NWZlNjA0OGMwOGY5Mjk0ODczMzQ1Y2M2N2JlNjE0ZDhkMTY1NDBhYTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1OTNkYTBkZjA2ZGVhNmE2MzFhNWNjYTgzNDkxY2I3OWFhNDJhMzgzOWIxYzM4MGFlOGI0MTZjMDAyMzFiZDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a1d9fe78bc754e8ba47e1da55a660f3e",
+      "statement": "get-article's revision parameter is a backward start cursor (rvstartid with rvlimit 1) rather than an exact-revision lookup, and the handler never compares the returned revid with the requested one, so exact-revision retrieval is the job of get-article-by-revision, which sends revids.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article-by-revision.ts#L59-L68",
+          "version": "repo-lines-v1:sha256:5883bbba48a3691bae5f958638206231e912e23a4263943a49e95b559e74dc42:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2YTVkMDNlODFhYmQyMWJlNjA5OWU2OGZjMjFjZDM1M2IwMWMxOTBjYWYzMGY0YjcyNTgzNzVkMzAzNzYxNjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhOTBmODAzODdlZjg3ZDI1YmU2YzA4NDE2OTcwYjgyNmFkMDI3ZGMwMjZhYWViMDBkMDg2MGU4MjBkNWQ4N2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlmMzJlM2JmOTk4NWY0MTE0Y2I2M2VhYmE5MTM5ZDIxYTBjOTQzNmY2OTM1YTAwY2I5MDZhOWUzYWMyNWUzMmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJkZDAwZWU4YTUwYmMwMjVkNTMxYTQ5MTJjZDNjMDQ0ODFlZmEwMzQxYmM2MTQwZWY3ZjJlYjg5ZmQ5OTk3MDIifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L163-L182",
+          "version": "repo-lines-v1:sha256:b06d23f311fded7d9f7f1717e8d79534e6a0a161a27d3b2ab70f530cac36f265:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1MTcyZTY0OWQwMzc5Nzc5YTNlMTQxM2QwYzcwMTgxNTlmYWUwYzI0Y2FkZDkxM2FhMDQzZmI2YTYzODdiMzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5YTg1NzJiODg4YjA4Zjc5Nzk4YTE5YWNhZDFlZmRhZmVkMDI3MDQyNWEzZTFjMjJkODg4ZDEwNmQ2NTY4M2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3MDMyMDMzOWU5OTgxNjgwNjdiNWFiOTA5Njc4ZjE0NmFkYzZlYzZhZDdhMWUyNTJmMGRjYzZkNWIxNDExZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImExOGFkZTYyZDM4MGU5NjRmZjdhZDUxMzljZTZlMzYwZWU4MjRkNmM3ZjUzM2VlM2U3Yzc5YzY4MDEzYTY2OWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c6c0b7108e2a42d2a86a49e466f698fa",
+      "statement": "每件接受 page id 的读取工具都用带 pageids 的直连 api.call 实现 id 路径——get-article、get-article-with-lineno、get-article-info、get-article-categories、get-article-properties、get-article-revisions 与 diff-revisions——因为高层 nodemw 方法只会拼 titles 列表，于是 id 路径自带一套结果解析、缺页判断（page.missing !== undefined）与查询参数。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/diff-revisions.ts#L148-L166",
+          "version": "repo-lines-v1:sha256:9fd9f41cea981201d89de93147355c320206fe92d8ae540e4bc7309627f30d02:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1YzBmYmM0ZDk5ZDAxMWJkZDYxZDAxMzczYjVlMDVjYjQ2YTM1MDY3OTYxMjA5MWU4YzIwOTFjZmMwZjYxZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM2NGFmNzI5N2I1OWRmNGNiNTMxMDczOTlkZjIzN2ZlNWQwZjA4ZjQzMGNhZjQzMTI0NmExODc0MDliMWUyNzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUxNjE0MzVmN2VmYjQ4YTA3Njg2ZjkyODQyY2M3MzRlMDU1N2Y4Nzk3MzczYzAwZDBmYmM2OWFmZmM1MWFmODgifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-categories.ts#L78-L99",
+          "version": "repo-lines-v1:sha256:0bb19a4318e48c1c2e226252ae06a01e5b540e4dcbda076335602484d67c31a0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlNWE3OTY3ZjQxNDY3ZTY1OWU0YzY3NWU1YzkwOTQ3ZWMxZGUwNDcwYTI3MjU4NGQxOWEyZDc0ODc2MjYyNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MDNiMWU5YWMwZmE3NGNjZDViNjZmZTVhOWIwMTRmYTdkNjhkZjQwMjdlNmMwMjFjM2ZmOGIxNTQ0ODJiNzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4MTkzNjUxYTQxYjcxNGRmMGViZTFjZDllMzRmNGE0Mzk3ODkyZWFiMWIzMmQ4NzI0MDVlMGI0ZDUzNjZhYWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0OGE1OGZjNWVlMDU3MjA0ZmMyMzM5YTFiNzBjNTBkOTMzZDA0YzY3Y2Y5N2M3MWZiODJmMzhhZDRiODEyYWMifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-info.ts#L85-L99",
+          "version": "repo-lines-v1:sha256:c86623573475421b023deb27fc06eabe6290665ee112cd4aa690f9a266bc5e39:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiYmUzYjJlMjFmYWRhODkyM2M3ZWQyNWNmNDY5Nzc5NjBjMDg3MTI2NmU0MTAyMzE5MzI4NDIyNmU0NDVlZGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhOWQ2YTViYWRjNTFkMGRiNzI3ZWNhNmU4MThiZDkxN2FiMTE1MTY4NjNmOTkwZDkyODljNWU0YzlmNTU5MGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4MTkzNjUxYTQxYjcxNGRmMGViZTFjZDllMzRmNGE0Mzk3ODkyZWFiMWIzMmQ4NzI0MDVlMGI0ZDUzNjZhYWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU3Y2Q4ZGUwNDQ2NjVjMWYyM2E5NzhkMTgwMTc4MWVmYzg0ZWI5NzVlN2Q0YWRlNDI1NWViNjhkYzVlYmIwZGUifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-properties.ts#L83-L101",
+          "version": "repo-lines-v1:sha256:b511c018c8d76d34cd5ce61758db09deb820eb02b7fcdf2ae39db99db80aa891:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlNWE3OTY3ZjQxNDY3ZTY1OWU0YzY3NWU1YzkwOTQ3ZWMxZGUwNDcwYTI3MjU4NGQxOWEyZDc0ODc2MjYyNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MDNiMWU5YWMwZmE3NGNjZDViNjZmZTVhOWIwMTRmYTdkNjhkZjQwMjdlNmMwMjFjM2ZmOGIxNTQ0ODJiNzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4MTkzNjUxYTQxYjcxNGRmMGViZTFjZDllMzRmNGE0Mzk3ODkyZWFiMWIzMmQ4NzI0MDVlMGI0ZDUzNjZhYWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI0MTM0YzNlOTliYjBjYmNiNGJhYWMzOGFkYmMwNjAzZDA2ZjQzMWM5ODc5ZGViNDg1MzE4YTMxNDUyYWVlMDgifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-revisions.ts#L79-L112",
+          "version": "repo-lines-v1:sha256:1cdf6c4441153967511bf3820c0b5d9b7afb3d7cdd693ef27c9e4aa4ef2b1631:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlNWE3OTY3ZjQxNDY3ZTY1OWU0YzY3NWU1YzkwOTQ3ZWMxZGUwNDcwYTI3MjU4NGQxOWEyZDc0ODc2MjYyNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmYWM0YTc0NmU0Y2Y0NTg1MTZiOGQ1NWQzMzYyOTEwZTg4NmVmNjQ5OGI1MWEwNGZlYTYzODExNjAxMjY4ZTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4MTkzNjUxYTQxYjcxNGRmMGViZTFjZDllMzRmNGE0Mzk3ODkyZWFiMWIzMmQ4NzI0MDVlMGI0ZDUzNjZhYWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk3NjA0ODFhNDgwNmEzYzk3YjBkMmY2NDY5YjY5MzgxMDA4MTBkYzIwZDM1MGFjMmY2MTkzZWZmNmYzMWQ5OTAifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L99-L122",
+          "version": "repo-lines-v1:sha256:81bb75245baaa1b9e0bbb58f69fd208a7234837c6efe235951d3965dea38402d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwMTkxZmYxMzYyMzEzMzlkNTI5ZTBiYzg5ZmQ2NWRiMzg4MjAwMGFhZGQzNTNiMTg3NWQ0MzU2OTQ5MDZhYjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5MDFhMTFmMmQ4MTcyMGMwMjU1ZDVlMTUyMjJiMTE4NTFmYTJmN2QxMjNjZjc0MzkyZGZkNWRmNmFlYTBmYWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU3NmNkZTA0ZmUwNGFjYjlmMDlhZmQ2NTFmYjIwNzFkZGQ2MWM5OTA2YjMxZDJkOGZlYjRhNTIxZmZiM2QwMzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMTlmYzk4ODkwNjQyOGYwMDE2ZjlkN2YzMDYwNTQ1MmU4MzkxODJlZDg1MmMwNmQ3MzdiN2JmNWNjMzM5ZjMifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L137-L161",
+          "version": "repo-lines-v1:sha256:7be2b09e5d558b64b547a4704b93eff9ea8edd4107140b58a5c96bf6c75142b5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzOTg2ZWVhN2FiNDdiYmEyNTlkMWVlYWZkMGJjMTFjNTNmY2MzMDM1MmM5YzdjOWUxOTczM2UyNTI3MzliMmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5YTg1NzJiODg4YjA4Zjc5Nzk4YTE5YWNhZDFlZmRhZmVkMDI3MDQyNWEzZTFjMjJkODg4ZDEwNmQ2NTY4M2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjY2JlZDVjNjMwMDk4YmE1MjAzNjQyMDFiODM0MGQ5ODE0YjQ3MzYxNTVkN2E3MjNkYzk4YzBmMDQ3YzExNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEyZDllNGI5ZjEzMGJkMDE0NTE1NGE4MzdiNDFlM2RhYzlhMTkyMGEzYTVlYjM2ZTkzMjYwMmY0ZGIwZThiYzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6d5a16a52b674f9eaa0b8a07409e03f1",
+      "statement": "maxlen 存在于四件工具——get-article、get-article-with-lineno、diff-preview、diff-revisions——四者都把 undefined 或任何 <= 0 的值当作“不截断”，所以 maxlen: 0 返回完整内容，尽管 schema 接受 0。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/compareOutput.ts#L193-L213",
+          "version": "repo-lines-v1:sha256:11f5337d216c417d2c94fe51a68849c2d166638b35e84f6c6e7ac20c1b1c6109:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0NjQ0Zjg3NTc4OWE5ZTk4NzNiYWYwYThhOWQ5ZGM4OTg0ZjEyNDBlMDkwZDg2ZGM1MzAzNGY5N2E4MTQ0OWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE4Y2MyZDBhNDBlNjliNTYxYWMyMDFlYTNkNjlmOGM5MjkwYzQ0ZmI0ZjQ2OGViOTJiZjIwMTc5OGQ1YWVjYjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlNjAzMGNmMGJjYmJjOWVmNWRlZmYwNzM3ZGZjNjRiMjk0ODZhMzkwZmUzNGNkYzI1MTZlN2Y4ZDVkZjg0NWYifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/diff-preview.ts#L48-L85",
+          "version": "repo-lines-v1:sha256:da939b5a213303f51639709e7af1b8d1d05645f3f01c43d353933d25aeb711ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmYzg3MTZjM2I3MDNjOTAzNGNjODQ3MmJiNGJlMTUxNDA5MzQyZDA0MGNiYzA1OThhOThjZDQ0MzNmYzZkYjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiYjE1MzVhZjEzZDNlYmIyZjc3MzYyYTk5NjllZmQ4ZmI3M2UyNzdiN2E5MzU3NmI5NDkyZDg5OTc3NzNhZjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3ZGJiYTg5YjAyNmFmZGJhNjNjODcyNzZjYzkzYTNkZmI4N2Y5MzE1MDU3MWIyYWEyNjBmNDgxNWJiZDZlNzkifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L76-L77",
+          "version": "repo-lines-v1:sha256:92cf9f88647912fb9c85b3aaa97f9b4065afbb4533618178da6cceee9a3c5fe5:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ZiOWFkZjZiZThkZDIyYzc4ZWM1Mjg0MmRmYjQwMzBjYzEwMGQ2MmU5ZTZiYzg5NmIzMGE3Nzk3MjRjYTQxMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDkzM2UzNTI0MTYzZTUzYzllMGFiYmFkZDRlMjAzYmZjMzkwNGQwODJjZjQ1YWZkYTRlNWY2YWE5NWVjODc1YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTA1ZWM5NThiNWYwM2ZjZTQ4ZWQ2MmFhNzUzMmU0ZjZjZmNmMzgzODc2MTk0YmQyMGMxN2FiNTU4NmQ4ZTZhOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmFlNGI1ZmVjN2U1MjVlMDc4NTQ1MjNjZjU1NjU1NWMyNTk0NDNhNTg1ZmQ5YmZkZjU0MGMxMDg1N2I4OTkwNCJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L96-L107",
+          "version": "repo-lines-v1:sha256:55220eafed18efa0c364984cee6e2487cbb8da3cfa23934fa80693a088a21718:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2MGE4N2YxNGEyN2NiOGQ1N2IzZTQ5NDNmNmEyMTFjOTdjNWNmMmFjNThjODA5NDEzODA3MzZiMzhkNjAyNTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjNWI4YzMxNzZjYzUzZWFjNTZiZGQ5NzcxYzRhYWQ5Mzk0NDc0MzQ5YTQ4ZTU0ODliMDgxZWMwNmE0ZTE2NTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiNjFmNjg3OGVmOGViMGNmN2FhNWE1NmZmZmZkMTlhZDhlOWU5Y2Y2NWIyYmU4YzU1YThlN2ZmOTVkOTA1YjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_17e44e16d97e4fedb48a33663c1effe9",
+      "statement": "get-article 的截断是先 slice 再追加一整句续读提示 “[truncated — article exceeds maxlen, call get-article again with offset=<n> to continue reading]”，因此响应长度超出 maxlen，而 schema 描述宣传的裸 [truncated] 并不是真实字符串；offset 超过正文长度时正文直接变成 “(reached end of article)”。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L64-L82",
+          "version": "repo-lines-v1:sha256:3b0c2323895f19db8c2305b82fb38efaf3664293ccba2cbd155dbdedaf1a8f29:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5ZmY3OTcxMjYzZjBlZjZmMmUwNTliNzM1ZTY3NDI1NjM2OTRmOWQ3ZDc2YzllNzNjMjRjMTYyYjlkNDNlNmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlN2UwYzU5NDBhYTE3ZWQ5Y2ZmMjRhODI2NTExMDYxMDgxY2UxYTEyMDIzMjJkZWUxZDQ2YjIxNjNhNWY3YzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2M2UxNjljNzc0YzQ5MjMxNDgyZjU1MjhhY2ExODBlMGJiZmYxYzBiMDMyN2IwYTI5MGM1MmYzZWYxMWYzNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlYTQ1ZGZiOWQzZWMyZWY3ODEzOWE3MDE5NTVjYmUxNzBhZDdkMmZjODRmMjg0MTJjM2NmODhlYzMyMWQ0NDUifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L96-L107",
+          "version": "repo-lines-v1:sha256:55220eafed18efa0c364984cee6e2487cbb8da3cfa23934fa80693a088a21718:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2MGE4N2YxNGEyN2NiOGQ1N2IzZTQ5NDNmNmEyMTFjOTdjNWNmMmFjNThjODA5NDEzODA3MzZiMzhkNjAyNTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjNWI4YzMxNzZjYzUzZWFjNTZiZGQ5NzcxYzRhYWQ5Mzk0NDc0MzQ5YTQ4ZTU0ODliMDgxZWMwNmE0ZTE2NTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiNjFmNjg3OGVmOGViMGNmN2FhNWE1NmZmZmZkMTlhZDhlOWU5Y2Y2NWIyYmU4YzU1YThlN2ZmOTVkOTA1YjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ab546df5212f45dcb67df01ea2dce665",
+      "statement": "get-article-with-lineno truncation is line-granular and emits a synthetic line whose content is \"[truncated]\" and whose lineno is the last kept line plus one (or offset + 1 when no line was kept); that marker counts toward shownLines but not toward maxlen, so a single over-long line yields zero content lines and shownLines can be limit + 1.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L198-L209",
+          "version": "repo-lines-v1:sha256:067d395793018b6f40c1b2b3189d5c4795073e896e7745ff5d98c08c3f377eda:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzMDZiZmFjYzZiMjVkZTJhMTkzMThlNmZiNmJjYmNjNTFmMzFhNzFiNWUyNzViODcwZDllOGRmM2RlMDBhYzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMyYmNjYzQ5NDM4OGZkNGUyYTMwYmM3M2ExZGRlNWQxMTdlOTMyYmQ3OGE3ZjAwMjAxNDE5OTVkNzFiMWMxYTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYxOTVlNmExOTNjZmE0Y2FkYTMyN2Y5ODIyNWFmODhlZTViNjliM2NhYTVmNTg3ZWU5YjFkOTVjMDg4YjdhM2IifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L76-L91",
+          "version": "repo-lines-v1:sha256:8010018c9b20edc28b59f750f733eaf05aeefbd60743e5d20fd7fa914e818788:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdmYjlhZGY2YmU4ZGQyMmM3OGVjNTI4NDJkZmI0MDMwY2MxMDBkNjJlOWU2YmM4OTZiMzBhNzc5NzI0Y2E0MTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1MWRkODIwYWJlY2Y4YTQ2MzgzNjUwYjMxNzJjMDkyMTljMWJhYWJkNTY0NTBhMmEyYjkyNTU1MGZiNDQ1ZTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9c1727d6bd9b4f8d8566ff8452d1a653",
+      "statement": "get-article-with-lineno 的行窗口用 1 基绝对 lineno、0 基 offset 跳过、offset 之后生效的 limit，totalLines 统计整页而 shownLines 含截断标记；窗口在整页取回之后应用（不减少 API 载荷），但它会决定是否 markAsRead——只有 offset === 0、未给 limit 且未截断的视图才算整页读取。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L175-L201",
+          "version": "repo-lines-v1:sha256:0d2f2055709bdc420565a7db81ad574534540121a5ca15a5d4ab91f413911e8c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2NjQ1ZWQzYmE1YzMyZjFmYmJiZWQ2MmQ0OTU4NGE0NmI3NGU0MDU5ODI0NDg5NGY5ZjFmMGJjZDY3ZmI5N2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyMDk5NWVlMjAzYWQxZTUxYWFlYTVlNTIwYzljY2M5YzI0Yjc5YTUzNjkyNGFlOWMyYzJkN2YzMzA0NzI0ZDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1MDdlMDE5NWQ2YTk0ZmMwZDNmOWZlYTVmMDZiMzRjMTc2NjZlNWU4NGE4MjBiMDI1YmY5MjBlMDA3N2VlMzEifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L41-L74",
+          "version": "repo-lines-v1:sha256:7404349c845db6299f7994266acb6e82c2d77599abfbc454060f1c51ea631acc:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0NDY5YjM1OWNlZWJjMGJlYTg0NjQ4NzAzNGU2YzM0ODljYzQ0YTQ0MjI5N2I4ZjcwNWRmMzc2ZTNkNGQ1YzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJhZDBkZWJhZjJiNzdiODA5YjMwMjkxYjMxZTI2ZWFjNmNjMjVmYTE4OGE2MDY5MzU0NjRiNjYzYWE1ZDgzZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU2YTNhMjgxYTU0MTEwYjQ3Y2YyYTY2MzZiYzYwZDk3OWZkOTkyYzhlMDNkOTM4ZDE3NDY0MDBlMmUxMzE1ZDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0e3c622edcb74e2b9891c246af85a3dd",
+      "statement": "Read tools that report a total fall into two incompatible meanings: get-all-pages and search (and the counts of get-pages-in-category, get-pages-in-namespace, get-pages-transcluding and get-categories) cover every match because the underlying nodemw method uses getAll continuation, whereas get-log, get-recent-changes, get-images, get-query-page and get-pages-by-prefix report the size of a single API batch whose continuation is discarded.",
+      "evidence": [
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L114-L185",
+          "version": "repo-lines-v1:sha256:94cc4f6e422c7737f712415a81f91223231ba0c1b51be10dda96c2ea4744fdc9:eyJzZWxlY3RlZExpbmVDb3VudCI6NzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3MjMzYTRhZjRmMjg5OTVlYjg1ZDc1MzRkNmJjNGFkYmE1YTQ0ZjczODFiMDNjNTFjNzM4YzRmMTM2MTNkNzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZDRkMGQwOTYxYzA5ZTkzZWM2NjQyOTljNmE3OTE4ZWMyY2UyODQ0M2ViZGM4ZWMyOWEwZjczY2ZiNWQ0YjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0YWJhMzViZDMxN2FlYWY3ZGNjNmU5NjNmMThmY2QzY2NiZjBkNGQxOWU3MzhiZGY2MDNkNjU2MGM2MWIwMTEifQ"
+        },
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L1149-L1165",
+          "version": "repo-lines-v1:sha256:f7f197d75cbd75bc573a7d65b0b78236f194afe12b515935ef4f6913bd849506:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzZDk1NDcyNWZhMGFiYjdlMDJhNzE5ZDdjNGNkZmRmNjM0N2M4OTQ3NTU0ZTViYmI5M2U2M2NjZjJiZTMxMTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlMTJiNjExODk0M2UzMGMwMDY4MzNlNzgxNjMwYTUzYjMyZjQxN2VmNWY5Nzk1YzNmMTJmMzMwODAyNGM1ZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4OTE0MmI5ZTcwYWM2ZDk4ZWNiNzRjZjUyODRiYjA5MWQ1YWU4NWRmMTE2YmFkMGNkNWMyYTA1ZjcxZjk3NzgifQ"
+        },
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L1241-L1266",
+          "version": "repo-lines-v1:sha256:28ce4e47ede4d3440d80df054f5d353a13a6017e8fd144784619c4b405d0588b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhZTNhMmUzZGYwYzExZGI2OTg2Y2IyMWM0ZGM1ZmQyM2IwYzk4MDJiMDlmN2JhYzBjZjE4MWZjY2FhYTRlY2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2YWZlNWU4MWJmMTRkYWNhMDE4ZjliODE4ODVmZTNjM2JkN2Q4YWYwZDMyOWJlNzRkNWVkZWU0MGFmZDIzMzkifQ"
+        },
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L1306-L1325",
+          "version": "repo-lines-v1:sha256:daec73d3d9a419837dad6b2ba4fb122a805e93d97334e0317386a66c858866a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlNGQzNmU0NWI2Yjg1NDlmNmVhMDNlODFlMGI2ODM3MDIzOWRlZDY0YTdmMGU4MmU5NTlmM2M3MTE5ZjUxOTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhjNTNlZmNhZTI1NDk2ZmRlZmY3NjM0NGJiMzhjZWEyODYxNThmYTIyNjE5M2Q5YmJkNGI0MTliYTJjMTEzOWIifQ"
+        },
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L1381-L1403",
+          "version": "repo-lines-v1:sha256:0fecda69f596341f0bcb579bdcec717aaaaf5c73f1b7f75ff6c5e332522e2b48:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4ODcxOTg0ZjI5YTY3YjhlZDA5MzZmZmVjOWUzNzg0ZDMzYWFlNzU3NWVmNDVhZTUzOTY0ZDQ4NWM4OGI4NTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlMTJiNjExODk0M2UzMGMwMDY4MzNlNzgxNjMwYTUzYjMyZjQxN2VmNWY5Nzk1YzNmMTJmMzMwODAyNGM1ZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlYjc1OTdmNzI5M2JmNzliZmRlNDJkNjEzZDVlNDI0ZGIwYzA5NTA5ZjVjN2Q4NWUyNzdlNGYyZTNlYjczNmEifQ"
+        },
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L347-L361",
+          "version": "repo-lines-v1:sha256:6236ed4fcb529fdbc934aaaaff1e1ac69f0c27faed2208d007c85cede799b350:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3NmMyYmZiNmI5ZjAwNDI1NTJiZDBlNDg1ZjNhMzNmYTU2MjM0MTNhMGFjZTI0ZmQ1ZjQ1ZDI4MzUzZTUyMGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJlZGM3NjBmOWFlMzE2ODRmYmIxYzcyZmM0ZDM5ZWFkNzNmNjFhYzk3ZmU3Y2JjNzRhMTI3NTRmMWVmNDBmOTAifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-all-pages.ts#L62-L80",
+          "version": "repo-lines-v1:sha256:1ae29af9801797f0945b84a5f487d51317b7b49e2714f4f02302b2b248ba41a0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2ZmIxNjI3MGMxYjhhYWVkZTkzYzZhMzkyZmEwZDVkMzY4OTBlYjdjMTllYzEzNjkyZjlhNDM4MDA5YTc0OGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRhMmJlODdmMWQxZmM4ODcwM2M4YjRkMGRlNmQ0M2JkY2Q2YjgwMjU0ZGNhMTc3Mjc0OTZkMTdiYTkyMDQ3NDcifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-log.ts#L80-L102",
+          "version": "repo-lines-v1:sha256:d0508a77a9f50a77e7bfcaffcd151aa897d259a201db986f96ddc1fc1997e819:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTkzZjhlNGVkNGI5YmU5ZDk1MTg5OGYzZjk0OTdmZGM4NWFlMjNiY2Q5NmJlZjU3Yjg3ZDA4ODA2YmIwOWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyNjBjNzYzNzcyMGVjYTBiZGMxMzhjNjk0ZmU0MGNiYzFlYWE2YjYxMmMxYWE4OTk1NjJiMTcwNTJmNzY0NDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmODkxZDhjMzAwZWVhOTQxNDNmODNiMjZiNzgzMjZmZTkxYTJmMTdlMTk2MGNiOTAxYjE0Y2E5ZTUwMmY2MWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0b938cbe3592425697136af9e6c1ee38",
+      "statement": "get-user-contribs' total is the number of contributions it fetched rather than the number matching, because its continuation loop breaks as soon as it holds limit entries, so neither `displayed < total` nor `displayed < limit` can reveal that more contributions exist and only a follow-up page that comes back empty terminates the walk.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-user-contribs.ts#L113-L167",
+          "version": "repo-lines-v1:sha256:418b0bc86f6d2bf91ccf092b4df0cfe35545150f174ab0986154654daa54ac92:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4ZDJiOTMyY2QxNzdhNmQ1YzQwNzc5NTEzYmI1MWJiNzhmNDEzOWU2ODBiNjcyNDBiODA3ZmMyMDEzMTdiNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAzZDczYzY2ZWY1YmE4YWZmN2Y3NGYwYTBiMGQ4M2Q4NGZiNzdiMDU2YmFlMjJkODZmNGQyMjgzNzY1OTE4MTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzZWFmNmNlODJkZjQ1Y2MxNzgyYWNiZjBiNzIxZWVlYThlYTBiOGY1MWQwMzhiODFlNjIwODY5YjY4ODgxOWYifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-user-contribs.ts#L52-L58",
+          "version": "repo-lines-v1:sha256:1d12bdc7600caac797c1e62c8ab821170c82b0af0313be4bd987476e66e5f3cf:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWU1NmU0YzA1ZjQ2YWE3YmM4ZDNhMzk2MmJhMzA0MmU4MzgwYjkyZDdhZGEzNTQzOTRjOWVjYTUwOGQ3MzE4MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDNjZjY0ZmViNDlmMzRjZWQ4YThhMmRmNWM1ODlmZTliYTM3YjQ1ZjBkNGU3OTBmNDdkYjkyNTYzN2FhNTZkMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzM1YmI5YTk0NTU1ODNiMWJhOWEyZTQ5M2UyYjM1YzQ4MjcwMDNkYzRiMzRiZGU1ZGJmZWZjODA2ZDI3ZjI4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjQ2ZDQxYjZlOTRmZmZkZTE4NDA4NTE4YjBiODU4OTY1N2JhM2FmNTc5MTVmYmI4OTM3Y2MzNjg5ZjgwYTUxNiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_580c57757b0a4a699e7399f5caf3541a",
+      "statement": "get-log, get-recent-changes and get-user-contribs share one timestamp cursor: a start string accepting ISO 8601, YYYYMMDDHHMMSS or unix time, treated as UTC and forwarded unchanged into lestart, rcstart or ucstart, with no second-shifting or de-duplication in the tool, so boundary-timestamp entries remain the caller's problem.",
+      "evidence": [
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L1241-L1247",
+          "version": "repo-lines-v1:sha256:5861bd1edc18a8d6c9138277b71e7c0b4023fefbdcd2d4448520262529b21745:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGFlM2EyZTNkZjBjMTFkYjY5ODZjYjIxYzRkYzVmZDIzYjBjOTgwMmIwOWY3YmFjMGNmMTgxZmNjYWFhNGVjZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQ5ZTEyNTQ2NDI1NTc2ZDNkZWFlOGM5YjlkYmYxMjhkNWQ2ZGRhZjVkN2ZlODU3OTM0OTI3ZGVmZmEzYjlkZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWRiM2U3Y2QwYzNhNjIzMDQ3NjY4MTYxZDEwNGU5OWQ4NjIwOWNhM2U3NzU0YTI1YjExOWE0OTA3ODc4MDQyNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWEzMDcwN2I0NmU3MWY5YTA0Yjc1ZjI4N2Q1MjljMjk2YzhiYWNiODMxNzVkMWI0YWZlZGVmZmZkNDY4ODYwMiJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-log.ts#L44-L58",
+          "version": "repo-lines-v1:sha256:b59398e69634fbece42b62e3098c42e25add90e9edc528aedd6a5715d86fb703:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxNGE0ZDc5OWVmYjAyZWI1MGRmMjlmMGRhOGQ2NzIzODE1ZDJhMTgzZmNjMThkZTdiODI0YWIyOTgzNzc0YmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1MzdlMGU1MjEwOGZhZmEzZGFmYzFjMDVmNGI4YzY0MzE1ZjY4NzA3Mzg2ZGYxNTk1MjY5ODA1NzUwMzQ1ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiYTQ1ZTVlZjBhMzEyMGI5MDgzYWJhMGVlNWM4OTU0Y2E0YjkwN2M1ZjUzYTc0OWQ1MzU2YTQ2ZGRhOTRkMzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVkNmZiNjkyNmVkYTRhYThjOTNkMjhhODgxNjE0NjMzY2M5NGU2ODM1MjkxMDM0YWRlMWM5NGNhODQxMGQ4ZDMifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-recent-changes.ts#L43-L56",
+          "version": "repo-lines-v1:sha256:98794dc3c695aebe82723661ef0a0c015933db7e7fd69a95f084b3e4734aaaa2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExZTVlZDljOTBmMjMyNmVjZjBhMDhhNTNmNWU4Y2FiNWI3MWUzNTEwOTBiMWNiZTdkZjNjMGRlMjIwNzg5NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1MzdlMGU1MjEwOGZhZmEzZGFmYzFjMDVmNGI4YzY0MzE1ZjY4NzA3Mzg2ZGYxNTk1MjY5ODA1NzUwMzQ1ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiYTQ1ZTVlZjBhMzEyMGI5MDgzYWJhMGVlNWM4OTU0Y2E0YjkwN2M1ZjUzYTc0OWQ1MzU2YTQ2ZGRhOTRkMzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjYWVjZmVkNjkxZGZhN2Q0MDNjMDAyMWRiMzhjODI4MmFiZmNiYmMxZjcxOTM5NDFmN2Y3YzJkNmZlZGIxZDYifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-user-contribs.ts#L52-L69",
+          "version": "repo-lines-v1:sha256:73bafcb35c48d75db484531575cbb2c0456620054ca94bbde5a3fa460837c15e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlNTZlNGMwNWY0NmFhN2JjOGQzYTM5NjJiYTMwNDJlODM4MGI5MmQ3YWRhMzU0Mzk0YzllY2E1MDhkNzMxODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzYTI4NjIyMGNjMjc4N2I0YmY3MmZlMGI4NGQ5ZDEyYzQ5OGM2Y2UxNjhhNTIxNzg4YWFmNzNkMDZiZGM4ZWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzNWJiOWE5NDU1NTgzYjFiYTlhMmU0OTNlMmIzNWM0ODI3MDAzZGM0YjM0YmRlNWRiZmVmYzgwNmQyN2YyODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFiNDk4ZWZmNGM1ZDJhMDYxNDEzZTdjZDFmNmE5YmM1ZGJlMDIwZjA1NmEyNGMyZTBhYjY5MWExMThhNzMwMTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_de0e7f452e7b47d48668ad9eb3b00e7f",
+      "statement": "get-log and get-recent-changes apply limit by slicing the single API batch they received and never pass limit upstream, so a limit above the wiki's batch ceiling returns nothing extra.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-log.ts#L80-L102",
+          "version": "repo-lines-v1:sha256:d0508a77a9f50a77e7bfcaffcd151aa897d259a201db986f96ddc1fc1997e819:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTkzZjhlNGVkNGI5YmU5ZDk1MTg5OGYzZjk0OTdmZGM4NWFlMjNiY2Q5NmJlZjU3Yjg3ZDA4ODA2YmIwOWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyNjBjNzYzNzcyMGVjYTBiZGMxMzhjNjk0ZmU0MGNiYzFlYWE2YjYxMmMxYWE4OTk1NjJiMTcwNTJmNzY0NDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmODkxZDhjMzAwZWVhOTQxNDNmODNiMjZiNzgzMjZmZTkxYTJmMTdlMTk2MGNiOTAxYjE0Y2E5ZTUwMmY2MWEifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-recent-changes.ts#L77-L97",
+          "version": "repo-lines-v1:sha256:b5406eefed89a9d2e89499eb1fb7e2a576925a85ee9867ec72afcc506a9443e4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwY2I0NDJjYzE2MTVlYjhlOTU5YzYyMzE0ZDA3OTJiOGY4NzIzYzQ1ZDU3Yzg0ZGI3YWJjN2M4NDg4NjI0YjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlNmI0NDBkOTBjNjIxZTc4NjI1ZGVlMDMwMjliODE2Y2JjN2Q1ZmFlMmEwMzY4ZmZmOWI0MTY2NmFjMzU0MjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2NjgzMTcxY2Q5YzUxNGU1MzRiYTRhMWFmNzYwNTVlYmQ3MzExOGY3ZjVmNzY4Y2Q1OGQ1NDYxM2EzZTBiZmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2900089a44d24e1e97a20de07f14934d",
+      "statement": "get-images is the only reader with a name cursor: startFrom becomes aifrom, and nodemw's next aifrom continuation (a third callback argument) is discarded because the handler keeps only args[0], leaving the caller to derive the next cursor from the last returned file name.",
+      "evidence": [
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L1149-L1165",
+          "version": "repo-lines-v1:sha256:f7f197d75cbd75bc573a7d65b0b78236f194afe12b515935ef4f6913bd849506:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzZDk1NDcyNWZhMGFiYjdlMDJhNzE5ZDdjNGNkZmRmNjM0N2M4OTQ3NTU0ZTViYmI5M2U2M2NjZjJiZTMxMTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlMTJiNjExODk0M2UzMGMwMDY4MzNlNzgxNjMwYTUzYjMyZjQxN2VmNWY5Nzk1YzNmMTJmMzMwODAyNGM1ZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4OTE0MmI5ZTcwYWM2ZDk4ZWNiNzRjZjUyODRiYjA5MWQ1YWU4NWRmMTE2YmFkMGNkNWMyYTA1ZjcxZjk3NzgifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-images.ts#L63-L90",
+          "version": "repo-lines-v1:sha256:f75c8ae8b3d86e1574f47e0f825cb311dca404d9b0714d6822ca859102eef0c1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczZjYwZmI0MzdkOTRiYTdjYThlY2U2YWY0NGQ0NWM5MTFkOWU4YWE2ZTgzODFkMDM3ZGVlNjAyMGE3MTU1YTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2MTJkNzFkYjE3OWRmMzI4ZDMzMjMwYWRjYzZhYzQxNmViZTA5OWY0NWUzZDIyNmNmYWJiNzc3YjRlY2IzNmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_60505a1122a249d882a2d06621f6c790",
+      "statement": "没有任何读取工具向调用方交出不透明的续延令牌：续延要么是 nodemw 的 getAll，要么是 handler 自建的 continue 循环；调用方能驱动的只有时间戳（get-log、get-recent-changes、get-user-contribs）、文件名（get-images）、行偏移（get-article-with-lineno）与字符偏移（get-article）。",
+      "evidence": [
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L114-L185",
+          "version": "repo-lines-v1:sha256:94cc4f6e422c7737f712415a81f91223231ba0c1b51be10dda96c2ea4744fdc9:eyJzZWxlY3RlZExpbmVDb3VudCI6NzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3MjMzYTRhZjRmMjg5OTVlYjg1ZDc1MzRkNmJjNGFkYmE1YTQ0ZjczODFiMDNjNTFjNzM4YzRmMTM2MTNkNzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZDRkMGQwOTYxYzA5ZTkzZWM2NjQyOTljNmE3OTE4ZWMyY2UyODQ0M2ViZGM4ZWMyOWEwZjczY2ZiNWQ0YjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0YWJhMzViZDMxN2FlYWY3ZGNjNmU5NjNmMThmY2QzY2NiZjBkNGQxOWU3MzhiZGY2MDNkNjU2MGM2MWIwMTEifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L175-L187",
+          "version": "repo-lines-v1:sha256:1df355ecba34bfa6b67814507f3524bf3688b5e18f0d3e40fca9b3630b1d0293:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2NjQ1ZWQzYmE1YzMyZjFmYmJiZWQ2MmQ0OTU4NGE0NmI3NGU0MDU5ODI0NDg5NGY5ZjFmMGJjZDY3ZmI5N2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwMjYxNzQ3NTQzZjQ2Y2VjNjM2OTI3MjM4NjYyOTRiMmEwOTkyMzdhZDA3OGI3ZmU2NzA5MjQ3NTNhYmQ2YzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyMDk5NWVlMjAzYWQxZTUxYWFlYTVlNTIwYzljY2M5YzI0Yjc5YTUzNjkyNGFlOWMyYzJkN2YzMzA0NzI0ZDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiZjJmODJhNjYzYzlhMzAxNTU3YjczMGNjYTlhMDE4OWJlZmFiMzk0MDk4ODYxNTdmNTYzZjliODNmZjVmMzMifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L96-L107",
+          "version": "repo-lines-v1:sha256:55220eafed18efa0c364984cee6e2487cbb8da3cfa23934fa80693a088a21718:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2MGE4N2YxNGEyN2NiOGQ1N2IzZTQ5NDNmNmEyMTFjOTdjNWNmMmFjNThjODA5NDEzODA3MzZiMzhkNjAyNTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjNWI4YzMxNzZjYzUzZWFjNTZiZGQ5NzcxYzRhYWQ5Mzk0NDc0MzQ5YTQ4ZTU0ODliMDgxZWMwNmE0ZTE2NTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiNjFmNjg3OGVmOGViMGNmN2FhNWE1NmZmZmZkMTlhZDhlOWU5Y2Y2NWIyYmU4YzU1YThlN2ZmOTVkOTA1YjAifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-user-contribs.ts#L131-L154",
+          "version": "repo-lines-v1:sha256:d59261d6d152b4b4ea5249e2c0a829aae407baa0bacafec0fa4e53b01e83e47c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3MzMyMmFjYjIzZTMzMGQ1MzJjNmNjYTliODgyZGU2ZjUyNjcwZmRkNjQ0NWQ3MDg3YzdkZThiMjk2YWU5Y2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiZWE2YjM1NDE3OGZjNjUwMDAxMThhYTU3OGY5YzMyOTgzNDg1MDdiM2I0YmRlNDllOWJhMmY3MTRmYzQ0ZDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc5NzBlY2MzMzE0YWRlMTFkNzQ4ZWYxZDQ2N2M2MGIyYTM4ZGY3ZTRiOWYyNzc4OTNjMGM4YjE2OWRjNjc0MzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3ZGZkNjkxMjk3NWMwMWMzNDZhZThmYjkyODA2YjkyOGE3YTZlYzM5ODRjY2NmMTdmYWQwOTc4NTUzNjViZDEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b2d8de6719b9440099807923cfcd83f7",
+      "statement": "对穷举类工具，limit 是显示控制而不是成本控制：get-all-pages 走 nodemw 的 getAll 取完再切片，search 用自己的 continue 循环按 srlimit: 500 翻到 10 000 条上限再切片，而 get-pages-in-category、get-pages-in-namespace、get-pages-transcluding 与 get-categories 连 limit 参数都没有。",
+      "evidence": [
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L295-L350",
+          "version": "repo-lines-v1:sha256:d45ff98263983b3d52f9f7ab696033d2b1a95ff9baa86b3025a802b010b7821c:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwODcxMDBkZjM2YzY1ZjQzNTI5MTFhZmM5YjkxMTc0MmIyZTA2YzczMDE0ZmVlYjVmZmY1ZjczMGY2MjExM2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlNmRiMmVkNzM2ODA2YWRmZTVlYzI1ZjE3MmJlZWJkM2I5ODVjNzNmNWJmMjMxMDdhYjMyMTYyMzNiODY5NjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3MzBjYzBjOWIzYTA5YjUxMzg2Y2JhZjcwMDY0OWZkYjdmMTY0ZWUyYWFiNWFhMjJhNWQ5ZDA2MjM2NzI1ZDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI5YmM4NzEwOTM3MjAyNmQ3YjNlZGY2NDYwOGY0MmNmOGE1MTBhYTc3Mjc0YzllYmFmYzA5ZTBjY2E2Nzg2NmQifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-all-pages.ts#L62-L84",
+          "version": "repo-lines-v1:sha256:834f8fd564b75524952ace4e50e4d0405f218ce6466e7025fdb2c91c93842928:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2ZmIxNjI3MGMxYjhhYWVkZTkzYzZhMzkyZmEwZDVkMzY4OTBlYjdjMTllYzEzNjkyZjlhNDM4MDA5YTc0OGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-pages-in-category.ts#L42-L81",
+          "version": "repo-lines-v1:sha256:58939664333f3f809906d57fc0b0e597ed5096921b33d545279c0b8362a23d98:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwMjc3YzNhZTZmZjcyZGNlY2VjMTZiNmM0MzM1MGM3MGY3NWJiZjQ3M2QwYzgyNDJmZWY0OTFjNzE2ODY2YjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVmMjNjZDE2ZWU1ZTkxNTZjZGZkZTczMWRkNWM1YmYwNTIyOGQxNTE1OTNkNWU2YTk4MjY2NTIzOTAwYWFhZDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwOGY1MTczZWM1MTg3OGM3YzM0ZmJmYTJiZjAxMGQzMGJjNjliMDJiNzU2ZTBhZjNiOTkyNDY0OGY3NmRiZmYifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/search.ts#L93-L157",
+          "version": "repo-lines-v1:sha256:d6e545525ced0fdeeea2e9f3d60b3eaf4084a316d9ed40fceae252d70717cbb6:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhYmQ1ZjU1ZDljNDg4YTFmYmZlZDJkZWNiNmEyNGYwN2ZhMmM5Mzg5Y2QyMWEwYTMzODExYTM1M2NhYWJkMDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYxMzlmYmViMjQzYzAyYjVkZDMxYmY2ZjQyMjJlODEyZTk4MjQ3ODZlMTE4Zjk4ZmJkMDdkMzMwZjViMjI0MDUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c33d4824efb4425e910d59709c76699e",
+      "statement": "get-external-links and get-images-from-article declare a single title argument typed as string or number, but pass it to nodemw methods that only populate the titles parameter, so the documented page-id form is never translated into pageids and only the title form is dependable.",
+      "evidence": [
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L1167-L1179",
+          "version": "repo-lines-v1:sha256:3a6112a9864b79dc5ddd3c50de4d9b97f8de1c678b3158b314c7092d1ea589b1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiYWVhMjg0MDVlZmNmOGNjYzMwYWE2ZDY1ZjU2Zjg4NTAwYjA2ZWNmZTRmZjg4ZGQ3Y2QwYjJjYjE1YzgyYTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4YzI5NTJlYzYxODNjYmU1MjBmMWJjMDcwY2YwODVjY2IwYzQ0MjUwMzQ3N2RlNWEzYzgyY2VkN2U5YTY4OGQifQ"
+        },
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L1511-L1523",
+          "version": "repo-lines-v1:sha256:7ded418dad553017921456735fa2b1f69a5c9e113882d5bb49f1d5ef077d8147:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjOTgxODMxOThiZDliYTNlOTkyZjg2ODY0MDQyZDc1YzY4ZTlhYjAwNTQyNDNjY2E2NTkyNGNiYjQxMDg3ZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlMTJiNjExODk0M2UzMGMwMDY4MzNlNzgxNjMwYTUzYjMyZjQxN2VmNWY5Nzk1YzNmMTJmMzMwODAyNGM1ZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYzZjU4ZTIwYzcwMzY3M2IwYWVmNTI0ZTYyM2NiNTZmZGM1ZmIzM2QwYjRlMjU2OTVhNmYxZTAxNzhiYWVhYTkifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-external-links.ts#L61-L76",
+          "version": "repo-lines-v1:sha256:6d643a131843fdb186a84407bd829da2786176f857be0060318bc9eb9810b4f0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwMzdkMmEyNzc2ZDVlMDA4ZmI1ZDAwMzRhODU0YTAxMzc4MTU3YzFlOWQ3MWIzNzI3YzYxZGJiNWU0MDczYTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4MDZiZTgzYThjMzBiZWYxMjk4MTIyMDEwNWU4ODNjYzA0ZmU3MTYxZjhkZTI5YmM2YzU2MDMwNDFmMzc1ZmQifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-images-from-article.ts#L61-L77",
+          "version": "repo-lines-v1:sha256:924c8bd123e4ee35dfd1710b2916dea536247e021c3f3929767cb39e8ca0e5b2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjNzBjNzdhNmY4YzY0MzY2MDkwZjRiZmY3NGVmNDBhNmQwNDMwNmRiODA4ODk5NDg2MGUwZTA5MWIxOGFjNzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3ZWU1NTM5NDEzZDQzNzIzMTc4ODkyYzUzODQxOTBmMDU1MWYwM2NmYzUzZDYwMzEzZjNlYTJhOGZhOTMxZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk2Y2ZiMTZkYWI3YjE1NDczMDVjNzkyMTkwMjY3NjgyNjllYTJlNGZiMGMzZTY3OWI2ZGU0OWQ5MDZiM2JkNDYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_39d1eeb9104a46a38ea6d5128f5fd20e",
+      "statement": "get-article-revisions returns revisions in opposite orders depending on the identifier used: the id path sends rvdir=older with a 10 000-entry cap on a hand-rolled loop, while the title path delegates to nodemw's getArticleRevisions, which uses rvdir=newer across the whole history.",
+      "evidence": [
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L419-L447",
+          "version": "repo-lines-v1:sha256:5aa72efecfa49d3f25ad28e053ce9dcff4f4d3af2fe3a1e8e3a83db16f7c5b28:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlZWMyMWZiOWRjYzNkNTM3OGE0MDljMDljYjhjYWRiZjdmYTE3MTY1YjMzZjQ2NGExOWNmYTk0NTE2ZTA3M2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlMTJiNjExODk0M2UzMGMwMDY4MzNlNzgxNjMwYTUzYjMyZjQxN2VmNWY5Nzk1YzNmMTJmMzMwODAyNGM1ZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjViYmQ1NDM0ZmRmM2I0YjZlZjNlOGJjZTYyZGM0YmQ0MDg0NzAwNmMzNWI3YjE0NmIyNDg4MjBlZTZkYzcyZDAifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-revisions.ts#L121-L134",
+          "version": "repo-lines-v1:sha256:7a3dd542aabf2f67d925f9f135ea48abb8bb627607bde99407cf1a56db6e3108:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1YWNhOTg0MjdmNWRmYzgxYzMyOWZhMmJjNzUwNTlkM2JjZjA1MTE3OTI0MjM0N2U2NzBmOTc0OGNmYjhmZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4ZDYwNzIzOTdhMmRhZDA3NTcxNjI3NGUyZTUyN2ExNDBmM2MyMTdjNmY1MDYwMzgyN2EwZDk3NThiYWUwMWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjYzE0YTEwOWIwOGJiYmQ2NzM2ZDUyYWMyNjc2YjUxMGY4NWE0MWRkYWZiNGIzYjQyZTJjYTM1OTg4OWY1MjAifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-revisions.ts#L79-L112",
+          "version": "repo-lines-v1:sha256:1cdf6c4441153967511bf3820c0b5d9b7afb3d7cdd693ef27c9e4aa4ef2b1631:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlNWE3OTY3ZjQxNDY3ZTY1OWU0YzY3NWU1YzkwOTQ3ZWMxZGUwNDcwYTI3MjU4NGQxOWEyZDc0ODc2MjYyNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmYWM0YTc0NmU0Y2Y0NTg1MTZiOGQ1NWQzMzYyOTEwZTg4NmVmNjQ5OGI1MWEwNGZlYTYzODExNjAxMjY4ZTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4MTkzNjUxYTQxYjcxNGRmMGViZTFjZDllMzRmNGE0Mzk3ODkyZWFiMWIzMmQ4NzI0MDVlMGI0ZDUzNjZhYWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk3NjA0ODFhNDgwNmEzYzk3YjBkMmY2NDY5YjY5MzgxMDA4MTBkYzIwZDM1MGFjMmY2MTkzZWZmNmYzMWQ5OTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ce4e9f3e78e842498bc74d0c044bdf74",
+      "statement": "重定向处理是逐工具行为而非共享约定：get-article 的 followRedirect 默认 true 但只作用于纯标题路径，redirectInfo 也只在标题路径上被读取；get-article-with-lineno 在标题路径上硬编码跟随重定向并额外解析一次目标页，以便把证据记在目标页并报告目标标题；所有 id 路径、get-articles、get-module-source 与元信息类工具从不发送 redirects。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L125-L155",
+          "version": "repo-lines-v1:sha256:241ee50471e1a9fe650a3bf3c4937a7a2a3ce83b08a7f56707fcb402b080cad7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkZTJhOWIyODlkY2JmMzBjZTVhYWMxMjFkZmExM2ZhMGQ3MzEwNTEwMzk2NjhmMzViZmQ3Y2VhYjM0ODhkM2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzNGYwMzU2MTk4MDkyYTgxMDFmMTE3MGIwMDcxMDZhYzIzZDQ5OTNkNjM0ZjljOGE5Y2Q5NDk1MGJmNjNiZTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMzFiYTgyZTM4MGEwOTI1NGYxYzY0OGY1ODlkYmU0NGZkODliN2VhOTMyODg3NjIzYmNmMWFiMmZhYWNmZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxYWY3MjQ5YWFiMzE1YzVmZmMyNGUzMThlMzU5ZTFmMGEwYjE1MGZlYjI1MmM1ZGQyNDAwZDIwY2FmYTYxNTAifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L135-L150",
+          "version": "repo-lines-v1:sha256:eeb4f7906abad00289d74749178af85295e6a6b01e512f401d4607e0aec713a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhZTEwZTQ2Mjk0ZDIzYjdkNGViZTY0Zjk2ZDQxNjQ4OTJiNTRiMDFlYWZkNTJhYTdhY2EwNzQ4OTJlYjYyODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzOTJmOGI0MGQ2YTc5OWVlNTk4MDViNDk5MzQ2N2M1MTI3YmZkNmYwZjdjYjhiMmIyNjI0ZDBjNGJhNWIwYWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlYjhiMWI3MDk2ZWFmYmI5YzExOWRkMWRlYTg0Y2U2NGU4MjYwMDU0NGYxZTJlODQzNzM3OGI3MDA4MWI0MmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0MTBkNWE3Yjg2MWQyYTU3NDFkYzE2ZjgwZWE0M2Y2MzA1ZmE1NWVjOWVkOWJkYmEzMGViZjVlZmMzY2Y4YWQifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L64-L92",
+          "version": "repo-lines-v1:sha256:e076a4d05ca2685b6d3567648bd7e9c043430c71b6c9d057f5f0b1aee90e7365:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5ZmY3OTcxMjYzZjBlZjZmMmUwNTliNzM1ZTY3NDI1NjM2OTRmOWQ3ZDc2YzllNzNjMjRjMTYyYjlkNDNlNmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiMTdhODU1NjdkMjNkNTdiZDUzNzk0MDIwY2QzODFjNzc0ZDFhMDQzZjI0ZjYyOGRmOWJjOWFjZTBiYTVmMDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2M2UxNjljNzc0YzQ5MjMxNDgyZjU1MjhhY2ExODBlMGJiZmYxYzBiMDMyN2IwYTI5MGM1MmYzZWYxMWYzNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdjNWI4YzMxNzZjYzUzZWFjNTZiZGQ5NzcxYzRhYWQ5Mzk0NDc0MzQ5YTQ4ZTU0ODliMDgxZWMwNmE0ZTE2NTYifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-articles.ts#L80-L98",
+          "version": "repo-lines-v1:sha256:8d2d4f9878eae7c1aae20646bf8ed1dbab4dd741a6d02498d74b76768109d76a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllMjIzOWNiZDhjOWMwMmM1ZTk2YzlkZWE4ZGZhODJlMjNlZTA1NjVkMzVjZjdkOGI1NmFkYmQxNTM2MGI4OTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjNWI4YzMxNzZjYzUzZWFjNTZiZGQ5NzcxYzRhYWQ5Mzk0NDc0MzQ5YTQ4ZTU0ODliMDgxZWMwNmE0ZTE2NTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1YWQzNTIzMmVlZjI1MGU3NTRkZDg4NjQyZTU5NjI1MmM5YmJkNjZjNjkwZTMxM2JkNWVmZmNmNjA4YzJmNWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_167a4fba329f46ad83e24ab96e8bd15c",
+      "statement": "get-users scans list=allusers with aulimit set to the caller's limit, no continuation follow-up and no cursor parameter, so a truncated user list carries no signal that more users exist.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-users.ts#L63-L97",
+          "version": "repo-lines-v1:sha256:a44ad28cb64acd636306a2279a8a750ca51c57a8002eefcdef0df04837394d6a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjYzYxYzVhOTk1YjhhNzA4YjI0YzQ2OGM1OWIwMjM2NmY5MTE2ZDllZDA2OGEyNmM5MGY4Nzc2OTYyN2YxMWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0108d9935d7c491baf853110f0d40a7c",
+      "statement": "get-backlinks can only report main-namespace links because nodemw's getBacklinks hard-codes blnamespace: 0 in its request.",
+      "evidence": [
+        {
+          "resource": "repo://node_modules/nodemw/lib/bot.js#L1525-L1538",
+          "version": "repo-lines-v1:sha256:860ebe4e0f8aa2522d9397570113af5bac160802dc6bdb87faf226ff9e9bb427:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjYjgyZjA4NDY5NzNkOGM3YmUwNWY4ZTllMDcxYjllMmRhOTdhY2QxNDkzOTFmNWM4YzlmMWRmYzQwNzU5MWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkYjNlN2NkMGMzYTYyMzA0NzY2ODE2MWQxMDRlOTlkODYyMDljYTNlNzc1NGEyNWIxMTlhNDkwNzg3ODA0MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFiZWQxMDRlYTMzOTVlM2I5YjNlOWU5NzQ3ZTczOWNhNTRkMWQ4MGEyZWUzMDc2ZmViZDMzODk1MDIwM2JlZjQifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-backlinks.ts#L61-L79",
+          "version": "repo-lines-v1:sha256:1eeec582301ebe23e757cc3892633e246fcffd7ed5e4dc980777984da422df9e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0NzUxZmRkNDY0OGU5ZjkwM2NiOWZjMDU3NWYzZDgxMTZlMWQ5YjA5YTI5OWVjMDY5NWQ2MWNhOWQwODZkMTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c1ef698d51a244a3b7dc2485eddfc195",
+      "statement": "Only get-all-pages, get-log and get-user-contribs return both a total and a displayed count; get-recent-changes documents the same total/displayed pagination recipe as get-log but its outputSchema and jsonResult carry only total, limit, start and changes, so its callers must fall back to changes.length as the displayed count.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-all-pages.ts#L42-L80",
+          "version": "repo-lines-v1:sha256:9b2828eb25d8e8b54af95050c2e4de9257675eb842df76a3430ec3b4960a6578:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3OTM5OThkMGJiNmI2MTgzYWEwN2MwZGIyYmU1NDc4MzY2NmFmOGFkYjc3OWE4MjJlNTY5ODk5ZTgzNjg2NjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1MmM3NTBlMzI3ODhiNDI1NzYwYzc3NmJlZjVhN2RmMDE2NGZlNTM1MWIxOTY3MTdiMTMyZjEzYjFlNzJiNmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRhMmJlODdmMWQxZmM4ODcwM2M4YjRkMGRlNmQ0M2JkY2Q2YjgwMjU0ZGNhMTc3Mjc0OTZkMTdiYTkyMDQ3NDcifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-log.ts#L44-L102",
+          "version": "repo-lines-v1:sha256:b456d6f5e3e2b23df8ddd88e29b6e32f7901d46916f5d6d7f64f5150fd1d06ca:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxNGE0ZDc5OWVmYjAyZWI1MGRmMjlmMGRhOGQ2NzIzODE1ZDJhMTgzZmNjMThkZTdiODI0YWIyOTgzNzc0YmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiYTQ1ZTVlZjBhMzEyMGI5MDgzYWJhMGVlNWM4OTU0Y2E0YjkwN2M1ZjUzYTc0OWQ1MzU2YTQ2ZGRhOTRkMzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmODkxZDhjMzAwZWVhOTQxNDNmODNiMjZiNzgzMjZmZTkxYTJmMTdlMTk2MGNiOTAxYjE0Y2E5ZTUwMmY2MWEifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-recent-changes.ts#L43-L97",
+          "version": "repo-lines-v1:sha256:1ac8b3ecfd444859f0dd3e706d37ba00290c013f3b729772f95177d26dc097a7:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExZTVlZDljOTBmMjMyNmVjZjBhMDhhNTNmNWU4Y2FiNWI3MWUzNTEwOTBiMWNiZTdkZjNjMGRlMjIwNzg5NzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiYTQ1ZTVlZjBhMzEyMGI5MDgzYWJhMGVlNWM4OTU0Y2E0YjkwN2M1ZjUzYTc0OWQ1MzU2YTQ2ZGRhOTRkMzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2NjgzMTcxY2Q5YzUxNGU1MzRiYTRhMWFmNzYwNTVlYmQ3MzExOGY3ZjVmNzY4Y2Q1OGQ1NDYxM2EzZTBiZmEifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-user-contribs.ts#L52-L78",
+          "version": "repo-lines-v1:sha256:3f2f86f66d698a8948089ba8aeeb0f6e3c1b36d3e405b945c9812732eb8cf22d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlNTZlNGMwNWY0NmFhN2JjOGQzYTM5NjJiYTMwNDJlODM4MGI5MmQ3YWRhMzU0Mzk0YzllY2E1MDhkNzMxODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxMTI1MzExZDIwNjM1NWFhZDBhOTEzODhkODEzNDBlMDQ2YTllNTgyZDJkM2Y1OGI5ZjFiMDhhMjk3ZDY5N2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzNWJiOWE5NDU1NTgzYjFiYTlhMmU0OTNlMmIzNWM0ODI3MDAzZGM0YjM0YmRlNWRiZmVmYzgwNmQyN2YyODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzMDE5MDZlM2ViMzZjMjBmZGY2M2FmZTA1NjM5ZDNlMmNiYzdiODViYmM4ZmY5M2I2MTY1MWFlODcyYTg1ZjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_480aefd2a95b4582901feee7e108b1b1",
+      "statement": "阅读面由 37 件只读工具组成（54 件工具中，列在 readToolRegistrars），成功信封分三类：31 件声明 outputSchema 并返回 jsonResult；get-module-source 与 get-articles 返回 jsonResult 却不声明 schema；get-article、get-article-by-revision、expand-templates 返回裸文本，parse 默认裸文本、传 include 或 limit_report 时切到 jsonResult。失败侧相反：只有 get-article 手写 isError 句子，其余 36 件都走 errorResult 的 { error, details }。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/utils.ts#L136-L148",
+          "version": "repo-lines-v1:sha256:9707db5657b6d1d2b63d5a115d755014b20a67aa82325b4daae8cb47c2e2ff10:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2NzU4ZjUwYTk1ODE1MTIyYzExMDNkZmI1NDE5YzA0YjUzMDIzZmY2OWY0NDQ0YjMyZjIwZGJkY2JhMTJkMDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2M2UxNjljNzc0YzQ5MjMxNDgyZjU1MjhhY2ExODBlMGJiZmYxYzBiMDMyN2IwYTI5MGM1MmYzZWYxMWYzNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/common/utils.ts#L85-L93",
+          "version": "repo-lines-v1:sha256:86ed3347ac68a86295048307801fb8710b10ff93d20852d60024fb34509208a4:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2UzY2I3ODA2ZTEzZmFkZjI3ZjIwY2VjYmFkNzRlMzkwNzFjZTJkN2E2OWM2NzJiNWRjMjJmMTIzNDFkZmU2MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjk2NjhhNjA4NzJmYjExODlmYWNhOTIyNzE1YTcxYjQ2NjNkNTU5NDUzNGRhNDEyODk5MGE0MmNhZmVkNzQ2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDViMDIyYTgwMmMxNmE1YjRlNTliMGUyM2RjYjNjODM1OGU0MGFiYzYxY2NhZTk5Mjg0YzBkNzE2OWY1NmQwMyJ9"
+        },
+        {
+          "resource": "repo://src/tools/index.ts#L89-L127",
+          "version": "repo-lines-v1:sha256:a3f6d8e60bf11cf4b0478b7c4afe12d4675f91ef51115b9c5a8b8e350a18bdf1:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3YjMxNzM1MjIwMjNmZWM2ODQ2YjZlOTkzYjRkZTRiY2Y2NTU4ZmYxMDJiNWFkMDQ3MDMzYmUyNmVhYzc2M2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4YzNiMzRjMDkxMzRmOTc3MGU5OGMzNTBmZjJiNjE2YmRjNjQ0MTgzOWQ2OGJiZjRhYmQyMjkzMTZlN2Y4NzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0YmZkYzRkYmNhYWM4YzI1YTU4MzM5N2E2NzExODEzMjJmZGU5MWZkODk2Y2E4Y2IxMmVjNjM4YTYxMTVlYWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2MzBiNDg4YjMyNDhkNWQ5MzkwNTdhZDdhNzA2MzI4ZGZiNmVlNzE1ZGEwZTlhYjgzNWY3NjhlODg0YThlMzMifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-articles.ts#L146-L146",
+          "version": "repo-lines-v1:sha256:659a439aab29b84b3ef5f79694f30d08282dd2eef6027d58ca7881d601a61369:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjU5YTQzOWFhYjI5Yjg0YjNlZjVmNzk2OTRmMzBkMDgyODJkZDJlZWY2MDI3ZDU4Y2E3ODgxZDYwMWE2MTM2OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjU5YTQzOWFhYjI5Yjg0YjNlZjVmNzk2OTRmMzBkMDgyODJkZDJlZWY2MDI3ZDU4Y2E3ODgxZDYwMWE2MTM2OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTQ0Y2M1ZjQ2YTcxNWM1MGE2Yzg0NDJhZjE0OGE0M2Q5MWI5Yjk0MzcxYjM2YzdjNTIyY2YyNTNiZmE5ZWJkNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjJlYzBiYWNhMDM1ZWZmNmU5ZTVmNWNkOTBkZDk1NTFhODAyMTc3NGZhOGY0MWQzMDZhOWU2YjYyN2I4ZmJmNyJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-module-source.ts#L132-L141",
+          "version": "repo-lines-v1:sha256:83d62a27539105330a31a7b3b6a8a94ad801047a0ab42ed6dc0cab7eaec8f50d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlNGFiNTM4NTFkZGI1MTJhOWNjODY1ZDcyMzdmZTM0MDg4MDA5ZDQ3ZDgwNDU0MWQ0NWFlM2JiZDM4NWQzMGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU4ODlmMWRlZjBlYTU3ZDg5NTY0MjVmNmQ2OTVkY2RiNTMwMDc0ZDQyYzVlYjkwMjBiOWY2OTI3YmVkMTYyMGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4YTVmMWU4MWIyM2M5ZWMzMDM0NGJlZGYyZGI4MTQ5YzViYzhhYjBlMDc3NDcwMmJkNDc3NDZjMWYwYTgyYjUifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/parse.ts#L178-L238",
+          "version": "repo-lines-v1:sha256:4db50c070d280b5fe38778ff0aa44b4892ac442baa8d348f6af12c1bd4c11709:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4MTA0ZjY3YjE2NTFjYmU1ZjA5NWNkOTA3NDBlYjY1NTY2NTAyZGIyYjJjM2Y1MDIxMDY0OTEyMWZlMzE5OGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyMmRmMDdmNWQxOTMzNDViZjdmNmQxZmM2ZWZjMTc0N2FlZmYzNjBhYWVlOTk4YmQ2ZGU5MTI3OWQxMWU3YjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmZGFjNDllZGRlY2NkYjMyMTFjNjgzMjI3OWEzZDA5NjcxMjA3MjE4ZDVkZjBkOGExNjNhNjQ5ZmNkMzllNDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA5ZjczZjg2YWNjZDA4YTA3MDVmYzRhNWNkOTc5OWQ4YTE4YmI0NzI1YTJjMjZlMGZhMWU0NTk3NmYzNmVhNTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6ba94e7de13844f185f1fbf083567838",
+      "statement": "交付原始正文的读取通道有五个：get-article（裸 wikitext）、get-article-with-lineno（行对象 JSON）、get-article-by-revision（按 revids 的裸修订正文）、get-articles（单次请求批量最多 50 页，每页带 content）与 get-module-source（带 contentmodel/contentformat 的主槽源码）；expand-templates、parse 与两个 diff 工具只交付派生文本。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article-by-revision.ts#L93-L95",
+          "version": "repo-lines-v1:sha256:6f9aaff1add6be101d437f350370e97bfa1fcb57a9839be4e87fde1c7d2ce592:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGIxYjAxZWYxZjU2Yjg4NDQ0NGI1NWM0MTY2NzkzZmUxZGVkNGE1N2Q4ZTc3NGU3Y2ViOWRjMGY2OTg2YzZkNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjkwMWExMWYyZDgxNzIwYzAyNTVkNWUxNTIyMmIxMTg1MWZhMmY3ZDEyM2NmNzQzOTJkZmQ1ZGY2YWVhMGZhZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWVjMWZjMzkwMDJhODk4ODliZjBhMDNhOTc5OWRjYTI1M2FiZGU5ODYxZjg5ZTQ0ZWZkMDc5NTRkZmEzMmZiNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzBhZjVhOTJkNjA0ZDQxYWZkYzkxYTZjYTJkOGExYjhiYTZlYTZiNzYwNGY4MzMwMzljNDk3Y2I1MTRjZWNiOSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L203-L209",
+          "version": "repo-lines-v1:sha256:074b9a02c00f350cafb2e13fbe17b6bd63b5d975de9bf872df4f29b3b6597111:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWU0YWI1Mzg1MWRkYjUxMmE5Y2M4NjVkNzIzN2ZlMzQwODgwMDlkNDdkODA0NTQxZDQ1YWUzYmJkMzg1ZDMwYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzc0Mzk4Mjc1ZjFkOGNjNDE0MWJjZDA3OWRlZjMzZDRjNTUyMDVmYzBkYmVhOWI3Mzg1NDJmZWFjMWRhNmI5MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGE4ZTk3ZTEwN2RhMDIxOGU5MDZmODk4NDNlMmQzY2QxMmQ5N2RjZTg2MzEwY2E4NWI2YmI3Y2Q5MDM2ZjUwNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjE5NWU2YTE5M2NmYTRjYWRhMzI3Zjk4MjI1YWY4OGVlNWI2OWIzY2FhNWY1ODdlZTliMWQ5NWMwODhiN2EzYiJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L179-L198",
+          "version": "repo-lines-v1:sha256:a0f509297595b58bc7419b201929422540b48ac5b1d152fb3b574da4ece9f0ad:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiMDNmNWFkOWU0OTZmZjMzN2I3ZjYyNTJiYzFjMjIzYTUwZGQ0YjEyOGVhYmI2MTZmNzIzYjlhNTA2MDY2MTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5NjBiYTUwZmVhZDE0NmY4YTUwNzMyMDEzYWY1MWU5YjE2OTYwOGU4MGQ3YzIxMDUzZGZiMDk5ZmQ4MjVmYTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjllZWIzY2NmMDIzYzgwN2NiZDhmNWFmMzMxNjZlNzhhMDNhZTM0NThlMTQwODVmZTJlMmYwNmQzMDRhOWMxNGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkODdiZDJmZmRhNmQ3OWIxMTUwNjQ3NWZlNjA0OGMwOGY5Mjk0ODczMzQ1Y2M2N2JlNjE0ZDhkMTY1NDBhYTUifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-articles.ts#L88-L146",
+          "version": "repo-lines-v1:sha256:bc0ceb7937b2e98e37f11b085da7485ae6e82e94a6a981c5e350bc01c1c6ad89:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3Y2QwYjRmNGUxOTFlNzQyOTU3NzRjYmFhODlhNzRkMDllMDU5MjViZTQyZjEyYjA5ODc0ZjE3ZjU4MWM4OTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1OWE0MzlhYWIyOWI4NGIzZWY1Zjc5Njk0ZjMwZDA4MjgyZGQyZWVmNjAyN2Q1OGNhNzg4MWQ2MDFhNjEzNjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjNTQ5ZTYzNGNmZWJlZTllZTNhODZmOTViNThlZmEzN2E5ZTg3ZTU1MzNkMmE2NTBmNmE0ZDZiYWY5YTcxNTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyZWMwYmFjYTAzNWVmZjZlOWU1ZjVjZDkwZGQ5NTUxYTgwMjE3NzRmYThmNDFkMzA2YTllNmI2MjdiOGZiZjcifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-module-source.ts#L82-L141",
+          "version": "repo-lines-v1:sha256:49f2b65ece3cc3d9683409fc9150300bb9816e1d462d73fc734cf3c6f7ae205b:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmY2MzZmM4ZGZmZGM2MjAzNDkzMjM5NDBjMzhhOTBhMGE2NWI5ODBmMjk3MzYyZmM5YjBmZDFmYzg0MTFjYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlmMzJlM2JmOTk4NWY0MTE0Y2I2M2VhYmE5MTM5ZDIxYTBjOTQzNmY2OTM1YTAwY2I5MDZhOWUzYWMyNWUzMmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4YTVmMWU4MWIyM2M5ZWMzMDM0NGJlZGYyZGI4MTQ5YzViYzhhYjBlMDc3NDcwMmJkNDc3NDZjMWYwYTgyYjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_59157d70327c418aa4f18df917e79376",
+      "statement": "只有四件读取工具会留下写前必读证据——get-article（recordReadFromApi）、get-article-with-lineno（markAsRead）、get-articles（每个存在页）与 get-module-source——其余 33 件读取工具从不写状态，因此 parse、get-article-by-revision 与 diff-preview 都不能满足守卫。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L59-L104",
+          "version": "repo-lines-v1:sha256:4ead5e32d02db45da5e9f07f9f4e0bfab2b68306ab941e9a511e167f1f0c900e:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0YjgwNDJjMjNjYjY2ZDNhY2Q4ODExY2M0MGRmMTEzMGU1ZGY1Yzc4MmRmMWYxMjMyMTUxYjY2MTVhNmY2NmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRiNTZkYmJmZWE5MzEzYmI3ZjIzYWVhN2E5NDJiZDVkZjNlODQ0NTlhM2VjM2Y0NTI3NGI3NTI2N2Q3MDNiYjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMWU4YTcxNDg0NTdlMjVjNWU1ODhhMThiY2ExNjE4YWE0YjYwNWFkNzA4M2IzNGM0NmExZDMyY2VkYmJkZmMifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L189-L196",
+          "version": "repo-lines-v1:sha256:3bd4b42b75b2838dd4167037f133ebcba8398b92d5b76d10eeebe56da71d688b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI0OGJlZTNkNzAyODI4MWE1MmY2M2Q2YjEzMTMzOGE3MGJkNmVhMTZlNzM1MDRlYThkZTcwMGQ4YTBmMzEzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzJiY2NjNDk0Mzg4ZmQ0ZTJhMzBiYzczYTFkZGU1ZDExN2U5MzJiZDc4YTdmMDAyMDE0MTk5NWQ3MWIxYzFhNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmUyOGZlYzFmMjJhNGQxMWJiMTIxYmViYmU1MGY4MzI1ZmIxYTcwMWQyOGIyZDNhZjQ0NWMwN2E0YzdkNTI3ZSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L193-L195",
+          "version": "repo-lines-v1:sha256:9d81c9fa3647acc18ceb690428819bb160d6767439952bcb4f0d28a89004d448:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmE2Mjk3MjEzYWY5ODgwMTBkNWE1ODc4NjA4ZjFjODM5Mjc0MTAyNTQ1ZjY0YzYyMWFiNmM2Y2VkNDlmNGFkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzlhODU3MmI4ODhiMDhmNzk3OThhMTlhY2FkMWVmZGFmZWQwMjcwNDI1YTNlMWMyMmQ4ODhkMTA2ZDY1NjgzYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2I4ZjlkNGRhMWRkMjBmMWZhMzlkYjAyMzQ5NjM1OGNhZWM1YTQ2YjQwYWUxYmNiZDNjMjM2ZWIwMzM3NjUwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjk0ZmUxZjcxZmE1MjgzMzMxNTFjYWZhZTJlYTFhMzU3NGRhZWJmZjA0OWIwNTUwZTNjZjM2MDJiN2FhM2E4OSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-articles.ts#L138-L141",
+          "version": "repo-lines-v1:sha256:cde0ea1440dcfbec1907fe96bffd43c1a7fea87a51e22a39e81ba9a1bbf0c116:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhNzlkNGM2ZTE3NjYzMDU3NjJlMTQ3ODk4ZjkzNTE2OGUyM2I4MDAyOTlkNTk1MGZlZmNmMjZlYTAxMThkMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzlhODU3MmI4ODhiMDhmNzk3OThhMTlhY2FkMWVmZGFmZWQwMjcwNDI1YTNlMWMyMmQ4ODhkMTA2ZDY1NjgzYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWEyZmU4NjFlNGRlOTY3ZWQ0YzMyNzNmZjlhODNjMjZkNDM2MmFkNzM2ZGI5NGJiNTMzNzdiMzM2NDVjNTE5YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzhhYTAxNWY1YzZiNDU5YTVjYzk5ODRjMDJjYmY0ZmUyMTFkM2JhNzFkYjc0OTZkYmNmZDYyNzY1YTYwZDY4OSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-module-source.ts#L127-L130",
+          "version": "repo-lines-v1:sha256:8ad931fc76968bf55424e5b565cc843fd77d90bf7871071e14d06796e971beb1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjczOTQ0NDFjZDg3YWM2ZmFjYzE2MzI3ZTcwMzYzOWExOGFlOThjOTVhNGIyYWJmYzE2OTMyMjg5NTUyMjU5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjdkNTE0NDk4OGYxM2U5OWFlYTA0MjU1MTExZWYzNDZmOGVkODYzYWY3ZDY2NzZkNzZmZTdhYjA4N2VjYTE1NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTI5MDA1NDNlMTFiMTE2OWM1Y2E4YzdmOWRiYTAzZjlhZjhiMGMwODczODdkZWNmMWE5ZjE5NmMyMTNiYjk1MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_515b536c7e33473f90aecd33720d44d8",
+      "statement": "get-article 的 offset 是字符偏移：先按 offset 切片（越界时返回 (reached end of article)）再按 maxlen 截断；isFullView 只在 offset 为 0 且未被截断时为真，所以 id 路径（经 recordReadFromApi 以 pageids 解析当前修订）会记录读证据，而 offset 或 maxlen 造成的局部视图不会，revision 分支则在设计上完全不记录。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L74-L104",
+          "version": "repo-lines-v1:sha256:7e450daaa0b4bbd97ce3659ae8c1685e564794a29521e51be6cb937f7d37b3f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyZTNhZTFiMjI1MjRjZDBlMjI3Zjg0ZmQ0NDk2NjNjZDQwYWU4Y2FhYTZkMzg3YTg0NjA2ZDY4Njk3YmQ2NTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3NmUyNWVhMzMxZTY5NTI1NTFjYTBhNjliNDQ4OGVlMGZkZjY3ZGQxOWQ4OGYzYmE3MGY5MjNhZjYxZmEwM2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMWU4YTcxNDg0NTdlMjVjNWU1ODhhMThiY2ExNjE4YWE0YjYwNWFkNzA4M2IzNGM0NmExZDMyY2VkYmJkZmMifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L163-L198",
+          "version": "repo-lines-v1:sha256:e03a48e89f74188be97e161fabcba004106cbac5bb859bfd26d568ab2ab89944:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg1MTcyZTY0OWQwMzc5Nzc5YTNlMTQxM2QwYzcwMTgxNTlmYWUwYzI0Y2FkZDkxM2FhMDQzZmI2YTYzODdiMzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5NjBiYTUwZmVhZDE0NmY4YTUwNzMyMDEzYWY1MWU5YjE2OTYwOGU4MGQ3YzIxMDUzZGZiMDk5ZmQ4MjVmYTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3MDMyMDMzOWU5OTgxNjgwNjdiNWFiOTA5Njc4ZjE0NmFkYzZlYzZhZDdhMWUyNTJmMGRjYzZkNWIxNDExZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkODdiZDJmZmRhNmQ3OWIxMTUwNjQ3NWZlNjA0OGMwOGY5Mjk0ODczMzQ1Y2M2N2JlNjE0ZDhkMTY1NDBhYTUifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L50-L54",
+          "version": "repo-lines-v1:sha256:87587cf6a3fa213713575e3e81b45faf00c50ad7181a60575d753478d8347009:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWU4N2VhOGI1YmUwMWRiYmQ4M2E3Zjg1MTNkYjAwYzJjNTQyOWIwNTgxYWZiOTJiZDE3MWYxMjNlY2M4NDQxMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzdkZWY1MGYxYmQ3MTgyMDUzNzgyM2YwN2M4NGZiNTk4OWNiMmYyOWYwZjNlZjExMzg1MzNmZjE4ODEzMWYxMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzZlMmU3MGZjZTkwZWYxYjMzNDAzZDdmMjQzZjhhMjU0N2Q0NWY1YmFmNDg3MjE5ZDEwOTVjYzgyZjk2YzNmOCJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L96-L107",
+          "version": "repo-lines-v1:sha256:55220eafed18efa0c364984cee6e2487cbb8da3cfa23934fa80693a088a21718:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2MGE4N2YxNGEyN2NiOGQ1N2IzZTQ5NDNmNmEyMTFjOTdjNWNmMmFjNThjODA5NDEzODA3MzZiMzhkNjAyNTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjNWI4YzMxNzZjYzUzZWFjNTZiZGQ5NzcxYzRhYWQ5Mzk0NDc0MzQ5YTQ4ZTU0ODliMDgxZWMwNmE0ZTE2NTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiNjFmNjg3OGVmOGViMGNmN2FhNWE1NmZmZmZkMTlhZDhlOWU5Y2Y2NWIyYmU4YzU1YThlN2ZmOTVkOTA1YjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_046b735824014c978eedfd12aa2e9388",
+      "statement": "get-articles 把最多 50 个标题或 pageid 用 | 拼进一个 prop=revisions&rvprop=ids|timestamp|content 请求，回包逐页拆成 {title, pageid, ns, revid, content, missing} 并给每个存在页写读证据；但 titles 在 schema 里是必填字段，所以只传 ids 的调用会被 zod 拒绝，且它从不发送 redirects。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-articles.ts#L53-L78",
+          "version": "repo-lines-v1:sha256:c576ac1886e021fd05c6b33c36708f3d99b77d2464fcf9eab49d149c085aee88:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzNzY0M2FmZDAyNGM0ZDQzYWY0NjRhMTQ2ZmJiYzM0MWE0YTMzNTdmMzVjMDNhMDJjNTQxZWMyN2IxYTllZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4NzBiNzQ3ZTM1ZmM0NmZjYzc3NjYxZjY5Mzc0ZWIwYTk2NzY5YTkyYzYxM2I4MjZiMzlkNjFiMWM3NzQ0NmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2NTVhY2MwZmYyMGQxYTUwNmQyYWI5N2EwNTU5MWE5ODViZThiZmY1MjNlNTgwYmVjYTYwZWUwZTU0ZjZmNTIifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-articles.ts#L88-L141",
+          "version": "repo-lines-v1:sha256:cb5fde06799d2c75e98585f79211c9037ca4f593de96fb3739d6471edf70c00b:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3Y2QwYjRmNGUxOTFlNzQyOTU3NzRjYmFhODlhNzRkMDllMDU5MjViZTQyZjEyYjA5ODc0ZjE3ZjU4MWM4OTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5YTg1NzJiODg4YjA4Zjc5Nzk4YTE5YWNhZDFlZmRhZmVkMDI3MDQyNWEzZTFjMjJkODg4ZDEwNmQ2NTY4M2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjNTQ5ZTYzNGNmZWJlZTllZTNhODZmOTViNThlZmEzN2E5ZTg3ZTU1MzNkMmE2NTBmNmE0ZDZiYWY5YTcxNTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4YWEwMTVmNWM2YjQ1OWE1Y2M5OTg0YzAyY2JmNGZlMjExZDNiYTcxZGI3NDk2ZGJjZmQ2Mjc2NWE2MGQ2ODkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_448a16080df44d7f914644cda55365ac",
+      "statement": "parse 是写后验证的主工具：page=<title> 渲染已保存的内容，它用 class=\"…error…\" 正则检测渲染 HTML 里的错误元素并把最多 3 个样本作为默认文本模式下的 [parse warning] 行或结构化模式下的 warnings 字段返回，而 API 调用本身仍成功；format: 'xml' 时不做该检测。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/parseOutput.ts#L69-L112",
+          "version": "repo-lines-v1:sha256:d772ff62e76c2cdfe2770eee8947421bf532d6c3034ac7ba2cd51699cda25920:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliMjVlYWJlYTMwMTA1ZDAwODJlZmRmMTM4MTNmNzhkYTAxMzVhZWJmOTVkN2NhZTcxOTViMzZhMjljOTQwZTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQzZjZhOTgyYmZiNTZiMzA4NmZlMjQwY2QzODAzNmYzOGQxMTNmMWVmZTAzNWQwNjQyNzQ0NzM2ZTU5YTk3YjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/parse.ts#L178-L238",
+          "version": "repo-lines-v1:sha256:4db50c070d280b5fe38778ff0aa44b4892ac442baa8d348f6af12c1bd4c11709:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4MTA0ZjY3YjE2NTFjYmU1ZjA5NWNkOTA3NDBlYjY1NTY2NTAyZGIyYjJjM2Y1MDIxMDY0OTEyMWZlMzE5OGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyMmRmMDdmNWQxOTMzNDViZjdmNmQxZmM2ZWZjMTc0N2FlZmYzNjBhYWVlOTk4YmQ2ZGU5MTI3OWQxMWU3YjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJmZGFjNDllZGRlY2NkYjMyMTFjNjgzMjI3OWEzZDA5NjcxMjA3MjE4ZDVkZjBkOGExNjNhNjQ5ZmNkMzllNDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA5ZjczZjg2YWNjZDA4YTA3MDVmYzRhNWNkOTc5OWQ4YTE4YmI0NzI1YTJjMjZlMGZhMWU0NTk3NmYzNmVhNTcifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/parse.ts#L62-L96",
+          "version": "repo-lines-v1:sha256:1cf103ff333e72d4d3038545215df0a01afd3a797e02e88312e41b62444237bf:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3NTgxYWIyMWU4ZWQ1NjU1NzdmMGI0MDUwZGI3NmFjMmE5NjM4N2VkZjg3OTEzZWEwYTQxNWQ5NmQ0MDI3NWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1ZjdmNTA3MjIwZGQ4ZDFlNWU4ZGRiNDg5YmI2YjAxYTUxNGIwOTA5MjYxYmUyMDE3MjJkN2QxY2JmYWQxZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxOGQ3ZjMzNzcwYjFkODk1YjFlMDNiMjUxMDc4NWFjYTM1MzRkMmJiMDllMzcyNDBlZTE0ZDA1OTVhMmM5M2IifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d7c48e98caaf4bfcb0ad9291eeda8963",
+      "statement": "diff-preview 把提议的完整新文本作为 totext 交给 action=compare（fromtitle 为标题，MediaWiki ≥1.27 或版本未知时附加 topst=1），返回 {title, current_revid, diff, added, removed, truncated, identical} 且不写任何内容；已知 MediaWiki < 1.24 时它直接拒绝并建议改用 get-article 与 get-article-by-revision 自行比较。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/diff-preview.ts#L48-L85",
+          "version": "repo-lines-v1:sha256:da939b5a213303f51639709e7af1b8d1d05645f3f01c43d353933d25aeb711ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmYzg3MTZjM2I3MDNjOTAzNGNjODQ3MmJiNGJlMTUxNDA5MzQyZDA0MGNiYzA1OThhOThjZDQ0MzNmYzZkYjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiYjE1MzVhZjEzZDNlYmIyZjc3MzYyYTk5NjllZmQ4ZmI3M2UyNzdiN2E5MzU3NmI5NDkyZDg5OTc3NzNhZjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3ZGJiYTg5YjAyNmFmZGJhNjNjODcyNzZjYzkzYTNkZmI4N2Y5MzE1MDU3MWIyYWEyNjBmNDgxNWJiZDZlNzkifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/diff-preview.ts#L87-L151",
+          "version": "repo-lines-v1:sha256:f567e9dcdc469c230aa5577dfc79567ebdae24c471cf56ee25f899d74e51bd03:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlOWE4OWI1NmVhMGRiOWE4NjIxYjA5OTZkMGFhNWE2ODVmZDc2NTJkZjU3OGM2ODVhYWU4MmY5YjE2ZWMyZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4NDBhMGFhMzJmNmVmZDQ0OTVlNzQ3NTI0YzllYTM2NGJjYzY4YjQwMzY4ZmVkZjZlMGU4NjdhZjljZGEzYTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c3f963abe9cd4e46a9df47ee8fb849f4",
+      "statement": "diff-revisions 是读状态的消费者：只给 title 或 id 时 from_rev 取本会话读到的 revid（getReadRecord）、to_rev 取页面最新修订，没有读记录就报错要求先 get-article；两个 diff 工具都经 callCompareApi 发请求，富元数据 props 被老版本拒绝时自动退回只请求 diff。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/compareOutput.ts#L224-L239",
+          "version": "repo-lines-v1:sha256:b4c03ad67cdbd17e5962e06528948fc675fc1223785e8b46dfb52004d4ae5433:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3M2EwMGY4OGE5NGJhYjRhN2RiYjI0NGMwMWMzOWViNTc1MjcwNzlkMjNlYjM2MDc2NDhkM2IyMjQwY2M1NWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUyZTgwY2Y3YTc5NGFiNGI1YmZlY2ZjODczYmIxMDkyZWY0ODEyMTc3Y2FmYWM0OTgxOTFmYjE5OWE5MWY0ODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/common/pageState.ts#L112-L115",
+          "version": "repo-lines-v1:sha256:38f935de4f63befe9b0af2f2a4f89b3ab584e0157ae4341bfd2304faa302c66c:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTVmODA1Yzg5ZGVlZWVmNDQwMDY5YmEyMzZkYjViNGNiMzRlYWViZGVhNTZkMWI5NzE3YWNiNzI4NjVkZmNhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWMzNGNkMTE1ZTg4YTUwMzJhZjhmMTI1OTExMjViZTUwMmUwZGVkZTAzMjMzNGQyNWM5NmUzNzAwNGUyNzMwMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWM2ZDY3N2I3NTQ5MGUyZWI0Mzk1ODdkY2M5MDQ3NTFlZTQ2NjYyOTUyNDQ5NGJkNmRlZjkzNDAzNzE0NDMxZSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/diff-revisions.ts#L125-L205",
+          "version": "repo-lines-v1:sha256:4709d0ce6c21f0e220feb6c9abe0b0028c669f2123119c51a461455652fd9510:eyJzZWxlY3RlZExpbmVDb3VudCI6ODEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkMGFjMDM4MzY5NjhhZDgxYzMxMzkwZWJkYjdmMjFhZTVlZGFhMzNjMDg2MmZhY2JiMzNiNTgwZmMyNWJkZGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2NmY4MTY4MWUyMGU0NWQwZjMzOTAyODI3ZDNkMDRmZjA1ZDgzZDgzNTdhYmEzNmY0YmMzYmExNmQzNmI3OGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyYjhjODlkMzUyMDcyNTFiMjc0MmIyZGNkNzBiNDdmNjMwMDJlZGM3YzM5N2JhZWRlNTQ3ZjcyZWUyYzgxNmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3d3715bfca6e4a1ba88638cffd78cae4",
+      "statement": "分页语义按工具分三档：get-all-pages、search、get-pages-by-prefix、get-pages-transcluding、get-article-revisions 的 id 路径与 nodemw getAll 系方法会翻到耗尽（部分封顶 10 000 条）；get-log、get-recent-changes、get-images、get-query-page、get-users 只发一批，因此 total/count 是批次大小；get-user-contribs 的 total 是已取到的长度，因为循环凑够 limit 就 break。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-all-pages.ts#L62-L80",
+          "version": "repo-lines-v1:sha256:1ae29af9801797f0945b84a5f487d51317b7b49e2714f4f02302b2b248ba41a0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2ZmIxNjI3MGMxYjhhYWVkZTkzYzZhMzkyZmEwZDVkMzY4OTBlYjdjMTllYzEzNjkyZjlhNDM4MDA5YTc0OGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRhMmJlODdmMWQxZmM4ODcwM2M4YjRkMGRlNmQ0M2JkY2Q2YjgwMjU0ZGNhMTc3Mjc0OTZkMTdiYTkyMDQ3NDcifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-log.ts#L72-L102",
+          "version": "repo-lines-v1:sha256:9b569be295ae5d8925fb19dedf877e2c726af63cc04d17229759fcba7587e429:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1NTQwMjUyMGE0MmFmMmM2ODc3NTQ2ZmVmNTVmNDA3NmIyMzZjYTZjZjdlZTVhZjVmNDg1MmJjZjE3NWRiOTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmODkxZDhjMzAwZWVhOTQxNDNmODNiMjZiNzgzMjZmZTkxYTJmMTdlMTk2MGNiOTAxYjE0Y2E5ZTUwMmY2MWEifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-pages-by-prefix.ts#L110-L154",
+          "version": "repo-lines-v1:sha256:f2c0e46b3071859680dc971d3bff88c77b33c16f9819f2e624b01142ef0d58e2:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4YTI1ZWEyYTI5OWQ3Yjg5M2YxODZmZGQ1ZGJiMjgzNTI0MjdlNTc5OWFkNzA5YzkxZjZhYmFlMGM4ZTg1NTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3NWJmZTEzYjY5N2NiYjhlNjI5MmNjZjY5YmFkNzk1OGE1MGEwMWExMGIyNmI0YWQ3MWQ4OGZlMTFhZTlkZDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiYWM1MGMzZGQ4YTIzNmMxYzY3MjhhYTllN2Q2ZDE3ZWEyZDYwOTk5YjI2MjE1ZjFiOGU3MzZkNDk2OWVhZDEifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-query-page.ts#L61-L77",
+          "version": "repo-lines-v1:sha256:083cc0637859b0f52c455b72014c67c843fdaa58d00f8e8ddd271434c4dd1688:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5MzU2YzAxYjlkMmYxZDNjZmYyOGNjNmUxMTU0MDAxYTEyZGU4MjhkNjIxYzU3ZjE5ODlhNmU2NTFjZjdjMjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3ZWU1NTM5NDEzZDQzNzIzMTc4ODkyYzUzODQxOTBmMDU1MWYwM2NmYzUzZDYwMzEzZjNlYTJhOGZhOTMxZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwOWFhZWIyOTJhOTVjNzg2MWM1ODkxMmM2MWM5MjU2NTQwMDdhMWZlZjlmNTE2M2JkY2EyZmRjMzdlZTE5YTQifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-user-contribs.ts#L113-L167",
+          "version": "repo-lines-v1:sha256:418b0bc86f6d2bf91ccf092b4df0cfe35545150f174ab0986154654daa54ac92:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4ZDJiOTMyY2QxNzdhNmQ1YzQwNzc5NTEzYmI1MWJiNzhmNDEzOWU2ODBiNjcyNDBiODA3ZmMyMDEzMTdiNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAzZDczYzY2ZWY1YmE4YWZmN2Y3NGYwYTBiMGQ4M2Q4NGZiNzdiMDU2YmFlMjJkODZmNGQyMjgzNzY1OTE4MTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzZWFmNmNlODJkZjQ1Y2MxNzgyYWNiZjBiNzIxZWVlYThlYTBiOGY1MWQwMzhiODFlNjIwODY5YjY4ODgxOWYifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/search.ts#L121-L157",
+          "version": "repo-lines-v1:sha256:bd6ccf346c3d835bebb94a125de821fdd2a23651cf02a9dbe7c0659bb70ba315:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0MjY5ZmIxZjY5ZmY1YTM5NTZjODJhNWYwMjZjN2Q2ODUwZmMxZGQxYzVmMTg2Y2JmMzU5YjRmOGNhYzViMmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyZWQzYmYxM2NiYmY1ODNkNTg2OTgzMmYzYzIxOWVlODc0Y2U2ZDgyZTMzYTExNWFkNTMwNGJjM2E1YWZiOGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYxMzlmYmViMjQzYzAyYjVkZDMxYmY2ZjQyMjJlODEyZTk4MjQ3ODZlMTE4Zjk4ZmJkMDdkMzMwZjViMjI0MDUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c09ca2ae67614fd49f953b96204348c9",
+      "statement": "get-pages-by-prefix 的命名空间来自启动时建立的命名空间缓存：调用方不给 namespace 而前缀含已知命名空间（如 Widget:、模板:）时，lookupNamespaceId 把名字解析成 id 并把前缀剥成冒号后的部分，缓存未建立或名字未知时退回“整串前缀按主命名空间匹配”；过滤通过 apnamespace 发送，循环上限 10 000 条。",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L293-L302",
+          "version": "repo-lines-v1:sha256:ab27a709017b3285e92228834b508aad778d8c9478b8d0259837cea6463a0c38:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZDVhYmFjYTIyNjgwYWU5NTMzNjcwMGRmNzY2MzYxOTdhN2NiNmMwMDRmNGNkNzlhYzFiMWZkMmYwYWM0YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjYjFhZjZhMDQ2MjhjMzk1OGM4MDAyMmQyNTM3N2M0Y2YyZTAzM2RhMGZiZjg1YTFlYjg3MmU1ZmMyNTU4MjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3ZWM3MTJkOWNjMWY0M2JjNWQ5OTRjYTQ2ZmFmNjcwMGJlMjc4OTk3OGY1Y2MyYjEzOWJhOTA4NzhhNjUwYWIifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-pages-by-prefix.ts#L122-L154",
+          "version": "repo-lines-v1:sha256:ff1ee3d10413fdd1ceb7b991254ab20008934bdda974d9e20276484d3589d6b8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlOGZiMzkyM2VmYjlhMTIzNmUwNGU1MDYyZjc2ZDFjMTc4NmNkMjc3OTkzZGIwMmJjN2EyMjM4OTY2MDE5MGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0MDNkNzg0ZmRlNDRhMjQzODNmZWRiY2MwZjE4ZjA4MjJhMjhlOTg5MmU5NmJjMzIyMjg2NTM0ODZkNjYzMzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiYWM1MGMzZGQ4YTIzNmMxYzY3MjhhYTllN2Q2ZDE3ZWEyZDYwOTk5YjI2MjE1ZjFiOGU3MzZkNDk2OWVhZDEifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-pages-by-prefix.ts#L84-L120",
+          "version": "repo-lines-v1:sha256:f03f3a25aed9f46c26c1b9f891b5f4b8fd3471c2db05408ffa4258f755c5b1fa:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwODAwZDExZThhZjJmZmZlMjQ2YmZkZDVmODA3ZTQwZDFlY2UyMjI3MzkyNWUzMWE2MjNlM2QyNjhlMjYzMTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzYzQyZmQyMTIyZmY5NDY4YzYzYWI4NTk3OTVjZTE5OTdhNmJjMzc0ZDVmZTMxZTdlODdjMzNkYjAyNTY3MzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5a8593a6f8de4be382338798384bd518",
+      "statement": "get-pages-transcluding 不再依赖 nodemw 的 getPagesTranscluding：它改用 list=embeddedin（eilimit: 500、自动补 Template: 前缀、自带 continue 循环至 10 000 条），因此 count 是遍历到的数量而不是恒为 0。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-pages-transcluding.ts#L66-L119",
+          "version": "repo-lines-v1:sha256:c00c02f21e99bcbbc6b3e955e00782d2fdd1998e0d6a55b5d171fe6d59f4f5c5:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1OTU5M2IwZjc5YzJjYWVmMzU2MzM0MzFkZDAyZmI5ZjgzMDhiZDFkZjlkODUwMmVkZGE4ODAwNGI3NmQ5MWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f53b252badb94813bfb49b6c9aa1d531",
+      "statement": "get-article-with-lineno 的标题路径固定跟随重定向（没有开关），并额外发一次 prop=revisions&rvprop=ids|timestamp&redirects 查询，用它的 pageid/revid/timestamp 记录读证据、用它的标题作为返回的 title（解析不到时退回调用方给的字符串），代价是标题路径多一次往返。",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L125-L155",
+          "version": "repo-lines-v1:sha256:241ee50471e1a9fe650a3bf3c4937a7a2a3ce83b08a7f56707fcb402b080cad7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkZTJhOWIyODlkY2JmMzBjZTVhYWMxMjFkZmExM2ZhMGQ3MzEwNTEwMzk2NjhmMzViZmQ3Y2VhYjM0ODhkM2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzNGYwMzU2MTk4MDkyYTgxMDFmMTE3MGIwMDcxMDZhYzIzZDQ5OTNkNjM0ZjljOGE5Y2Q5NDk1MGJmNjNiZTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMzFiYTgyZTM4MGEwOTI1NGYxYzY0OGY1ODlkYmU0NGZkODliN2VhOTMyODg3NjIzYmNmMWFiMmZhYWNmZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxYWY3MjQ5YWFiMzE1YzVmZmMyNGUzMThlMzU5ZTFmMGEwYjE1MGZlYjI1MmM1ZGQyNDAwZDIwY2FmYTYxNTAifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L189-L196",
+          "version": "repo-lines-v1:sha256:3bd4b42b75b2838dd4167037f133ebcba8398b92d5b76d10eeebe56da71d688b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI0OGJlZTNkNzAyODI4MWE1MmY2M2Q2YjEzMTMzOGE3MGJkNmVhMTZlNzM1MDRlYThkZTcwMGQ4YTBmMzEzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzJiY2NjNDk0Mzg4ZmQ0ZTJhMzBiYzczYTFkZGU1ZDExN2U5MzJiZDc4YTdmMDAyMDE0MTk5NWQ3MWIxYzFhNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmUyOGZlYzFmMjJhNGQxMWJiMTIxYmViYmU1MGY4MzI1ZmIxYTcwMWQyOGIyZDNhZjQ0NWMwN2E0YzdkNTI3ZSJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-30T18:16:46.462Z"
+  }
+}

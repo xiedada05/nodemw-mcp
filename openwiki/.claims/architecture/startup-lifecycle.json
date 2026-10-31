@@ -1,0 +1,422 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:17f192fd37b050c879a4990472ec582997da3fbb34a63040500c2644fc48f7b8",
+  "claims": [
+    {
+      "id": "claim_2e9a7dbc24954737b55c32d8ac3aa87f",
+      "statement": "Startup is one linear `main()` in src/index.ts that runs CLI parsing, installs a process-level `uncaughtException` suppressor, does optional API path detection, constructs and optionally logs in the bot, runs the informational probes, assembles the description, registers tools and the prompt, and only then connects the stdio transport — so the MCP handshake is never served before all process-wide state is decided.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L114-L150",
+          "version": "repo-lines-v1:sha256:8b2e35bf23f15656af930522e8cb0212ca5fdf53385c080b8e1c3b559f5826e9:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkMDU4NzBlZDg0ZTdmN2FlNzgwNjZmOWZlZmI3NzYzYjIyNmNhMDgyYjhmMWY0MTEyODVmNGU0YWM2OTczMmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1ZjdmNTA3MjIwZGQ4ZDFlNWU4ZGRiNDg5YmI2YjAxYTUxNGIwOTA5MjYxYmUyMDE3MjJkN2QxY2JmYWQxZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiOWM5ZWIwYTYxMTRlMjY4MDNhN2NjZWU2ODYxMGIxODg0MzY3NjA0OGYxMWZhYWE1ZjlmM2VmNGM1MzRkZmUifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L348-L403",
+          "version": "repo-lines-v1:sha256:7cab71108519b3f0929109b2a7367e9b475f58aee716119684747f2975547cac:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4MWI4NzFhMDg2ODAzNWYyMzNiMDkyMDQwNTVhY2NmMmY2ZTlmZTEwYWQ5MjM5ZDVjMTBmMTJhZWI0ZDYyZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTdkMTY4NThiMGM1OTgxODJlNmQ2Njc0MmFmNjZlZmI0N2ExNWYxODAyNjkwMmZiMDViODE2NGFiZmZjNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk0ZmI2YmE2NjE4ZDVmNWFlYjkzY2YyMDM3NDk3YzNlMjZkMGJmMzhmZmY3NDdkZWNiOGE3ZDlkOGQxMGJjZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4NjJkMGI5MTg5MzY3Yjg0OTE5NDRmOTMyMzU5ZGM1OGVjM2UyOGZhMTMxZDYyNzk2NDYwMDFmYjM0YWU4MGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_dbfdf1bf32964fdda8c08c0d6ef4b3fa",
+      "statement": "`parseCliArgs` resolves the target server as `--server`/`-s`, then the first positional argument, then `NODEMW_MCP_SERVER`, and an exhausted list is the only parse-time fatal error: a message naming all three sources on stderr followed by exit code 1; `strict: false` means unknown flags are silently accepted.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L48-L71",
+          "version": "repo-lines-v1:sha256:bb9ec98113075dff36dc87a91081759f8f91da06ac83a1fe34f725aa396d758e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhZTBhY2VjODQxOTQ2MDY2MTNjM2Q1MDRiNmZmYmYyYzRiMDllMWJjZjBlNzVmNTNjOGI4ODQ3NDViNzVhYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlMWYzMzMyODEyYWE2NWJmNDliMWFkZmUyYjljMGEwYmU3MTYxOWUzY2Y4Y2JhYzhlNWIxYTM5ZDYxY2M2ZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmNWY0ZTEzZDAxODQ5NWEwOWI0ZWNhOTg1NDcwNzdiOGQ5YjEyMWQ2MTk2NTBjYjFjNGY0ZGRjNzMzZjZkZWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_43b521868da64a40a8f4a55dc7522dd9",
+      "statement": "When the target server is given as an http(s) URL it is decomposed into hostname, protocol, and port — any path segment is dropped and re-derived later by auto-detection — and if `new URL` throws the raw string is used as the host with the protocol left unset.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L76-L89",
+          "version": "repo-lines-v1:sha256:a7b0bac277bfc8f1fd0659f687ff07cbbed2440978131a301fb605cca8382954:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MmI0MTRkNzJiMjI3NTg3NDZlYjQ1MDM2NTQ4OGIzMTFhOGEyNDY5Y2E4NWM0ODhkOWIxNzVlNDcwODM0MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIzMTBjZWRjMGJhMGQzODg1YzMzMjY5ZGVhYmZkZWE1NzUxM2EzNmNiNDU1MjMwMTEyZDliZTJhZDQ5MDAwMjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU3YzUxYWRiOGZlYTg0MzBjZDBmOTc4YWViOWVkZDk3NTU0NWI0NjRlNzdkMjQ2MjE0YzA4ZTRiYTMwMGIxOTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6bec9cec23ea4827976efae10d2ffd7e",
+      "statement": "`pathExplicit` is computed with `!!(values.path ?? values.endpoint ?? NODEMW_MCP_ENDPOINT_PATH)`, so an explicitly empty `--path \"\"` is indistinguishable from an unset path and auto-detection still runs, which makes the `'/w'` default in the returned config unreachable.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L91-L100",
+          "version": "repo-lines-v1:sha256:a364c3c005748a3242a7cde2f404850a314c132cda63c34d2aff5d6895ec358e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkZjRmOTk0ZjMwZmUyZGQzMDFjYzdhZWVhYWRlNjAxNDY4M2NmNjljOGMxNjE0YjRmZjMwNWM2M2I5YTY5YmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhZGMyMDhmNDkwZTNkY2E3ZTY5M2U4OGFjNzU3MDEwYjlmMjA5M2Y5OGE5MmIxODg2NGJlNzEyZTQ5MmNmY2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2ZGE5ZWYxYTgxNTQxMzcyODQzMTdmMzRhNjNlZDA3ZjA0Y2I1OTBkOGYwZDI0NDI3NmI1YWM3MmY0YWYzZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1YTE1MGE0YzJkODYxMjNhYjBhZDJiNTRlMjhlNTUyYmVmNzM4ZjY4YjdjODZhMGJkODM1NWNmZjUzODk4NDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_709dc3ecd3b24280b5a08b3c885bf44e",
+      "statement": "API path auto-detection is fatal and anonymous: it probes `/w` then the empty suffix with throwaway Bot instances that never log in, prints the winning path to stderr as `Auto-detected API path: …`, and on total failure prints `Error:` plus exit code 1 before any authenticated client exists.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L185-L200",
+          "version": "repo-lines-v1:sha256:0745a9fe4c86de224b00400bea8eac340da48a1efb0b4cfaa263512c4eb552c5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5NDhlZjliMDkxMjA4NWYxZGQyMWEzMThkZDNlM2M4YWM5Y2UzNThiOTY1Yzc0NDQ4YzJmN2EzYjI5Zjg5ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5YjAyMjAwNzkxODdkZmIyNmExY2UxOGVjYzBiMTIzMTM1MzJmN2E1MTc5ZjY5YmFjOGNhMzY5YjNlY2VmODMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0OGMyMjQyZDkyYjZhZDZhNDg0YTMxYTlhMzg5ZWI1ZjQ2NWMwMGQzOTZhNGYzMWM1ZjQwZjgxMjVlYTY3MjYifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L131-L140",
+          "version": "repo-lines-v1:sha256:a41023367cbcb42d3bc997dda3b4eb5a319b0fc98583405216c2b378ff529a2e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjOWQ5N2QzNGFhYTlmZDY1ZDI2NTViYWY3YzM5ZDg4ZmQ4MmIxMTI2NTJiZGZlYjYyYzliYjEzNjRhNmM5NWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUyNmRhZTcyYWI5YTJiM2Q2ZDJkNzliNTRmMzE2Nzg5YTZlMzhiZTFkMzEyYmEwZDliYmU4ZDg4MjhiZWMxZTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4M2I5YTQzNDRkMjk5YTQxOTljOTU0ZDk4YTM4ZTQ2MGI4M2NlMWNmOTcyNTJkMjYzN2MyNTFlZmE2MGQ1OWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b46c618e0518440fa133ca962738cc47",
+      "statement": "A login is attempted only when both a username and a password are present, and a rejected login is fatal: `initBot` rejects with `Login failed for user '<name>': <message>`, bootstrap prints it and exits 1 before the transport connects, leaving `getBot()` guaranteed to succeed for every later tool call.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L202-L220",
+          "version": "repo-lines-v1:sha256:ca7e088b99dc6c05800efe5b8470ae0246a00bb53e580a96a4f74c80af115979:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjNmZlYzlkYTVhMTNkMzE3OWY2ODQ4ZjE5MzllOGFiNTVkYThiZmQzMmU3ZTlkZTRlNWZlNzEyN2I0MGVhNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjNWI4YzMxNzZjYzUzZWFjNTZiZGQ5NzcxYzRhYWQ5Mzk0NDc0MzQ5YTQ4ZTU0ODliMDgxZWMwNmE0ZTE2NTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE4MmYxM2Q0MGY0NDlhOTA4Nzc5NWEzY2IwZWRhNWM5NzY3ZDExZWUyMzIwYmQ3ZmRiN2E4ZTBkOThjZTFmYWQifQ"
+        },
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L222-L227",
+          "version": "repo-lines-v1:sha256:0895c1aa0ee0a0064e26012e7caa15c200b44efb1656d1a152ea73086878d7e8:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjQ4NjlhYTM1ODc5NmM0NWNhZGNkZjAxMDhmYWNlN2QyYTMyYTk3OTAxNWU2NTVmZTdhMzNlZTA2ZjhjYjljYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTE5NWE5ZWM1MTgzNDkzMDNhMzdmNTgyMDM3NWUzMmRkZDVlMzY4YTdhN2Q5YzkwMjQ0OWUwYjM5NjFmMjlmMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzlmYzAyZTNlNWNiMzI2ODMzNzgxOGM2MDMwZmIzNDJjYjViZjU5YWM3ZDZkZmFjMmJjMmFlNWQzYWU4MmNkYSJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L144-L150",
+          "version": "repo-lines-v1:sha256:f49d45cfa74cdcd2e04fe28a048d22c95762f3db11a90e03f59ca2fb4bdf411d:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2VkNDJlZjI2MDU3MTI1ZGZiNTZiNDYzN2MyNDA1ZmM0NmE5MzgzOTk3ODI5YzA3NmVhMzE3NDViMWI3MmViMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDgzYjlhNDM0NGQyOTlhNDE5OWM5NTRkOThhMzhlNDYwYjgzY2UxY2Y5NzI1MmQyNjM3YzI1MWVmYTYwZDU5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmI5YzllYjBhNjExNGUyNjgwM2E3Y2NlZTY4NjEwYjE4ODQzNjc2MDQ4ZjExZmFhYTVmOWYzZWY0YzUzNGRmZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_06b29f70683144eda97a661e2706f762",
+      "statement": "The `token` field is captured from `--token` and declared on `ServerConfig` but neither forwarded to `nodemw` nor used to log in (and `NODEMW_MCP_MW_TOKEN` is never read), so a token-only invocation starts in guest mode with no warning.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L133-L174",
+          "version": "repo-lines-v1:sha256:f668c07f28ac5219776d07fd242fbb5148d5eef975630c9175f8173d3d4a0f00:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlNTI2MGEzMDc0MTAxNDU3MzZiZmFjNTMxM2RjYjYyN2QxMTNiM2YzMmEzNTQ3Mjg0YzYwNWM3ZGMzYTY0NTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjYjVmZTA2ZTZlZjdmNTRhMGQ2ODY4ODVlZmJiM2Y3YjUyNjEyZWNhNDYzODVlNmNkZjk5Y2U5MzcxNTFmMDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgzNmM4OWQ5MTEwZmNkMjM4YzVkZmZiM2MyNzI2ZGI2MjM5M2Y1MzUyNzNjYjViZTc2NGI5NzA4MmVmYjBkYzQifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L101-L107",
+          "version": "repo-lines-v1:sha256:7e0266183344c743e4b1d4941c82d00d0d640c0aa8da0260d511f89523782d7b:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2VkMmI4OTVmZjY3MDRkNWE5YmFhZGVhODhmYWVkMTg3ZjIzZmZkMmZlMjlmYzEzMTJhMWVmYThhNjk2NjEwZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWU2YjdiZTllMmFjOWZlMDMxNjg4ZjgwZDYwOTEyN2ZjOGJjZGQ3NTg5NGYwYmZhOTRmNjRkYzRkOTVkYmFmMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWNlOTc0NmE3YWM3MTBlZTQwMzNlOGUxMTA1ZWQ1M2IxZmE2MmEzODFlOTJkMWE1MDE1MDE1ZTlmNTc4NmQwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDU3YmNjOTNkNmFmN2JkZDUzYTllMWIxYjFiNDVhZWMyNTg1OWI4NmI3ODJkYmY1M2Q5MDdiZTBkZGI5MzU1NCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_4699af292d90494db63ea4cd982c6353",
+      "statement": "Site info, the namespace cache and site statistics share a single try/catch in startup, and any failure there is fatal: startup prints a diagnostic block that names WAF/CAPTCHA blocking, a wrong `--path`, a non-MediaWiki target and network/firewall issues, then exits with code 1 — so there is no degraded read-only startup path, and even a wiki that only rejects the `namespaces` siprop cannot reach the handshake.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L152-L207",
+          "version": "repo-lines-v1:sha256:7e54de3933a2fe799634b4cf425cbfbc925daf91351481638c3ca827d42e7c13:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2MWUwMjJhMTQzNjQyZmU1NTA5NmZjYTI1MzJkM2JkNWY1ZTJiMzlhMjNlN2Y5YzMwODU2N2FmNDExMjdlZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlZDMyOTU0ODRiZTc5YTM1ZTI2NjM2NzVhMzM5ODNlNDJmZmM1YThkY2IxN2U0NGYwZGYzZWU3NDg5NmQ0YTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4NmI1YzI2MTBkNjM3NGM2NzEzNjIxZDYwMTI4ZjMxMTNlNTBjOWE1MTYyYmRjNjA4NjQ3Mzg1M2ZhZmQzYzAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9f5ee0e740184a99a9987f370ed7f4ac",
+      "statement": "The MediaWiki version probe fails silently and leaves the cache null, which is not cost-free: the four version-aware write tools fall back to legacy per-action token types instead of `csrf` and can fail only at call time.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L209-L222",
+          "version": "repo-lines-v1:sha256:5fd09662e0f3b29734e25f6236aaf7ad50e78445186b9e0769d010bd428ce2cb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhNWVjNmFhZjE1YWY3NDI4MDQxMzI0NTRhNWU4OWYwOTAxOWQ5OTcyMTkzYzZmZjc0M2I2YmFmMGJmNmRlZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFkMmQ2ZTJjZGRhMjZlNzY5NWRmZDI0NjVjNTlmYWQ3NzdmOGVjY2M3MDNlNDZhYmFlMDYwZTgzZjEzZTcwOWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkYmMyNzVkMWZkYzE4N2NjYjRiNWIwZjY3NmIzOTVjMTc1YjFkMGQ3NjE4ZTk1NmNiNzE2YTRlMDgxNGE5YTMifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/block.ts#L94-L95",
+          "version": "repo-lines-v1:sha256:fea749abb6dd8c9b8ecb84d4ce45d22f2cb6a30d61718d5a5b4003f480edd4f7:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODFmMmZhMzIyNTAzMzU3YTE0MjUxYzMzNTM4ZjNmMTM0MzAxZmQ2ZmE0MDE0NzAxMDE4MDBlMzAzMmQ2MDBhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGRkMmQyZmYxNWU2Y2QyMTFmMTAzMWFjMGI4ODE4NjVmMTQ1MTc4ZjM1YWM1MjlkZWFjMTk0MzYzNGQyYWJlYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2ZhYTU5MTBmMmQxZDM2ZTM4ODEwYjc4ZTFlY2VlNTczMWZhMWRiZDFiNDc0ZTMxZjYwZGI3ZmE5YjUzNjQ5YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGZiYmM2N2IzYjQ4ZjYzYTk0YzRkNGUzMDNkOGIxZjhlY2MwMjBhYWI5YTlkNGZjZTAyYWUzZTc5Y2IxM2Q4ZSJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/protect.ts#L82-L83",
+          "version": "repo-lines-v1:sha256:d21a57e1d39a5c4eb8e8b4b05f42f7d6bdc3eca60aa198e45b84d0a57767e29f:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODFmMmZhMzIyNTAzMzU3YTE0MjUxYzMzNTM4ZjNmMTM0MzAxZmQ2ZmE0MDE0NzAxMDE4MDBlMzAzMmQ2MDBhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGIzYzAyNmRlOGEyMThhMzYxOGNkN2I4YmYxYzNjOWIzMGFjY2I2NTRiY2MwMjI4ZGMzZWJkOWZmMjMyYTJjMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2E5MDBmMTlmODU4YTVkMDRjNzU4ZjdkMTNiZDQxOWI5ZTg2OGFmZGYwMjRhMjI0Mjc2OTkyYWM5Y2RmMWI2ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTZkOGVkNzIzYTQzZjQ1OWIxYTNjZjRlYmVkOTliMTgzYTkyMTMwZThmYTFmZDVlZTgwZWYyYmI2NDExN2UxMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_45700f38bac6462ab83d7f136e9ca56a",
+      "statement": "The startup self-lookup runs only when authenticated and its failure is silent, and it reads `whoami.user.groups`/`whoami.user.rights` — the wrapper shape that the `whoami` tool invents for its own result — so against the pinned `nodemw` 0.26.0 adapter, which hands back the userinfo object itself, the `User groups:` and `Key rights:` description lines are never emitted; the login heartbeat reads the same query through `fetchWhoami` as `userinfo`, so the two self-lookups in one process use incompatible shapes.",
+      "evidence": [
+        {
+          "resource": "repo://package-lock.json#L4047-L4057",
+          "version": "repo-lines-v1:sha256:dd69b78598251455c7b9ea233b9867d635e7c9d6fe95bd00ec544467e7b99664:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4YmY0NTU4Mjk0YTIzMWEzZGQ0MmE0NGI2NzM0ODllNGY1ODEwZjY0NWI5NTE3ZjE4MGNhNmFmMmM3NTY5ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhNmIxOGM5ZDIyMWFiYzcwM2QwM2FlNzkwMzFiZTU2ZDhjZGE0OGUxYWI3NWI4OTE1YmM2YzE3YTlhYzE3NmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc1ZWU0MWJlODhkYjgxYTkxZTkwYWFlODkxOTE4NzE2MDkxMTJiNzYxMTJiMTRiZjliMTdmYWJmNjVjYjYzMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5YTVhYzQzMjI4NDcwYWFkZDFhMGI5NGI1ZDMxMGYwNGU1MWQyYWRmYmQ0MDY4ZDg2MTkyMTczYjZjYzAyM2UifQ"
+        },
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L70-L92",
+          "version": "repo-lines-v1:sha256:d03a4636ad452e387b923134aa0359c2516ba52ee33220ebe138837dfa47e8bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwY2M5NDE2MDBiZGRjOThjYjE1MzdkODg3MjBhYzBiN2Y3Mzc3OGY4MDVmNThhYzg2MDg5Zjc1ZTc0MWMyNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU4OTVkMDFmZjA1YzgxOTg0NjBkNjc0YTU2MGRkN2QxMWNlN2RiZTEwZDZmYjE4MzhlNWY2MTY4NjMxNGE5MjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY5NTZlZTQxNmI1MDI2NTQzMzdmMmRjMTJhM2E3MjIzNzU1NGI4NWFlNTEzODg4MGU1MTg3YTkyZmFhOWEzNmIifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L224-L237",
+          "version": "repo-lines-v1:sha256:2eb21486d34e235812bb161f1c652a6fcc6a0f7dede1b10147d147e1e6050e14:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjZDJkYjdmOGFkODcyNmQ3MmMwMTZjMzVlY2NiOTUyNzQyODM1MzU2NzA2MGM4MmJlYTgyODgwODgwZmMxM2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxNWM2MjEzOTk3NTdhMzI2YjA4Nzg2OTc1YjBhYmZkY2IyNzI3YjQ2M2UyNGE1NjZhMTE1MDVhN2Y1NDIwNmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyMzZjNjEzNjUxYWFhNWYxY2JiNzMzOTAyZmMwNzdjOTk3YWRiOTg4YmM1ODA4MzhhYzA5MGE2ZmYxMTNmNjAifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/whoami.ts#L61-L72",
+          "version": "repo-lines-v1:sha256:ba064cc1c3f0c887dccc77043cfd79e0e7cfbd14a0ca3691e201fffad326a85d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3OGUxOWEyOTMxMjRiMDBkZjFhM2E4M2FkM2E5MDE0ZDM1ZTI4YjQ2ZDI3MGNmMjI5NTYwYTBkZDVmM2Q2NDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7f20d1e7c0e8426fb9b2f43bb6adc6db",
+      "statement": "The agent description is assembled from ordered parts with explicit degradation fallbacks — `config.server` for sitename, `en` for language, `MediaWiki` for generator, `an unknown MediaWiki version`, `\"Main Page\"`, an omitted stats line and an explicit GUEST sentence — and its API line is rebuilt from `protocol`/`server`/`path` rather than `siteInfo.base`, which is collected but unused and leaves a non-default port out of the description.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L239-L276",
+          "version": "repo-lines-v1:sha256:c26c5322d17ca131943e25c85a358f8ba4d2d3491163301b104b9e05c8f6430c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyNDU1ZmYxOGNkMDE3MmU0NmJmMTZmN2ZmMmZlNThhYmRjN2YwYmQzZjdmNWJlNjFlMzliYmE3ZGI5YWI4ZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NTRlYmJmZDhlZmVhNGQ0OWVjNWM3YTM4Yjg3MTYwNWNlNGYzMGM5NTY3NmQ2ZTU5MTBmYzQ4ZjUwMzQ1MTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhYzllNmQ5ZWMwZGFmNTI2Y2Y2ZTFmZTkyMzFmYWEyMzg3NTg0OTZlMWQ2NWUxOWE1NTQ0NWY1OGY4M2Q0NzkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7f19694e478d4c909a45bc4b6c086097",
+      "statement": "One description string feeds both delivery routes so they cannot drift: it is passed to `createServer` as MCP `instructions`, and returned verbatim as the body of the `operating-principles` prompt registered after tools — and `src/server.ts` itself is site-agnostic, only assembling the server name, version, capabilities and `instructions`, so every wiki fact originates in `main()`.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L346-L364",
+          "version": "repo-lines-v1:sha256:158dbb163c4b74643f2048df5e6f6cb940cb2b32d696387ab2120a8c67789292:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyNmFlNmMwZmIxMzZmYTRlMzRhMWMwM2I0YzExNWQwNmMxNmU1MmY0ZTg2NWM5MmMzOWFlZWRhNjFhNDhjMmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhNzFkOWZiODgwZWVjZGNiYTUzMjc1MmRhMjM3YTZlOGI2MzJlMWNlY2ZlNTM2ZDhmZTkyYjhmZDA5NzJiYzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcwYjA2NTZkMDc4MmExYmEwYmZjY2RlMmQ4MDllYWY2OTYwNmE2YjE2M2NkMTZjMTQzMjFkMDE0MmZiZWFmZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA4ZTEzYzVjZmY5ZWNiN2YyMjg2NmUzMTQ0YzQ4YWUxZWRkYmEwYTIxOTEzNGM3MTk2YmE0MWUyYzQ1NDc1MDQifQ"
+        },
+        {
+          "resource": "repo://src/server.ts#L39-L51",
+          "version": "repo-lines-v1:sha256:f07a9e6cf87b0a1733e68eac403b8bb74d2de8457427c4b2844c3ca124b011a4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxNDAxZDNhNDkyZGUzNTRhZGVlYzRjMjU0Yzk4MzIxZmViMGY2MWE4ZDBkNjY5NWYxNGM5ZjQ4OWUyZTgxNDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5MDEwNTc0NTU3NzNjZWYwNTk0M2Q2NjIwODE0YmIwODJiNmYxZDcwNWY3ZGJmY2QxZjQ3OTBmNzA4ZDQ4MjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bdf554a26e104e3abe077a722b1b6382",
+      "statement": "Guest versus authenticated surface is fixed at registration time: `registerAllTools(server, auth)` concatenates the write registrars only when the startup auth snapshot is true, per-registrar failures are logged and skipped, and the banner's tool counts come from the registrar array lengths rather than from what actually registered.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L348-L349",
+          "version": "repo-lines-v1:sha256:ff413f35dd52ebcca8ce01aeec66939fc430313ed5d83092837f7c53c6cb50f4:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTgxYjg3MWEwODY4MDM1ZjIzM2IwOTIwNDA1NWFjY2YyZjZlOWZlMTBhZDkyMzlkNWMxMGYxMmFlYjRkNjJlNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2IwMjNhYWJhZWNjZTcyMjlmZGY2Y2UwNzVhZDZmMmY5ZjllZTk2ZmRkNGFjNDRkNmE1NDE5YzQ0ZDUzMjE2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTRmYjZiYTY2MThkNWY1YWViOTNjZjIwMzc0OTdjM2UyNmQwYmYzOGZmZjc0N2RlY2I4YTdkOWQ4ZDEwYmNkMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmNlNTUzNmFlODA4ZWU4MTM5YzIyNTZkNDZlYTljM2IzMjNlMzgxNTQ0ZDZjNWU4MjIwMjg5ZjI2NDg1ZWZmOCJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L387-L390",
+          "version": "repo-lines-v1:sha256:a71477c835ae51d846ae6ba913e6bdc60ec5a1b4ebf7f2ebc3a4bd32dbe0f5a9:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWI0NWJmYzgxYzNlZjYxYjQyNWFhMjhlNjgxZGJmYTQ5YTczMTIyMmY5M2ZlMjUzZjYyOGM2NGU3NmU2ZGU1OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWJjZjA1MjNmOTc2NjkzNmI5MDdmNjE4NWNkODBmY2RhMmZjNTZmYzZkY2U4NTYyMDRkZDE1OGMzNDY5ZTZjNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzUzZTQyMGE3OGQ0NDlmMzFjNDg1NTBlNDA4YzcxZTQ3MDgxODI5MGYwZDQ3MjRjNmYzZDNiOWMyMTViODBiZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzYxZThiODU3NmM4NjAzNDAxMWM2YTI4Zjc4NTE1MGM0MDY4MzcyNTVlNmNhYzdkYjVmZWIwYTM0ODY3NWUxNCJ9"
+        },
+        {
+          "resource": "repo://src/tools/index.ts#L149-L163",
+          "version": "repo-lines-v1:sha256:72af8cecac2edfb28cd19e0c9d3c0f772c2d774584c41ae0f0ac3ca1daf5c980:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlODUwOWI3YjVkZTE1NGMzMzZkMmYxMWRjMTIxNWYxZDJmZGQ3MTYxZGZlNTU5YTMyMmJlZDAwNWY1NGYwYWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyMWYzNzdiMTFiMDhmMDExMTJhYzNmMTI3OTZmNjUwYjgzYzE4NDQ0YTI5OWEyZWFjNmExY2ViNThiZGQ3OTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fcbadff685cd476e8750e100c294995a",
+      "statement": "The only transport is `StdioServerTransport`, connected last, and the startup banner reporting package version, site, endpoint, MediaWiki major.minor version, auth state, tool counts, and optional statistics is written to stderr only after the connect resolves; src contains no `console.log` at all, keeping stdout protocol-only.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L366-L403",
+          "version": "repo-lines-v1:sha256:abd5d1a5939d3aad00c177366c73e747b8090ae8e235e5bb620a339cf8c633de:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhNDVkODBkMjg1Y2Y4NTAyNDg4NDZjYjg2YmQwMGViNTY2YTZhZDZmNTA1MjU1NzMxNTBmYjY4MzI3Mzk3MTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTdkMTY4NThiMGM1OTgxODJlNmQ2Njc0MmFmNjZlZmI0N2ExNWYxODAyNjkwMmZiMDViODE2NGFiZmZjNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2MDVkMWM4OGMzYTg2MzUyN2JiZTBkM2IxMjE4NmI5YzIyNWVlMDI4NTFiM2VkM2U0OGU4YmJjM2QzZWFkZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4NjJkMGI5MTg5MzY3Yjg0OTE5NDRmOTMyMzU5ZGM1OGVjM2UyOGZhMTMxZDYyNzk2NDYwMDFmYjM0YWU4MGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3cdb8a56298b429ebfdcfa7dc3676de0",
+      "statement": "Fatal-exit behaviour is confined to four checkpoints inside `main()` — missing target server, failed path auto-detection, rejected login, and the siteinfo/stats block — each printing explicit text on stderr and exiting 1 before any transport exists; any later throw, including a failed transport connect, is handled only by `main().catch(console.error)`, which prints the raw error object without the `Error: <message>` shape and without forcing exit code 1.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L136-L139",
+          "version": "repo-lines-v1:sha256:f0f8c3840216afbfb0a8bd71ffdd139e3230c75d6e1d6849b60bf483935bcaa7:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2M3MzM0MmM3Y2ZmMTQzMzkwZGY3OTAwZTQwNGU5MzFlY2UxOTA4YTM1NmE1N2YzYTVhOGY0Njg4ZmIyYWMzNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmI1N2Q5YmQxMmNiNTgyNGZlYWM5MzRmMjI4MDEyNjdkZWRkYTZiYTUxOTkyOTc0NmE4Yzk1ZTQ2MTRiZjFhNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWYxZmYyYjIxNWVkYzRmYzY4ZDU0MTEzMmViNjcxNmZiMmZhZGQ0OTJmZWViZTc4MTkyY2JkNTNlZjNhNmMyMiJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L146-L150",
+          "version": "repo-lines-v1:sha256:bedacbbdee8e0121133858417de1d161bbe99bd74b3656ba09391c2b878138bb:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDgwNmRmOTljOTQyNGNkOWU0MzkzOGIyOWI3ZTZkNTgwYjUwNzA4NTcwYmJlOGM2MDYzMTYzZjVhZmUzMmFkZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjE1OGYwNDkxM2Y2Y2MwNDRkOWE0N2M3NGVjYjVhMzQwMDJmNGMxZDY3Zjc0MmUwODE4NDViOGRkMGE0N2FjMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmI5YzllYjBhNjExNGUyNjgwM2E3Y2NlZTY4NjEwYjE4ODQzNjc2MDQ4ZjExZmFhYTVmOWYzZWY0YzUzNGRmZSJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L196-L207",
+          "version": "repo-lines-v1:sha256:43424f1a8ff03d86d24a348a39397cdb01ed30850022d298de58a57dad4a316b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjZDYyNDU4MjVmYjYzZWVjMDc0YzhhYjM0Y2Q4NTA0ZmE4YzVjNTkyZjNlMDdmMGJjYjM5YzNiMzg4YzJkNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1ZWNkMTAwOWQ1Y2QzNzYzNjNkMTIzNGVmMDM1YjYyNGUwYzVjYTE1MmNhZGM4NWNiYWRhMTNkNWY3ZWI3NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4NmI1YzI2MTBkNjM3NGM2NzEzNjIxZDYwMTI4ZjMxMTNlNTBjOWE1MTYyYmRjNjA4NjQ3Mzg1M2ZhZmQzYzAifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L406-L406",
+          "version": "repo-lines-v1:sha256:098c8d31048c26a358302776fc2bfd1f4c31c30e1baec478a9d46123d1a13636:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDk4YzhkMzEwNDhjMjZhMzU4MzAyNzc2ZmMyYmZkMWY0YzMxYzMwZTFiYWVjNDc4YTlkNDYxMjNkMWExMzYzNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDk4YzhkMzEwNDhjMjZhMzU4MzAyNzc2ZmMyYmZkMWY0YzMxYzMwZTFiYWVjNDc4YTlkNDYxMjNkMWExMzYzNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWI0ODdhZDQyMTZhZmFjZTdiNjBjNDYyMTY2MjZhOTBmMjg2NGZkYjI4ZGRkZWFkMWQ2ZTYzMDAxODFiMmUxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L67-L71",
+          "version": "repo-lines-v1:sha256:c624d96af629fcde250fd668625a9f37d6952f217c42a768494fca94cc177da3:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODkyZDM2MmNiZWY4MjI5MTkzNWY2MTM4MDMwZTI3ZDNhYmZhMDEwZGU2OTkyNmM4NGZlMTQwZmNhZDZiNDI3NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTJmY2RiZDQwZWE0ODFmYWNmZTNkMDc3ZjA3Y2Y4OWUzN2U5NTBlYTljY2NkZjgzZTQ0ZWEyMmVhZmI2OGM2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWY1ZjRlMTNkMDE4NDk1YTA5YjRlY2E5ODU0NzA3N2I4ZDliMTIxZDYxOTY1MGNiMWM0ZjRkZGM3MzNmNmRlZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_501eab09cb8c4564984d1e27d9b11ca0",
+      "statement": "Every startup probe is serialized before the first client message can be answered: an anonymous start costs three requests plus zero to two anonymous path probes, an authenticated start adds the `whoami` lookup for four to six in total, and the version probe re-fetches `siteinfo` even though the earlier probe already returned the same `general.generator` value that the version regex consumes (each request bounded by the 30-second timeout added in the nodemw patch).",
+      "evidence": [
+        {
+          "resource": "repo://patches/nodemw%2B0.26.0.patch#L5-L18",
+          "version": "repo-lines-v1:sha256:63bcacc47c932ba31f7557b63fc40c6df8f5d2b364d001ec14c809bfd0080139:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZTg2YWU0Mjc0NDE5Y2U2NGVmNzlkMGM0MTYwNDcyMDZjNjExZDQxZTc4MWM0OWUxMDIyZjBlODQ4M2YxYjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiZGY2NmI1YmYyYTQ0ZTY1OGJlYTJlZTg2Njk1YWIxNTBhMDZlNjAwYmY2N2NkNWNjZTI0NWFkNTQ5NjJjNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyNjVjYTEwODhkMzI1NWNjNjA3ZWExMmYzMmZhMTc5YTE5MGVhYTYzZDVmYmM2MDgxMGMwZTY5MWU5NWRlNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU0MjdlNjk4NThjOGYxNGU5Y2YxOGI1MDcyNWM1Y2RhMWQ4MGYxMzZmMGQxMDdlNjdiNzZkNmU5NTFiNGU5ZWQifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L152-L222",
+          "version": "repo-lines-v1:sha256:fed82b5aa0092feea22c64cb01c072fc075f12d11aa0229abf5ed2e3e0fe881a:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2MWUwMjJhMTQzNjQyZmU1NTA5NmZjYTI1MzJkM2JkNWY1ZTJiMzlhMjNlN2Y5YzMwODU2N2FmNDExMjdlZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZlZDMyOTU0ODRiZTc5YTM1ZTI2NjM2NzVhMzM5ODNlNDJmZmM1YThkY2IxN2U0NGYwZGYzZWU3NDg5NmQ0YTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkYmMyNzVkMWZkYzE4N2NjYjRiNWIwZjY3NmIzOTVjMTc1YjFkMGQ3NjE4ZTk1NmNiNzE2YTRlMDgxNGE5YTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_dbcec9253b6e403d96599ac8d57d19d1",
+      "statement": "`--debug` (or `NODEMW_MCP_DEBUG=1`) both enables the bootstrap's own `[DEBUG]` response dumps on stderr and is forwarded into the `nodemw` client options, whose dependency-level console logging can emit non-protocol lines on stdout, so verbose debugging is in tension with a clean JSON-RPC channel.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L159-L173",
+          "version": "repo-lines-v1:sha256:ee11d699f86694e190894d7f88e65ea2c47d8a80bae98cf3dc5e06fd7a619340:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhOGM4ZmNhZTQ5ZDAxYzY5MjExNDU0YjcwNjg0NGY5MDQxODMyMDAzNzNjNTg1Y2MzOWViM2U3YTdiMTc0ZGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3YjhmZmZhNzM5YTgxODA0ODBiZTVkYTZiMzVhMDk2YzQ1ZTU5ODVjNTBjZjkwMjQ4ZDJmYzA0YzgzOTVkZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMDllNTI2ZDBkNGJkNTk3ODU1OWU5OGE0ZDZhMTIxNzhjMDM2ZGVlNjMwMTdjZjc0NDdkZDI5OWQyYjBlMDkifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L167-L167",
+          "version": "repo-lines-v1:sha256:ece3fad94e80597179be5581cfc72e13bea695c4f2ce4b65714972c438650765:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWNlM2ZhZDk0ZTgwNTk3MTc5YmU1NTgxY2ZjNzJlMTNiZWE2OTVjNGYyY2U0YjY1NzE0OTcyYzQzODY1MDc2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWNlM2ZhZDk0ZTgwNTk3MTc5YmU1NTgxY2ZjNzJlMTNiZWE2OTVjNGYyY2U0YjY1NzE0OTcyYzQzODY1MDc2NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTg1ZjlmNTY3MTVmZDc0YjRhZTZjOGM4MzUwYjUxNDcwMWEwYTczY2JlNWE5ZjA4ODE3MmUwOTUwNjg3OTU0YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGM4ZTc3ZWU5MjViM2Q5ZTZjYzIzMDkxZmU5NWY5Y2M3YzQ0NDQyZjNkY2EyOGE1MDJkNzMwYWMxYjg5MThjZCJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L212-L212",
+          "version": "repo-lines-v1:sha256:20aa78bcbd83213b03a2b22adf12c1a179a24ec87fac97e3886b517ae3f40c4c:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjBhYTc4YmNiZDgzMjEzYjAzYTJiMjJhZGYxMmMxYTE3OWEyNGVjODdmYWM5N2UzODg2YjUxN2FlM2Y0MGM0YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjBhYTc4YmNiZDgzMjEzYjAzYTJiMjJhZGYxMmMxYTE3OWEyNGVjODdmYWM5N2UzODg2YjUxN2FlM2Y0MGM0YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGYwZGMyNWY3MDlhYWMwNjc0NzRmMDVlMWM5YjAzOGRlMTM2NTA0MzIwNDJkNGNlOGVkNmZmMTk1NzQ4NTI1ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDYxMTI3YTExNjMyZDkwNjRhYTUyZGQ1ZDU3OTk4NjdkYTg5ZmIyZjRjMjYzZDlhZWEyMjQ5NGRlNjY2YjI3NSJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L93-L93",
+          "version": "repo-lines-v1:sha256:6fb15c96e8a7d0433137b2b24589a03f3e1a569ea3f5b132fc56b4b722016e38:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmZiMTVjOTZlOGE3ZDA0MzMxMzdiMmIyNDU4OWEwM2YzZTFhNTY5ZWEzZjViMTMyZmM1NmI0YjcyMjAxNmUzOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmZiMTVjOTZlOGE3ZDA0MzMxMzdiMmIyNDU4OWEwM2YzZTFhNTY5ZWEzZjViMTMyZmM1NmI0YjcyMjAxNmUzOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTdjNTFhZGI4ZmVhODQzMGNkMGY5NzhhZWI5ZWRkOTc1NTQ1YjQ2NGU3N2QyNDYyMTRjMDhlNGJhMzAwYjE5MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmJkYTU1ZDAzYzM3ODcyZGMzZmM5NTU5YzYzYmNkNjNhZDYyYzA2MDlkODgwZDlkOGVkNzQ0NDdhNDc0ODA4YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_4b7a9190a5054bac8acd6177958e6451",
+      "statement": "Startup itself has no automated verification: `npm test` runs `vitest` over `src/common/__tests__` and `src/tools/__tests__`, but no test imports `src/index.ts` — the tool tests mock the whole `nodemwBot` module and drive an `InMemoryTransport` — and CI only builds and publishes, leaving the manual `test-server.js` script as the sole (misleading) end-to-end check, since it spawns `dist/index.js` without a target server and reports success regardless of the exit code.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/npm-publish.yml#L11-L24",
+          "version": "repo-lines-v1:sha256:5a0c9b16c0fb7f392954d1e17cde26dbbf960425fb73d24d652d0cb5b1714250:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1MGE2MDZkZWQyMDhhNzcwMWFmZTU5ZTg2MjQzYWQ4M2EyMjg0MjlmNTMzMjk4MDNlZGU1MDBlOGY2Y2M5ODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNTI5ZDU0MGQyOTNiM2EzNDBkY2Q5MDQwMjFkOGQwZmFhOTg3NjNkYWE1NjgyYmRjNTI1YzQ5NTVjOTFiYzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2ZWM1ZjQ4Mjk1NjUxN2U4ODNmMzgxMjZmMjBjODYwMTk5ZmFhMWI1NWNjYTc2ZDRhZTc1MDk0NTQ3YTM0NTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0N2M5YjgzZGY3ZDc0MTE5MDhlOGI4MmJjMWRlNDExMzA0MDA2MjU3NThmZTZmNDdkZTdhNGM1N2FjMTg5Y2IifQ"
+        },
+        {
+          "resource": "repo://package.json#L18-L25",
+          "version": "repo-lines-v1:sha256:94330a37ea2ed1a06fc313f93456c980962c212f440a67f4a9c39c6bef6bede3:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTg0MDY5ODRiZGVmY2EzNGRkNmJjOTAwMjdmMWQxMWFiY2IxNzAzNGM1MjVjOWE1Y2VmYTFkODRmY2NkODFkMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzUxYjE4Njc4ODM0ODdlNTFlNjAwOTkzYzRhMTdkODJkOTFjYTM0NTc3MTAyMGYzODcwMTgyM2I3NDRhMjUyMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDAyNGMxOWVmMDgzYjZhYmEzMDYzOTQzNmVjMTE3NDhiOTY0OTRhYmI1ZjhjNDIwOGM1Mzc3YTIxNWNlMzU3NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjE0NDA3ZGUyNmI0MjczMWM5YWNlODA2ZTc0OTFkOTMzMmI2ZmVlYjNiYTljODBmZGUwZWIwMzdhZGU4NDEzMiJ9"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L37-L52",
+          "version": "repo-lines-v1:sha256:111bc341032eb8363b7bd17e800f938ff401103bd0b7f761d45337f67fa32042:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5OTZmODk0NDQxMWYyNTU4Y2ExMzZmYTMyNTFlNGJkNDk5NTdjM2Y3MGQ4MmIxOTMyNWE4OWFkODZhZWFlZGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViMDBhNzM5N2Q2ZDRmMzlmZTUwYmQwNDQ0ZjU2MTJmYWYxZDE5Nzc1Y2VlMGEzM2EzYmEwZWI5NDIxMTZiZTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVjM2I4MDcyMGU5YmY5NmU0OTA1ZGNhZmU3MzYxYmRkNTg3ZTBlYmI0ZDNiYWI0NzU2Nzg3NTJmMWEzMWI2MGYifQ"
+        },
+        {
+          "resource": "repo://test-server.js#L11-L56",
+          "version": "repo-lines-v1:sha256:469dbc79d6bb28e24b8c4b672f1ea6089d153c15989d2eeecd6c6153a9a86faa:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiNzgxYjNiZGRlNWIyMTJjMDFjODQ1NzYyMmY3Nzg0MDEwZjE4N2FhMThjODY3YmM1NzZiYzA1ZDg5MGFlNGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzZTVhZjYzNTBiYzcxODJkM2Y4N2YzZWQ3OTE2YTNkNjJlYmU1MWU2NjQ4ZWRlYzZiMmRhOWMyNDdlOTM3ZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUyNjlmN2Y5YjlkMDM1ZWQxMmVmYjg3NjFlMzVhNWM3MDQ5MzZkOTJiZDdkMGI3ZmE0MWYwZDU1MjY5MDU4M2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjMTExMjg3Y2MyZjIwYjhhNjY1YWZhYTc3MzNjMTZkMDdiNTlmNWU4Y2Q0N2U0ZTQ1YzRkMGJmMTA2NDU1NGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8c68b658e2014a4db59b3c8608a219de",
+      "statement": "`src/index.ts` is the single esbuild entry point, bundled into `dist/index.js` with a `#!/usr/bin/env node` banner and `nodemw`, `@modelcontextprotocol/*`, and `zod` left external, and `package.json` maps the `nodemw-mcp-server` bin to that output.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L14-L17",
+          "version": "repo-lines-v1:sha256:3e0df235c042f089723a9e9e4fc644200f06fd773e65da111afd866b7ed42ed4:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjUwZGVjZjNkMTQ1NDBhODJiMDZhNzA2NWRmODEyYmE3ZTNhYzY4ODQ2ZjViNWFlYzJlY2I5NTEwNjQ2ZGExYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBjOTQ5ODU1MjZjMWM1N2VmMDBjMDBkM2Y0ZGM5MDYxNTY3N2EwYTM2YThiNzk1ZGZmOWFmZmQ1MGZlOWY1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWRjNjUyNjc4NDFjZTE5YWQ2YzA1OTEwNzRjZGMxZmU5NDQyN2U4NDEyOTg3NGIzN2RkNGY3OTMzOTc0ZTNkMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjU2MWJmMDk1MDc5MmIzMjIxNjM2MGIxNzBiYzA5NWI5YTkwNWQ2ODU3NjlhZDg4Y2YzZmY0MTgxMmQzYzFkZCJ9"
+        },
+        {
+          "resource": "repo://scripts/build.js#L11-L26",
+          "version": "repo-lines-v1:sha256:d4261e71b6e6c6f54a1c3c2222d0736febce11ab6fc2cb8b9f8eaaae2006169f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyZWQ2Zjc0MDBlNzFhZWJlOTNjNTk5YmEwNTBjZmMyOWQ4MDk5MmJhZWQ0OTliOGVlZDRkYTBmOWE2MWMwMDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3MzI3NzVlZWU3NzAwMThkYjdkNzlkMDM1YTAxNjMwMTVhMDE2ZGUxN2ViYmY4ODg0OTAyZWM2ZDFkOWZjZjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhM2M1MTc0NGU0Nzk2MWQ5ZDk5MTNiNjE3YmI1ZjU2ODc5OTQ0ODVmZTM2M2UyODJiMDQ5MjFmMWVjOGZjYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYxMjJlOTYwZTI1MTdhNTE3NzI3YmExYjczNGIxMzAwZGYwYjI3MmIzYTFiYTYwMTcwNzBjMDc3MWZkNjE0ZmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_46d22a0009dc4739b47f98c5fa303685",
+      "statement": "The guest-mode description sentence tells the operator to start with `--username --password`, but `parseCliArgs` only declares `--user`/`-u` and `--pass`/`-p`, and because of `strict: false` those misspelled flags are silently accepted and ignored — so following the agent-facing hint yields another guest session rather than write access.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L275-L275",
+          "version": "repo-lines-v1:sha256:25159a26285f0175e4b7f548b9bb23be6debc97545bbedcf30b91994d60e689e:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjUxNTlhMjYyODVmMDE3NWU0YjdmNTQ4YjliYjIzYmU2ZGViYzk3NTQ1YmJlZGNmMzBiOTE5OTRkNjBlNjg5ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjUxNTlhMjYyODVmMDE3NWU0YjdmNTQ4YjliYjIzYmU2ZGViYzk3NTQ1YmJlZGNmMzBiOTE5OTRkNjBlNjg5ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjhjMzlkNzZjNjNkNjg0OWZmZTIxNTI4NzY0YmEwMjIxYjdhY2Y1MjlkOTA0MmYzMzdhZmZkMDFiYjdiOGNmZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjBjNjU0MWJlOWNjNTQ4MmY4Y2ZhMDNlZDI1YmNhMDZiNzNkZDU4YWViMWNlZjRkNDQ5YzE2ZjU1NjE3OTViMSJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L48-L64",
+          "version": "repo-lines-v1:sha256:397c490a929ba47c683acf61f7aba7532f847141d35e20bf9fa70d55bc8a2ea0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhZTBhY2VjODQxOTQ2MDY2MTNjM2Q1MDRiNmZmYmYyYzRiMDllMWJjZjBlNzVmNTNjOGI4ODQ3NDViNzVhYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlMWYzMzMyODEyYWE2NWJmNDliMWFkZmUyYjljMGEwYmU3MTYxOWUzY2Y4Y2JhYzhlNWIxYTM5ZDYxY2M2ZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIxY2I1M2NmMmZkOTQ4ODU4ZjVmMTgyZDg4Mjc5MTk2Y2YwOGMwYTI3MzcxNWNjZDViYmM4MWVjOTUyZGMyNWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2ff2923bf99c4514ab6c7ea37f9953b3",
+      "statement": "`--dry-run` is read during parsing and forwarded to the `nodemw` client only: it does not change which tool registrars run and it never appears in the agent description, so a dry-run session is indistinguishable from a live one on the agent's side.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L171-L172",
+          "version": "repo-lines-v1:sha256:4d2f1265e1acea0877b35b7ae46e4e7e949c142bf9d47e0e6883b9fa423b8945:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTZmNjU5MzRkZjFlYWI4YTM4MzZlODI5ZDQ2NjZjYzlmZmJmZTNiNzcwODE2MDRjNzQwZWYyOGI0MDhhYjIzYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzE1ZjAzYTk5MzZiYmFkYzI5NDcyZDZmM2Y0YmE2MDJlNzZhODAwZjkxNGI0MjQwMDgzNzhkYTFkMGFkYWY4ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWRlYmEwNWJjMDg2NWZkMTg5ZWViNWE4ZWZkMWJhNzRjMjgxNDJjZWNlMjZmNjc1MDNiMTllZTRkMzQzMDViOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTdjN2QwYjk3YmJkMWQyYjI0NzU3ZWNlMTVlODVjMzY5NGJlMDYzMTc3MmE5NDAzZDQxNDA0ZWEwNGU3ZDMyMiJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L104-L104",
+          "version": "repo-lines-v1:sha256:958350b314eb97db87600045e2436faa496bbfb0d94a44c04413400d2f3bd2a6:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTU4MzUwYjMxNGViOTdkYjg3NjAwMDQ1ZTI0MzZmYWE0OTZiYmZiMGQ5NGE0NGMwNDQxMzQwMGQyZjNiZDJhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTU4MzUwYjMxNGViOTdkYjg3NjAwMDQ1ZTI0MzZmYWE0OTZiYmZiMGQ5NGE0NGMwNDQxMzQwMGQyZjNiZDJhNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjVhMTUwYTRjMmQ4NjEyM2FiMGFkMmI1NGUyOGU1NTJiZWY3MzhmNjhiN2M4NmEwYmQ4MzU1Y2ZmNTM4OTg0OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTExM2FmNjRjY2U2OGZiYzExNmQzYzlhZmVmODc4OGIzNTMxN2UzNWEzNDllMmVmMTY4YWVmZjJkZjZlZDcwMiJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L239-L276",
+          "version": "repo-lines-v1:sha256:c26c5322d17ca131943e25c85a358f8ba4d2d3491163301b104b9e05c8f6430c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyNDU1ZmYxOGNkMDE3MmU0NmJmMTZmN2ZmMmZlNThhYmRjN2YwYmQzZjdmNWJlNjFlMzliYmE3ZGI5YWI4ZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3NTRlYmJmZDhlZmVhNGQ0OWVjNWM3YTM4Yjg3MTYwNWNlNGYzMGM5NTY3NmQ2ZTU5MTBmYzQ4ZjUwMzQ1MTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhYzllNmQ5ZWMwZGFmNTI2Y2Y2ZTFmZTkyMzFmYWEyMzg3NTg0OTZlMWQ2NWUxOWE1NTQ0NWY1OGY4M2Q0NzkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_76384605ae174af09ade016797cff820",
+      "statement": "The authenticated identity line shown to the agent is built from `config.username` rather than from any API-reported account name, so it echoes exactly the configured string.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L262-L263",
+          "version": "repo-lines-v1:sha256:299bf5894f64654fca2e3be2b2203ecc9324d5ed9a89639c2f5809cabfda251a:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2UzYzZiODUwYTJjYjEyZGM2NjQ1MmU2ZWM5YTYyNDRmZGNkZWM5ZWVhNTMyMjEwZTFhZjg0ODE4MmM1NDE0OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWJhMjdmZDhjMWQyOTY0MTI3YTMzZGM0MjYyNjNhMjA1NmY0ZWQ4ODFhMjViMmViNzA0YjFiNWFiMTBjMjEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODdhYjI0N2NhOTZkYjJmNmE4YjkyMDJmZDExYmY4YWRiNDhmMGYyM2NlYTg1NWM0YmZmYzkyNGUwMTJjODU4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzNiNGNmYTZmNzE2N2E0N2JlODQyNjU0YjI5YTkxZjM4OWFiOGNjNGUxZTQ3Yjc0YmUzNTI1M2U4YWNlMzNlZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3ea07532eb5d4c658f4965d93ff1e6d8",
+      "statement": "`main()` installs a process-wide `uncaughtException` handler before its first HTTP request, because nodemw response callbacks run on `@cypress/request`'s `complete` listener (the socket I/O stack) and therefore sit outside every promise chain and tool-handler try/catch: a malformed 200 response would otherwise kill the one-process-one-session channel. The handler logs one `[nodemw-mcp] Suppressed uncaught exception in wiki response handling:` line and keeps the process alive; the affected tool call never settles and is bounded only by the client's own timeout, and the bundled nodemw patch (null-shape guards plus per-request timeouts) is the proper fix this handler backstops.",
+      "evidence": [
+        {
+          "resource": "repo://package-lock.json#L4057-L4057",
+          "version": "repo-lines-v1:sha256:da6b18c9d221abc703d03ae79031be56d8cda48e1ab75b8915bc6c17a9ac176c:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGE2YjE4YzlkMjIxYWJjNzAzZDAzYWU3OTAzMWJlNTZkOGNkYTQ4ZTFhYjc1Yjg5MTViYzZjMTdhOWFjMTc2YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGE2YjE4YzlkMjIxYWJjNzAzZDAzYWU3OTAzMWJlNTZkOGNkYTQ4ZTFhYjc1Yjg5MTViYzZjMTdhOWFjMTc2YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWZkMTVlNGYxY2Y2ZjdkYWE1ZmFmMWE0YWQ4OTg5NWIzMTIwZjM3MDIzYmY1NDM2MzA4OTEzYmY1ODQyYzdiZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDlhNWFjNDMyMjg0NzBhYWRkMWEwYjk0YjVkMzEwZjA0ZTUxZDJhZGZiZDQwNjhkODYxOTIxNzNiNmNjMDIzZSJ9"
+        },
+        {
+          "resource": "repo://patches/nodemw%2B0.26.0.patch#L1-L35",
+          "version": "repo-lines-v1:sha256:a0260bb73595ec41edbdbcace0ba8dfcfbde682733247300faa05ec96ce21af4:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5ZWM5MGYyNmEyNmYwYmE1OWM2YzIyYTU0ZjVjNWQ2YTA1NjJjZDViNGM1MTI0ZDQ4NDVmZDQ3YWU0MjNjYWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhNzIwNmNhNmZiNTJlN2Y2ZmFlZjIyNDQ0ZjdmOTUyNjkwYmI1MjdjZGQ0OTM2YmRiOTkwNjYzYmZkMWIxOTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkMmUzOWJhNzI5NGRiMmMxMzU0MTYwYTgzNTIyMDNlYzVlYTIxOTlhNDJjZWFiOTU0OTNhYjgwNGE1YjhjNDUifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L117-L129",
+          "version": "repo-lines-v1:sha256:1eb6553116960614af2e6c066e47b3a9853f1027f34d7feab302ff80432414c7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3NWVlOTZkOTc3MjE1ZTViNTQxNzI3YjlmYmIzOGMwMTgwMDQyMDJjMTAyNWQ3YjZkZWIzOTZmODAzMmFkYmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUyNmRhZTcyYWI5YTJiM2Q2ZDJkNzliNTRmMzE2Nzg5YTZlMzhiZTFkMzEyYmEwZDliYmU4ZDg4MjhiZWMxZTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFiYjY0MjQ0ZTBiZmU1Njc1YzM1YTgyOGRlM2U0ZmQ1YjM3OTFiN2JmZTY3YTk2ODc1Zjc1ZGU0NmNkYzY0M2EifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_05e0c32e039d45a4982f6c1a620a4730",
+      "statement": "A 60-second login heartbeat is started only for authenticated sessions, only after `server.connect` resolves; each beat issues `meta=userinfo` through `fetchWhoami` and downgrades the session only on positive anonymous evidence (missing/zero id or `anon`), ignoring network and API errors, while an outer latch prints the `LOGIN SESSION EXPIRED` banner once. Because write tools were registered from the startup auth snapshot, the downgrade removes nothing from `tools/list`, and the unref'd interval keeps polling after the drop without changing state again.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L97-L123",
+          "version": "repo-lines-v1:sha256:dff513587bc6eb0e49b3095078abbfab1a48811273cbf226cf21be75e25161ab:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllMTIyNTY0NGE4NThkYjRmNDMxZDA2M2M0MzQ2ZWU5ZDgxMGQyYzg1MjNiYTNmOWU4MGQ0MDVlNWYxOGRiOWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjljNzkyMWM2NzE4YmVjMjQ3YWRjNzIwN2YwYjI5ZDUzODJkZTRlMjRhMjEwMjljOTFlY2EyY2I3YWYzZWVhYTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUwMzI4YmU5NDBjZmJhNGYyYjJkNTJlMzAwNGEyNGIyZTc0MzY1YmJiMDQxOGQ1ZmJlNGZmZmY3MmQ1ZTg4NzEifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L370-L384",
+          "version": "repo-lines-v1:sha256:dd891afe9f082f3868c5d56fd54a48e081d9c98ea4b50f633d9eeba48be9c5c6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhiNTNjOGRjM2UzNGQ5ZGFiZGJiMWNkNThjMWI4NTE2YzZmMGU1M2YxYmY2MDk2OWYyZDVlNmUzMWUyZGI5NTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3ZTlkZWE1ZDNiMmVmOWNhYTViYjE2ZThmNDY1NDExNGU5NDY2MmEwYmVhM2Q4ZjBjZWI2YzA3NTk1OGExZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2YjA1YTZmNmYxZDk5OTM4ODllMDQ2ZTFjNzFkZmMzYjExYzYyZWZhOWY0MmFjNGIzMGQxMjVlMjdiYjRmZjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b54c69ca79a4464facf46e8a56f7630c",
+      "statement": "Startup populates the process-wide namespace cache from the same siteinfo request that feeds the description (`siprop=namespaces|namespacealiases`), so the table behind `lookupNamespaceId` exists before any tool call; when the response carries no namespaces section the cache stays unset and lookups return null, which callers must treat as \"cannot decide\" and keep legacy behavior.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L259-L302",
+          "version": "repo-lines-v1:sha256:61f6ee20763d0286704e1648eeb34d97c412d8ff4cac1cdb95285bd0abdab1e4:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExMTAxZDRlNDEyNGU4MzcxM2JkNTFjOWI2ZDQ2Zjg0ZDUwZjM5ZTVjMjAwMDJjODM4MDg5MzBkOTI2M2E3NDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNDU4YjMxZjlhMGY0N2QxMjk1MTJhY2M2ZjkwNTQ3ZGMwZTBiYmNjNTc0ZDdhZDYxZGRlNmNkMTFjZGEwYTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc3ZWM3MTJkOWNjMWY0M2JjNWQ5OTRjYTQ2ZmFmNjcwMGJlMjc4OTk3OGY1Y2MyYjEzOWJhOTA4NzhhNjUwYWIifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L160-L170",
+          "version": "repo-lines-v1:sha256:e6d439539f861f09f0c30f4413fc11b9b963e1c261e16d73895296cf66df664d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5YTIzN2Q0MDk3NDVjYzgzYThiODVkMGVkNTU0MGNlZGQwNDljMGFlMmRiN2JmZmQ2YWIxMGMyM2Q2ZTRmNTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQyMDhmNjM0MWQ0MTdmYmNmMTZhY2VjMTc2MjFhMWRkZTcxNzkxMjBiNWRhNGU5Y2QxZWVhYjRlN2NkN2Y3N2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjOGU3N2VlOTI1YjNkOWU2Y2MyMzA5MWZlOTVmOWNjN2M0NDQ0MmYzZGNhMjhhNTAyZDczMGFjMWI4OTE4Y2QifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c41dfac722534288a76aa13f6b379ba6",
+      "statement": "Only thrown errors are fatal in the siteinfo step: a successful response that lacks `general` leaves `siteInfo` undefined without aborting, so the description falls back to `config.server`/`en`/`MediaWiki` while statistics still load.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L171-L195",
+          "version": "repo-lines-v1:sha256:e721591e54d47cb8c3129f71b32bbebeba168ce5c4863cde2f285c8e4048df09:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1YWFiNjYyODNlMzNmNjBkOTA5Yjg0N2UzYmRiYmY3OGY4ZTgyYzdkYzMyNTYxNjE1OTVlZGI3YjRjYTUzM2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0NjA5MTE0OTdkYzc2MjA1NjEzM2M1MWQwODM4NDRmYzJjNWIyOGZkZjNhM2ZmYTEwYWY0Yjc5YjBkODY1ZmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlZWE1ZjFkNmIwYWQ0MjJmNWRjYWE2MjBkOTk3YzlmMmJiMzc2N2I2YmQ0YTc3YWJkYTkzMTU5NTExM2FhZDMifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L239-L246",
+          "version": "repo-lines-v1:sha256:c258cf4e025839d8e644cc9c6ba197558eb56677f6625d46680635e08488ab76:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjI0NTVmZjE4Y2QwMTcyZTQ2YmYxNmY3ZmYyZmU1OGFiZGM3ZjBiZDNmN2Y1YmU2MWUzOWJiYTdkYjlhYjhlZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZmZmZhMTFmMTdlOGI3MmE1NWVmYzc5MGQ1MWE1MzdiMjExOTJiOWJjNzE5YTQ5MGY2MjU3ZjI4MGM5M2E2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzc1NGViYmZkOGVmZWE0ZDQ5ZWM1YzdhMzhiODcxNjA1Y2U0ZjMwYzk1Njc2ZDZlNTkxMGZjNDhmNTAzNDUxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTBmZjY5ZjE4N2MzMGQyMjA4MGUwM2ZlNjk1NDhiNmI2Yjc0YTU3YzIwMmZiYzgxMGQyNjc5MzBmMmE1Yjk2YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_94771c7aa6f845cdab4e9711cde47c30",
+      "statement": "The agent-facing description carries operational rules beyond site facts: its operating-principles block states that a fresh process starts for every client connection (including `/mcp` reconnects), that read-before-write state is per-connection so the target page must be re-read after any reconnect, and that a \"not allowed / login required\" write error most likely means an expired login requiring a reconnect.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L278-L344",
+          "version": "repo-lines-v1:sha256:dbcf7f67842751ca4130a8a4c91a8ae6bc4e45c6ea471488c95648da9fdce958:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwNzFkMDEwZjYxZTc2MDAxMzFlYzQ3MGMzMWEyZjBjODUzNjBiOTI0MjRiMzdjMWU0ZTdiNTI0MDA4MDJmM2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhNzFkOWZiODgwZWVjZGNiYTUzMjc1MmRhMjM3YTZlOGI2MzJlMWNlY2ZlNTM2ZDhmZTkyYjhmZDA5NzJiYzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlMGQ5MzA2YTMwY2M1YzJlOTVmYzdmNTgyNDlkNTU4MzlmZDYzYTU5NzBlZGY4ZGMzOTliOTMxNGYyNDYwMTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk0ZmI2YmE2NjE4ZDVmNWFlYjkzY2YyMDM3NDk3YzNlMjZkMGJmMzhmZmY3NDdkZWNiOGE3ZDlkOGQxMGJjZDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_598cc79d4fc54ae3bc527d2211b178a2",
+      "statement": "Registration order is load-bearing: the description string must exist before `createServer(description)` because it becomes the MCP `instructions`, and every tool registrar plus the `operating-principles` prompt is registered before `connect` so the client's first `tools/list` sees the complete gated catalog; the transport is created and connected only after both, and the heartbeat and banner come after the connect resolves.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L346-L368",
+          "version": "repo-lines-v1:sha256:a59f95cd981a77d6a24e539d1a94f8dcf3be129720eea934902733f09f722345:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyNmFlNmMwZmIxMzZmYTRlMzRhMWMwM2I0YzExNWQwNmMxNmU1MmY0ZTg2NWM5MmMzOWFlZWRhNjFhNDhjMmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxNmZhNzg2MTg4N2UxODYwODA5ZmZjNGIwZGE0NGVjMmM2MWM4OTQ2OTM3MjA5ZmEwMGQ4NzJmNzdiMWE1NDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcwYjA2NTZkMDc4MmExYmEwYmZjY2RlMmQ4MDllYWY2OTYwNmE2YjE2M2NkMTZjMTQzMjFkMDE0MmZiZWFmZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0YWVkOThmNDA5YmE3ZWMwNjBiYmI4OGJkNDdhNjNkOWUxMjlmYWUzYTAwNzBjOTE2OGU4ZDVkMWFhMjgyNTEifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-30T18:16:46.462Z"
+  }
+}

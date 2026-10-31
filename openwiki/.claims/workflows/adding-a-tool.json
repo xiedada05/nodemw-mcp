@@ -1,0 +1,534 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:a153f70811bf19858bebfda331d318347fccddf494d975e31e0a650f64dd363e",
+  "claims": [
+    {
+      "id": "claim_0512d1c2e4c44005a38725394b98606d",
+      "statement": "A tool's read/write domain is declared only by directory plus array membership: read modules live in src/tools/ro and are imported into readToolRegistrars, write modules live in src/tools/editing and go into writeToolRegistrars, and registerAllTools concatenates the two arrays only when includeWriteTools is true, which main() sets from the authentication snapshot.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L348-L349",
+          "version": "repo-lines-v1:sha256:ff413f35dd52ebcca8ce01aeec66939fc430313ed5d83092837f7c53c6cb50f4:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTgxYjg3MWEwODY4MDM1ZjIzM2IwOTIwNDA1NWFjY2YyZjZlOWZlMTBhZDkyMzlkNWMxMGYxMmFlYjRkNjJlNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2IwMjNhYWJhZWNjZTcyMjlmZGY2Y2UwNzVhZDZmMmY5ZjllZTk2ZmRkNGFjNDRkNmE1NDE5YzQ0ZDUzMjE2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTRmYjZiYTY2MThkNWY1YWViOTNjZjIwMzc0OTdjM2UyNmQwYmYzOGZmZjc0N2RlY2I4YTdkOWQ4ZDEwYmNkMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmNlNTUzNmFlODA4ZWU4MTM5YzIyNTZkNDZlYTljM2IzMjNlMzgxNTQ0ZDZjNWU4MjIwMjg5ZjI2NDg1ZWZmOCJ9"
+        },
+        {
+          "resource": "repo://src/tools/index.ts#L89-L163",
+          "version": "repo-lines-v1:sha256:d61bc048b9e59863c76297c947c8642f313099c5e7f5c85bca7bf146066412ee:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3YjMxNzM1MjIwMjNmZWM2ODQ2YjZlOTkzYjRkZTRiY2Y2NTU4ZmYxMDJiNWFkMDQ3MDMzYmUyNmVhYzc2M2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0YmZkYzRkYmNhYWM4YzI1YTU4MzM5N2E2NzExODEzMjJmZGU5MWZkODk2Y2E4Y2IxMmVjNjM4YTYxMTVlYWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c54a832ac75149ffa7b461d3fc6dc67b",
+      "statement": "Registration is per-tool isolated: each registrar call inside registerAllTools is wrapped in its own try/catch that logs 'Error registering tool: <message>' and continues, so a broken or duplicate-named tool is silently absent from the catalog rather than aborting startup.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/index.ts#L149-L163",
+          "version": "repo-lines-v1:sha256:72af8cecac2edfb28cd19e0c9d3c0f772c2d774584c41ae0f0ac3ca1daf5c980:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlODUwOWI3YjVkZTE1NGMzMzZkMmYxMWRjMTIxNWYxZDJmZGQ3MTYxZGZlNTU5YTMyMmJlZDAwNWY1NGYwYWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyMWYzNzdiMTFiMDhmMDExMTJhYzNmMTI3OTZmNjUwYjgzYzE4NDQ0YTI5OWEyZWFjNmExY2ViNThiZGQ3OTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e7b98d86fa5d423ca51507953b5d804c",
+      "statement": "src/tools/ro/get-backlinks.ts is the minimal read-tool template: one exported factory calling server.tool with a single-field zod raw shape and all four annotation hints (readOnlyHint true, destructiveHint false, idempotentHint true, openWorldHint true), then tool.update with a three-field outputSchema and return tool, with the work done in a separate handler that returns jsonResult or errorResult.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-backlinks.ts#L41-L59",
+          "version": "repo-lines-v1:sha256:c89d2ba2509a566294ecc6b759c96f28b86a587204d11f525cc02939cfd80841:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwMmMyNTg4MGIyMDFhZjMyMDYyZWQzYjc1ODA1MzkwM2U3ZWQzMzY3MmE5YzZkOTllYWZmYzNiOTgxNTMxMzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE0NmI4MGM1ZWMwYzgwNjk0MjA5YWYwZDVmZDhmMjRhYmJiMzBlZjdjNWY1Yzg2Mzc4M2Y4MTU1YmJkNjI5MGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2OTU5ZmYzYjEwMjBkN2ZhODhkOTliMmMxODQ1ODQzZjI5NDViOTYzMzQ1NjU4OWI0YTIwODYwY2ViMzhjYzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1f7a804b52254012b4ea1fade1cfe54e",
+      "statement": "src/tools/editing/purge.ts is the minimal write-tool template: the same server.tool plus tool.update shape as the read template, a description composed of the action sentence, '(requires authentication).' and a following LOW RISK judgement, all four hints declared explicitly with readOnlyHint false, destructiveHint false, idempotentHint true and openWorldHint true, and no read-before-write guard.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/editing/purge.ts#L35-L54",
+          "version": "repo-lines-v1:sha256:151b8566db15f707cf0e5d4b605ad976d254e7953dde4860cef30782ffb62e4b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyYzQzZTUyMWE3YmQ2NTFmNzkyOTQ2MGM4ZjFhMWFhZTQ5YjMxN2Q1NjUyYmZlMmY5ZWZkMmMyMTY4MDMwMzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM0NjMzMmI5ODhkN2Q1OTViODI0MzVlNTllOWNhYTVlMDY4MDU1MGJmYWZkYmFhODRhOGJhOTA5ZDIzODMzZjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyODAyOWY2NjE4NWJlZjE4NGVhNDk2M2Y2NGI0NjZmOTU3NzMyNzkyYTIzNWViOGZlNjdiNGU3NzNmMDQwYWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ed6da80bc29e44d8a2e11e845e3cd6c6",
+      "statement": "outputSchema is never passed to server.tool in this repository; it is merged afterwards with tool.update({ outputSchema }) on the value returned by server.tool, and modules that declare no schema simply return the server.tool result directly (get-module-source and get-articles do this while still returning jsonResult).",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-articles.ts#L53-L78",
+          "version": "repo-lines-v1:sha256:c576ac1886e021fd05c6b33c36708f3d99b77d2464fcf9eab49d149c085aee88:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzNzY0M2FmZDAyNGM0ZDQzYWY0NjRhMTQ2ZmJiYzM0MWE0YTMzNTdmMzVjMDNhMDJjNTQxZWMyN2IxYTllZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4NzBiNzQ3ZTM1ZmM0NmZjYzc3NjYxZjY5Mzc0ZWIwYTk2NzY5YTkyYzYxM2I4MjZiMzlkNjFiMWM3NzQ0NmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2NTVhY2MwZmYyMGQxYTUwNmQyYWI5N2EwNTU5MWE5ODViZThiZmY1MjNlNTgwYmVjYTYwZWUwZTU0ZjZmNTIifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-backlinks.ts#L48-L59",
+          "version": "repo-lines-v1:sha256:59b8f10290a42e64a75a48d0c9da08e1dfe60b710f3e9923e46bc2e96428a3e2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1MjQ3Mjc2NzY2ZTFkYjE0ZDJlOTdkNmVlMWNhNmNhZWUwM2IyODBiNzQyMWQ4OGRjYjUzODg0NTllM2NkODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkYzBlMTM1NWYxNDAzYWJjNmZiZDgxOGRiNzc2OGUxYzlhNjFmN2RlNDFmNzQ0ZGIzMDFiZTk5Mzg0MDU0ODEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2OTU5ZmYzYjEwMjBkN2ZhODhkOTliMmMxODQ1ODQzZjI5NDViOTYzMzQ1NjU4OWI0YTIwODYwY2ViMzhjYzYifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-module-source.ts#L52-L74",
+          "version": "repo-lines-v1:sha256:d2994e3af7e4ae812e9783188770d8529f449193831b1ee6a2befa92055944a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3MWYxMzg0NTM5ZDMzNWIxZmIzOWYxMzZiN2YzN2U0NTVhNWQ3NDkzNDBkNDRkNWUwNGUxYzc1NzBjNGQ2NGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjZTc1NTUwNjE3MTRlMzgyMWU0YzZhYTNjODdlZDBjOTkyZjFlNDgzODM0MjRiODIwZGE2ODA1Y2YxMDUzZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFiMzMwM2FiNWM4NjdhNTNlMjkwYTI0NTEzMDA2YWE5MTEzNTNmNzlkMWFmYzg1NTM5YmRjMjdmYjgwNGEwZmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_60992b94f1d4410db2c469156b223bc1",
+      "statement": "scripts/add-output-schema.mjs is a one-shot codemod keyed by a hardcoded tool-name-to-schema object literal rather than by reading handler return values, so a structured tool missing from that map logs 'FAIL (no schema)' and is left untouched; adding a new tool therefore requires either extending the map or hand-writing the tool.update clause.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/add-output-schema.mjs#L6-L47",
+          "version": "repo-lines-v1:sha256:3c16d220296dc7dc5f4027ccab26c5e57149cb4be07e95780d373cc0d5918f57:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU0ZDRhYWUyNzM0OWM1OWVlYTExYWQ3OTJjZDFjNzdmYjc2ZjliZjE3MWU0NTA0NDNkNDFlYjE1YTExNjQ5MTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmZTExYTcxMmI4YzczYzA5N2U4YTFmMGFjYmE5YzQyMjYxNWMzYjllZTc3ZjdhNzBiMTZhZGYxMTk3MTNlMGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdkOGFjYzczNjdhMzdlOTAxMmY3MzNkMDIyODU3YTQ1Yjc2Y2U1OGNjYmYxNDVhOGE5ODBhYjMzM2EwNjdiZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzNjExYTc4YTkyMzkyZjMwNmQxMjM0YTNmODA0OThmZTZjNWY0NTgzZDU1YzdjZGM0NmJiMmIzODA4ZTZmYWYifQ"
+        },
+        {
+          "resource": "repo://scripts/add-output-schema.mjs#L61-L78",
+          "version": "repo-lines-v1:sha256:eb0fca7a5542ea585442b3228d6a370c1453dfb0afc21810d8be5a64b70058e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2ZDE2M2U2N2JlMWQzMDc5ZDBhMDA3YjI3YTU4ZWY2MGU4YWQ4NTUwMGZkOTBjNTI1YzdkODY5ZDA0NzFhZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAxMjIyYzA4MWFlZGQ1ODAyNjY4NjFlNTQyZWVmMzU3MzVjYjQzMmUwODc4MTA2MzhhNDM0N2JhMjYxYzhhOTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBlZGRiZTdiMDQyM2M0Y2ZiMThhZjhkN2UzZjhjNGYzMGQ2MjAwMTVkOWFmNTVjNzc5MjRiMzJmMjIyMTE4MGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5cb8010f3430476da5d0cd963f450bef",
+      "statement": "The codemods skip already-converted files by a textual marker instead of re-deriving state: add-output-schema.mjs skips any file whose source contains 'tool.update', while convert-tools.mjs skips any file containing 'registerTool', which makes repeated runs idempotent for converted modules.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/add-output-schema.mjs#L61-L65",
+          "version": "repo-lines-v1:sha256:a7f024c3a3a4ead0a92fef64727bcebd2feae6b34867e9af17d657db0006bc4b:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTZkMTYzZTY3YmUxZDMwNzlkMGEwMDdiMjdhNThlZjYwZThhZDg1NTAwZmQ5MGM1MjVjN2Q4NjlkMDQ3MWFmYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDEyMjJjMDgxYWVkZDU4MDI2Njg2MWU1NDJlZWYzNTczNWNiNDMyZTA4NzgxMDYzOGE0MzQ3YmEyNjFjOGE5NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjNmZTRlNWJjNjlkZTdlNGVjMjNkNzAzYjE4YmRlN2YxMjkxY2JlMTA0ZDc1YzdhYzgzNzczOGQxYzMwYmM1MCJ9"
+        },
+        {
+          "resource": "repo://scripts/convert-tools.mjs#L62-L67",
+          "version": "repo-lines-v1:sha256:185b19b55e014331bdf1ecf7b63068a0c9a66f548e511c241824a721b3f250c9:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGI5YjdmNGE1MDE2MmIxMWEzOGQ1MjdhYWRjNmY5ZGNjZWFmNjc4OTUxNDc0NDM4ZjEwMjRkZTYwMTEzNWI2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQxOWE2ZGNjMDRlMjEzYTNjN2E3N2E0NTZiMDFlNzZkMWVmNzhjZDAwYmJlYzFkOGY4MTQ1OGZlOTNlZGM1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDRkNjlhZWQ5NWYxMDAzNmRkNTZmNmNhZDljMzBhZGNlOTNjNDdmYjAyNzMwYTg2YWYzMTg5NjVmYjAxNzkxYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjgxODllMmFkNmE3NWExZDFkYjljOGViYmU0Yzg1YWVkNDZiOTI5ZDc3Zjg1MDVlZGUzMGEwMTdlOTQzY2Y3YSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3e91cd204d5c4434a86719030fa9b8c3",
+      "statement": "Both schema codemods hardcode a filename skip set of get-article.ts, expand-templates.ts and parse.ts, so the text-output tools are never given an outputSchema; get-article-by-revision, get-module-source and get-articles also return text or jsonResult without a schema yet are absent from both skip sets and survive a run only because they have no map entry.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/add-output-schema.mjs#L49-L65",
+          "version": "repo-lines-v1:sha256:555e1588add8b93c2f482a14bc445476446e42906912d1f9cc220cbcdcb075ee:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkMmY5YjJmM2ZmNDA1MzljNmVjNzZhNGQ1NjQ4MjE2ZjBhMmRhY2Q0MTEwZDRmNDVhODIxM2Y1YTc5MTJjMDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM4MGM1MjMwNmQ2ZjkzMDc5MzE0ZThkYjdiZDczYmZhYmIzMTlhNTU0YTNmYWM4YmE1N2Y1MjM4YTA5YTA4OTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIzZmU0ZTViYzY5ZGU3ZTRlYzIzZDcwM2IxOGJkZTdmMTI5MWNiZTEwNGQ3NWM3YWM4Mzc3MzhkMWMzMGJjNTAifQ"
+        },
+        {
+          "resource": "repo://scripts/convert-tools.mjs#L52-L53",
+          "version": "repo-lines-v1:sha256:a2a95e35d8e48b68db0b02256c12a7e77a5e4f8b82513ed40e2f2fd44046b301:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDdkYjNlMjZkYzRkMGU2YWE1NGMyNDY5YjI3MzNlMTFmZGI1ODA5ODkxYmQ5YjcwNDgwZDU5Y2MxZTcyZjhlNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEzMzY0MTg5NjBhOTIwZGRkMDg5Y2NkMDU2NTdhNTBlOGY3YWNhM2I4OTE0MjI4ZjVjZGFlZjhjNTliMDczYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmVlZmU3NDk5ZDQ3MDU5OGE1MWZmMzExNzQyNjhjYmE1N2U3MTUzOTU5MGIzY2FhMzAyZWExNjM1MjRjOTI3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTRlOGZiODRlNzdhY2Y4YjhkMDI5OTY3ODk5OTRmZWE4NWYxMjFmYzY3MWM2MTc2OWU5Y2NiMTI4ODVhNjE0NiJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-articles.ts#L146-L150",
+          "version": "repo-lines-v1:sha256:0047b8ec490eb9c8685e34bf06b916581ae8d052e1638bf442a4124a29637b79:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjU5YTQzOWFhYjI5Yjg0YjNlZjVmNzk2OTRmMzBkMDgyODJkZDJlZWY2MDI3ZDU4Y2E3ODgxZDYwMWE2MTM2OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTQ0Y2M1ZjQ2YTcxNWM1MGE2Yzg0NDJhZjE0OGE0M2Q5MWI5Yjk0MzcxYjM2YzdjNTIyY2YyNTNiZmE5ZWJkNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-module-source.ts#L132-L141",
+          "version": "repo-lines-v1:sha256:83d62a27539105330a31a7b3b6a8a94ad801047a0ab42ed6dc0cab7eaec8f50d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlNGFiNTM4NTFkZGI1MTJhOWNjODY1ZDcyMzdmZTM0MDg4MDA5ZDQ3ZDgwNDU0MWQ0NWFlM2JiZDM4NWQzMGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU4ODlmMWRlZjBlYTU3ZDg5NTY0MjVmNmQ2OTVkY2RiNTMwMDc0ZDQyYzVlYjkwMjBiOWY2OTI3YmVkMTYyMGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4YTVmMWU4MWIyM2M5ZWMzMDM0NGJlZGYyZGI4MTQ5YzViYzhhYjBlMDc3NDcwMmJkNDc3NDZjMWYwYTgyYjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5253882782794399aa43a8a9972cfbec",
+      "statement": "The maps in the codemods are a starting point rather than the current truth, so a mapped schema must be re-checked against the handler's jsonResult payload: the map still declares purge and whoami as z.object({}).passthrough() while the files declare { pages: ... } and { user: ... } respectively.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/add-output-schema.mjs#L30-L47",
+          "version": "repo-lines-v1:sha256:31ae4bd724322aa07e3e15b39cc4e1bb7e8712d97e91e19a31f38fa29978f053:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2ODEzYzJmNGVjNzQ1YTI5M2U1ZDg5MDNmZDNkYjVmZTY3MDRlYjNiN2ZiZWM4YTQ4NWFiNTk2OTczNGViZTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmZTExYTcxMmI4YzczYzA5N2U4YTFmMGFjYmE5YzQyMjYxNWMzYjllZTc3ZjdhNzBiMTZhZGYxMTk3MTNlMGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmM2U0NTA2NjVkYWUwMDUzNjIxNGE3NzZlNjJkNmIzNGE3NjI2MjMwZDFkYTY4NWQ3NzUxNzFlYjMzMDNhZmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzNjExYTc4YTkyMzkyZjMwNmQxMjM0YTNmODA0OThmZTZjNWY0NTgzZDU1YzdjZGM0NmJiMmIzODA4ZTZmYWYifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/purge.ts#L52-L53",
+          "version": "repo-lines-v1:sha256:fe90a570e442f6183fe02f9d3b00d70db8a2ac02aaafcdbf5ce011bcf75c6f54:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmMwYWIxOWMyMjAyNjQ5MzE2ZWFkZDVmNzc5NzUzMzVhZDNjYzM1MzVhZjgwNjEwZjRlYmQxNjkzZTE5ZTAxZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjBjMWUwNWFkODgwZTIzMTQ5MDk2OGM2NWZiM2FiM2QyYWUwYzM2NzM3MDczNTQyYjk1MzRlNTU3NjA1NjViYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjE2M2UyY2U4OGMxMmY5MGJhYjJmMzhkMDljZTlhNWU2ZTMyMzUxMmYwOGRmMDk2Zjg3YThjZWQ4ZTA5ODMyMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzMyYWEyYjFmYzU3OGNkM2Y5NDEzNzExZjk1Y2VjZDNlYzJlM2VhM2FjYTZkN2U3NjViYzg1OTI2OTViZGI5ZSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/whoami.ts#L55-L58",
+          "version": "repo-lines-v1:sha256:581998afa36459db565aed8359960705b465cda6e748186b658e355e13140a6a:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGFjNmU2MWY3YTdkNjdkMTE5MDRlODNmYjY5ZjJjZDJhM2FhMWVjZTU4Nzk2OGVhYWU0NDMyMWU4NDU5OTVhOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjBjMWUwNWFkODgwZTIzMTQ5MDk2OGM2NWZiM2FiM2QyYWUwYzM2NzM3MDczNTQyYjk1MzRlNTU3NjA1NjViYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTBmNjk0MmU3MTBiMDNiYjY4NzE3ZmJjZDFkZDExMzY2ZWJiNGQ1ZjlmNDk4NWQ2ZDRmZThiYTNjMzhhMzY0OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjAwY2QwZjI1MWUzZmE4ZTQxOTY4ZmI0MzdmN2U0Y2Y4YTRiNjJiNTY2NGM5NTk4MjRkYTgyYWQ1MjA5MzM3YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_dde9fd2117374817945cec55a6c022bd",
+      "statement": "add-output-schema.mjs performs formatting-sensitive string surgery: it replaces the literal 'return server.tool(' and appends the update at the last 4-space-indented ');' immediately followed by '}', logging FAIL and skipping the file when either anchor is missing.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/add-output-schema.mjs#L80-L114",
+          "version": "repo-lines-v1:sha256:6061ee45cd23d3bacbda5532e333c2ac970c3a552e675de6f95e7e9b72133b03:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhZTAxOWNjNmU5MjdiN2U3MTg5YjI0NjUxZjZiNTc3MTQzYjRjNTAxMDI5YTE5Zjk4ZWE0MjgzNWUyY2FlZTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwMGQxMjA4MDcyMDlhNjcxYWI5Yzc5NGNmYTRmNWVmOWFkNzM1Y2E5MjQzOWE2YTY1MDFlNmU4MmM4MWE5MGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAxMjIyYzA4MWFlZGQ1ODAyNjY4NjFlNTQyZWVmMzU3MzVjYjQzMmUwODc4MTA2MzhhNDM0N2JhMjYxYzhhOTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjZTg0MzE3MWMzYjQ4NTQ1OTg4ODQxNzkzN2FjZTUwYzFkYTYyNzE2MzdjMzFiY2I0MjI0ZTIzNzg0MmM3ZjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_38447108805a4021aec8267253de4082",
+      "statement": "scripts/convert-tools.mjs is a second, separate codemod that rebuilds registrations in the server.registerTool(config, callback) form with description, inputSchema, outputSchema, and annotations objects; no module in src/ uses registerTool, so this is not the current house style.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/convert-tools.mjs#L123-L142",
+          "version": "repo-lines-v1:sha256:17cee953803c8ec2f959f5bd279e15df1027f15c5d43ba92eac51b6199cc2589:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2OTcwNTdhOGE2ZWJmY2NmNzZlYzliMzBmMzcxNWI5MWY3ZmVmZDA0MmUxMzA1ZWYxODIzYmY2ZjNhNmRmZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1NDdjZmZmNGRiN2Q1MDA1NmE5N2VhOGQ0YzU4NGZhZWZjY2U1YWNiZTFkNGQyNDQ5NTRiNzQyZDQ3NzY4YTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlNTM5YjU1ZmQwNWNkM2JmNTZhM2I1YjEzYTQ0MjcyY2FlNDlkZjAxZjhkNjE5YWM2YmNmZWNmY2VjMGFjMWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_27d5b9f21c074230bc67d30e0006b8b1",
+      "statement": "promisifyBotMethod is the default route to the wiki because it adapts nodemw's callback methods, while wrapper gaps go through callApi(bot, params, 'GET'|'POST') in src/common/utils.ts — the only place besides fetchWhoami that touches (bot as any).api.call — and the reason must be written as a comment: pageids/revids addressing, hardcoded wrong parameters such as getUsers' auwitheditsonly, missing action wrappers such as block/unblock/undelete, and callback shapes that discard needed fields such as get-user-contribs' continuation token.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/utils.ts#L42-L58",
+          "version": "repo-lines-v1:sha256:abf29baf9c0c29bebc9cdc7b1911d22d72827e3c0c9a01db65b5850f6a113829:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0MmRhMTI5ZDc4OGM3Y2YxYjNiNmZkNGM0ZDEzMzBhM2M0MTIyNzg5MDUxMWM3OWY4ZTUyNjIyZTZhNzM2NDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwYTMxNjAxM2Y2ZDRiY2UwMWI1YzIyYzU0ZmQxMmEwMGU5MGZjMjVhZDZjZDVjZmE1ZmVmNTEwMTNhYTZkZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhNTVmM2Q1Yjc3OTc3NmUxOGE0MTFlMWYyNzI2ODZmMjdjZTY0ZTE1NDJlZGE3ZGRkYWI0NjliNDU1NGEzM2YifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/revert.ts#L92-L100",
+          "version": "repo-lines-v1:sha256:0955f42e102981ccd135bf5a41a25d20c6c81fe1fadb09e6eefecd8f9911f3a0:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGZjYzNmYzhkZmZkYzYyMDM0OTMyMzk0MGMzOGE5MGEwYTY1Yjk4MGYyOTczNjJmYzliMGZkMWZjODQxMWNiZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWQxYjZiNDFiZDAwZmE2MmI4OGVjMWIwN2ZiNjU2YmQyNDE5NWM5YmJlOTgzZGJiZGZlY2JlODE0ODhmZWJiOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGE0MjRhNmQ2YThjYmUzNTNjNTk0ODY2YWYyZmMwM2FiMmU3MGIxYmQ3N2VmZTM3MDYzMzg0N2I4MjcyNDEyMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTIxNWExYTM2NTIwMjJkOTU3MTA3ZDIwMDkwYzY2MjE1YmU3OGVlNjIyODk4YmI2ZjIzNjdlZGQyNGU3NTYzOCJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-users.ts#L68-L85",
+          "version": "repo-lines-v1:sha256:8005b486f5a32b67363c070ef413bd93fd14ce9a96ab6906d06d8d0153838ce1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MmI0MTRkNzJiMjI3NTg3NDZlYjQ1MDM2NTQ4OGIzMTFhOGEyNDY5Y2E4NWM0ODhkOWIxNzVlNDcwODM0MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliODBmZDg1YmVkODhkZmY3NDc2NDNiMTQ4MTZlYWIwYzI5YzQ3OWI3OWVjMWM5ZDc3NTE5NDEwZDZkMTc5NWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE0ZjQ3NGEyOTE3NTVkZWE3MzVkYTlkM2E5ZGFhY2I1ZmJmZTg0OTM1NmNhYTg0NDkzNzkyMDI0OWMxZDliZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlNmNiM2VjNmQ5MzQ0NDFiOWMwNWFkODI2OTY5M2ZkYjIxYzA4YmJjZTFiYWQxZWVmZDUzM2MzM2Y5MGZmYmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e791ba97b53e40e1a9baa551d3658a70",
+      "statement": "The four admin write tools that need an action token fetch it by hand with getToken and a version-derived token type, choosing csrf on MediaWiki 1.24 or newer and the legacy per-action token otherwise.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/editing/block.ts#L94-L102",
+          "version": "repo-lines-v1:sha256:6be7dfc28d1d47e37937007249d218974941cf4a2dbd26723761cde4535982fe:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODFmMmZhMzIyNTAzMzU3YTE0MjUxYzMzNTM4ZjNmMTM0MzAxZmQ2ZmE0MDE0NzAxMDE4MDBlMzAzMmQ2MDBhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzc0Mzk4Mjc1ZjFkOGNjNDE0MWJjZDA3OWRlZjMzZDRjNTUyMDVmYzBkYmVhOWI3Mzg1NDJmZWFjMWRhNmI5MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2ZhYTU5MTBmMmQxZDM2ZTM4ODEwYjc4ZTFlY2VlNTczMWZhMWRiZDFiNDc0ZTMxZjYwZGI3ZmE5YjUzNjQ5YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDIyNjRiMzUwMGMyMGJkNDVjZDVkNDNlZTkwMGIyNzc2ZTliZjhiMWVmNDZjZGZmOWYzZTFiODVhMzQyM2IwOCJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/protect.ts#L82-L90",
+          "version": "repo-lines-v1:sha256:130b1c495c9970f0479b8a361ebd9a8f8b59741f50488dafbc1cbba88bef8681:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODFmMmZhMzIyNTAzMzU3YTE0MjUxYzMzNTM4ZjNmMTM0MzAxZmQ2ZmE0MDE0NzAxMDE4MDBlMzAzMmQ2MDBhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzc0Mzk4Mjc1ZjFkOGNjNDE0MWJjZDA3OWRlZjMzZDRjNTUyMDVmYzBkYmVhOWI3Mzg1NDJmZWFjMWRhNmI5MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2E5MDBmMTlmODU4YTVkMDRjNzU4ZjdkMTNiZDQxOWI5ZTg2OGFmZGYwMjRhMjI0Mjc2OTkyYWM5Y2RmMWI2ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGI0MmMwZWMwYzQ1MzY0OWU3M2E2YzQ0ZmJhYmZhMGI0ZTZkNDI5NGY4YzI1ZDk4YmNhOTE4Yjg1NmRlYjJlZiJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/undelete.ts#L69-L77",
+          "version": "repo-lines-v1:sha256:54a834f21e2471407f4e19b469d3137fda34a21bea418058a5751cc22180b193:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODFmMmZhMzIyNTAzMzU3YTE0MjUxYzMzNTM4ZjNmMTM0MzAxZmQ2ZmE0MDE0NzAxMDE4MDBlMzAzMmQ2MDBhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzc0Mzk4Mjc1ZjFkOGNjNDE0MWJjZDA3OWRlZjMzZDRjNTUyMDVmYzBkYmVhOWI3Mzg1NDJmZWFjMWRhNmI5MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2RkMjczZjZkMWU2NjY4ZDI5NmI0MzA1MTc4MjlhNjVhOTdkNTUxYzI3NDRlMGM1NzcwMjY3ZDgyYTRkZjQwNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDc4YTc3ZWMzMGM4MmRjZWU4YTkwYWMwZTJhZTk0YzQ4YzgxMDA5MDUwMjYyMGRmMDFkOGYwNjI5N2FmNjc5OCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b0f50aaa8d3a4010911759607b25a2a8",
+      "statement": "All seventeen write tools describe themselves as an action sentence ending in '(requires authentication).' followed by a fixed LOW/MEDIUM/HIGH RISK judgement — seven HIGH, six MEDIUM, four LOW — while the machine-readable destructiveHint disagrees with that prose on the low-risk tools, being true for fifteen of seventeen and false only for purge and undelete.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/__tests__/annotations.test.ts#L57-L73",
+          "version": "repo-lines-v1:sha256:8549e5958ba4dd3dad710ca6d1eb424c0655de4e65bba2bfd1596c21ecd46b0e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwOWEwOGYxOWJhYzQ5NjhiY2Y3MjIxZWJjZDM3NzMzM2NhZmNlNmQ4ZjNhZDEyZjNhZTlkZWIzOTJlOGY1ZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1ZjdmNTA3MjIwZGQ4ZDFlNWU4ZGRiNDg5YmI2YjAxYTUxNGIwOTA5MjYxYmUyMDE3MjJkN2QxY2JmYWQxZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5ZjM0NzRjN2I5ZTU3NmU5NWEwOThkMjQ2YmE3ODU5ZmM3MGQwNjk4N2JjNjQ2OGJkM2JhNDRiN2I1ZWU2MWUifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/append.ts#L39-L54",
+          "version": "repo-lines-v1:sha256:24a610438a5ec2f38fac8fd4481dc3fdb7ce169e03571efa303d53c52cd4dba7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyYWNmZDViMTI1M2JkNWI3YmYyYjVmMjc3NDc0N2U3MWQwYzJiN2Q1ZjRmYWVjMTFmMDg5YzhjYTZjZTU1NWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0OWNmNzAyODMyMGJjZTljODBlNTRkNTEyYjhlYzFhMjE2OWQ1MDU0MDI3MmViNTAyMDFmYzg3MTIyNDg0OTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjZjA4OTQzMjY5ZWE1ZmJkMTkzMTIwNWM1Mjg4ZDY1YWUzMTg1YjhlZmQ3NWY2N2U0OWMzZjQyYjA1MTFjNzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ4OTM0MjVlZmRmZjg4MDllYTc2Mzg5NzQ4YzQ2NDM0ZGMzY2E2ZGVmNWJlYTY4MzkzODA3YTFmMWNiNDUwNTUifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/purge.ts#L37-L39",
+          "version": "repo-lines-v1:sha256:95171ae131d4495c611f8fc3a35111a8f72d533f95d070d9080201a656cd1659:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjM5NTAwYzY5N2ZhODY4NWM1ODc5NjI3ODE5MDhjNDdkNWYxZDE0MmY5Y2JiOWZjZGZhNThiZTMwNmVmZmY4YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzc2ZTNkNzMzZTZlMmUxMWQ1NDk1ZjczNGQwNmE2YmRhYzIyY2RkOGY2MThlZjk0NjcwZDc5NDhkNjFjNTc0MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDE2YjMxZjdjYTE1NDAzNjhjZGMyYTkyNjhmYzllMmNlYTBjNTUxMzEwNzNhMjNkNTkxZGFiMmQ1MDViY2FkMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTQ1MTEyNzgwNDBhMTcwZTY2ZjQ2ZjY2ZjQwYzdlOGVhOGVjMTgyZTJkNGFkNzEwZGZhN2UyNjI5OTM5NjZkNiJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/revert.ts#L38-L45",
+          "version": "repo-lines-v1:sha256:d6e9165bb1f46fc590e1bb54cf303ce6ee41cef9bde8a8f80cc0c33d97cd76f3:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjI4MmQyYmNmYjY1YjUyMDJhYWIxZTYxZjFiODQyZWMxM2M0ZTBjNDQ4ODMwZGUwNjQ1NDI1OWVmNDM0YjlhNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODVkZDZjN2Y1ZTQxM2UzZmU0NWZjNTBjOTcxNjcyZjk0NTcyM2NlZWI2ZWY5MzBmMWI4MGFmZDYzNTJjY2I2YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWY3NmQzMzk5MGQyMzQyN2U1MTM3MzgxNWMyOTVhMmExNGRhNmY5YzE5ZjAwNWIyNTVmOWNmMzA0NzQ4ZmNjNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTlmZTJkMzUzNjc3YzlkMDhiMmIxMzJkNGQ5ZjIzYmFkMDc5N2ZiYzAwNWE3ZGNmZjVhYjBiYWY1YzI4ZmIyNyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1642ca14d69d4a24a048209fbd1a6194",
+      "statement": "The read-before-write guard is a pageid-keyed map of { revid, revTimestamp, readAt } plus a title-keyed write cache: content readers call markAsRead with the revision timestamp only after successfully fetching current content, and writers call requireRead(title), which always re-resolves the title via the API, throws when an existing page has not been read, rejects a title that now resolves to a different pageid than the cached write, rejects recreating a page this session wrote that no longer exists, and returns 0 for a genuinely missing page so creation still succeeds.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L210-L267",
+          "version": "repo-lines-v1:sha256:1737c3487e2e1b1e407e368b9e6031c659881b5b40c9dc7f944f43e8f46a38fa:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzYjE2YWI1YTI0MzYwMTE4NDQ1N2E4MzNiY2NjNTc4NDZmY2U0NWMxYmIwMGZjNWVmMjJmM2U2ZTU0YWJlMmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIwNjUxMGNlZTkxMjIxZTBhN2YwOTBiOTY5YTA4YzAyZTBkZGE1YmNiZDJiNWNhOTAyMWUwYWQzMDJhMWExY2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY3NmZkNGRmNjQzNTJiNTJiMDkwZjc5NDU5M2E2OWJmNDUxNTgxMmEyODhmNjZjNzQxZTZmN2IxNjhhMzU0ZTEifQ"
+        },
+        {
+          "resource": "repo://src/common/pageState.ts#L38-L104",
+          "version": "repo-lines-v1:sha256:004dceaebace8e470541b0288c801bd0fda09e6c9e86c459ae762e0b6a590cf8:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlZDg2NzY3MTE5YmJiZDExNDM5NGQzZDZkN2Q0Yjk4NWI5ODNhYjQ4MTI2MGY3MTY4OTZlNzNhMTQzNDJiMzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVhOWUxY2UyYmM2MWE1OTQ2MTI3ZjhlYjViM2JkOTcwNjhmMjllYmVjZjM0ZjFkN2IxZjc2NjhhYTBiM2MyY2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMWU4YTcxNDg0NTdlMjVjNWU1ODhhMThiY2ExNjE4YWE0YjYwNWFkNzA4M2IzNGM0NmExZDMyY2VkYmJkZmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_47f7371edc264e46a7b3250d19c217e9",
+      "statement": "The guard is applied by exactly the eight page-targeting write tools edit, write, revert, append, prepend, delete, move and protect, and is deliberately absent from purge, block, unblock, undelete, send-email, create-account, upload, upload-by-url and add-flow-topic, whose targets are not readable page text.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/editing/edit.ts#L84-L100",
+          "version": "repo-lines-v1:sha256:9a8741f6e72d294f591a465123a2ed9893d480fe0520bdc074b883d3d68252fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyNjdhMjcwZTY3YWEwMzcwNjdkYzc0OGE4MjUzZmI0ZjdlODAxMmI0MGU5YTQzMWU5NzNkZDFkN2U5NmFjMmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3Y2IyYWNjNWZlM2E1MzYxOWE2NWUwNzJjMDg1YmRhZWU4ZTNlYjZjMDAzMjVmNzNjNDAwNzIzNDE3YjYzMzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI1MTk5NDRhOGUyNDE5MTUyNGNlMmFlNDgxZTY0YzczZjlmNDUxMGJmZTgxODIzM2FhY2ZlZmIxZDkyODMyY2MifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/purge.ts#L56-L74",
+          "version": "repo-lines-v1:sha256:cad26ea1fc8ad4ca5d00e49822984120e119cf0c38d91b2acc45a9707f6528d9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3Mjc2NGVkYTA4MDEwYzZhMGViOTJmOTY5NzEzYWRmY2U4YzI0YjI2ZGQ3MGI5ODBiN2I4ZWQyMGU1NjVhOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwNWVjOTU4YjVmMDNmY2U0OGVkNjJhYTc1MzJlNGY2Y2ZjZjM4Mzg3NjE5NGJkMjBjMTdhYjU1ODZkOGU2YTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/revert.ts#L78-L82",
+          "version": "repo-lines-v1:sha256:09f5b5b73d0ca95884a8c836ad892829f76feab89031da35abc3d794d1fb9d7f:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTYyYjQxNGQ3MmIyMjc1ODc0NmViNDUwMzY1NDg4YjMxMWE4YTI0NjljYTg1YzQ4OGQ5YjE3NWU0NzA4MzQwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjM5YzZkM2VlYTQwNTM1NjgzODlkMjQ3NzM3MTVlODg0MTE4MGJhNjUxMDkxMGY0YTE1MDk3NWQ3ZjFjYTkwYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODBmZGI3OWY3NGRhY2Y2OTViNmNiNTc4ODZhMzkyMzljMGYyYTU1ZDBjMDY0NzQwMTg2YTQ1OGE5YTEyZjk0YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2U3ZjVmMzdlZjY0MWM5YzA3ZGRmMjhjNWZhMTE2MWM0Njg2NTcyMzE4ZTdmYjJlNDRjMTkxZjI4MmM5ZTdjYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_94abf47b49ff4e189e27a1cd002421c2",
+      "statement": "Write tools that accept a summary, reason, or comment prefix it with '[nodemw-mcp.<tool>]' so wiki history attributes the action, a convention present in twelve of the sixteen write modules.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/editing/block.ts#L104-L104",
+          "version": "repo-lines-v1:sha256:85f8b949ba72e29c06c72ebf4c2784f4ae90e5cf686221bccf1253a7dd033c03:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODVmOGI5NDliYTcyZTI5YzA2YzcyZWJmNGMyNzg0ZjRhZTkwZTVjZjY4NjIyMWJjY2YxMjUzYTdkZDAzM2MwMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODVmOGI5NDliYTcyZTI5YzA2YzcyZWJmNGMyNzg0ZjRhZTkwZTVjZjY4NjIyMWJjY2YxMjUzYTdkZDAzM2MwMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmZhMDg3MzVkZTgxNjY0YzgxZWU2NzBiZjRmMGVjMzdmNDM5MGNmNDNhMmU0Y2Q4ZGEzY2M0YmU0YmVjYmY0MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjdiYjBmMDhhZGJhMGE4N2M5ZjA4YWMzOTAyZGMzZTA1YzM0OWJjYTU4ZjE4YjkyZDJkZDhkMjllNjc3MDVmNiJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/edit.ts#L151-L151",
+          "version": "repo-lines-v1:sha256:0005777afa772a45fa3f94fa38470a5251cd422f26f592527d293fa7f4a69cff:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDAwNTc3N2FmYTc3MmE0NWZhM2Y5NGZhMzg0NzBhNTI1MWNkNDIyZjI2ZjU5MjUyN2QyOTNmYTdmNGE2OWNmZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDAwNTc3N2FmYTc3MmE0NWZhM2Y5NGZhMzg0NzBhNTI1MWNkNDIyZjI2ZjU5MjUyN2QyOTNmYTdmNGE2OWNmZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2QzNWQwZWMxYWI1MjA0ZDZmMmVlYjljMzFhOWNlZGQzN2FjZmRlMzFhMDYzNTRiNjhhNmM1ZjJkZTY5ZGQxZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2M0YWFmZDM0MzdjNDk1NjM2YzdlYTg2ZTNlOTQ1YzZkMWJmNzVkYjU5NGE5ZjdiNDQzNzQxOWY2ZmVlNWFkMyJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/upload.ts#L77-L77",
+          "version": "repo-lines-v1:sha256:aab0e4f45e45666be67449390831b4b77bc7ef5f46de0fe7703fc4181f607e8a:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWFiMGU0ZjQ1ZTQ1NjY2YmU2NzQ0OTM5MDgzMWI0Yjc3YmM3ZWY1ZjQ2ZGUwZmU3NzAzZmM0MTgxZjYwN2U4YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWFiMGU0ZjQ1ZTQ1NjY2YmU2NzQ0OTM5MDgzMWI0Yjc3YmM3ZWY1ZjQ2ZGUwZmU3NzAzZmM0MTgxZjYwN2U4YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2JmOTJmZTgzZWQzOTI5OGY2MTZiNDZlNGFiMDU0ZTRlYTI0MjFmZTQxZWVhNmViNGQ2MGRhYmVlNTlmODliNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2M0YWFmZDM0MzdjNDk1NjM2YzdlYTg2ZTNlOTQ1YzZkMWJmNzVkYjU5NGE5ZjdiNDQzNzQxOWY2ZmVlNWFkMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_4fbdb88c2835418a88672e2e9a04a98f",
+      "statement": "Registering a tool requires no code-side count change because the startup banner derives its totals from readToolRegistrars.length plus writeToolRegistrars.length (54 authenticated, 37 for guests), but README.md and README.zh-hans.md each hardcode every tool name with fixed counts (37 read, 17 write) in their own file, so both lists drift independently of the registry.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L103-L109",
+          "version": "repo-lines-v1:sha256:c0afa184c466f93c21662968d95d66c0134a1c9ad7c5885333eb7b371b309e39:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTk4NjY5NzU2YTIwODgwODU0NWNhNmQ4OTMwNTU3MWFkYzBjNzk1ODJjMDNmZmI4NWMzZTFiYTc0ZDkyMDYxYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjFlZThmZjI3ZWI0OWI3NzhhY2QzOTQyYmIzMjY2Nzg0MGVhZWY1ZWEwMDc4NzBjMzQ3MTc1NWRiM2NhY2RhNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTZlNDk2ODAzZjVlOTBmMTEwODk2NzdkYzY1YzhmZWNmYWRkMmM0N2Y5NGRkMjkxZGJjOWY5YTMxMWVmNzk3MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzBlMzgyYjBlMjUyZjI4YzFkOTQxMmJhNGRiODRiNjFmMTRkNDczZmZhNWJkOGM4ZDI3MzgzN2E5ZDE0NzI4OSJ9"
+        },
+        {
+          "resource": "repo://README.zh-hans.md#L101-L109",
+          "version": "repo-lines-v1:sha256:7f479ed1b0bcf1105e333d0cc2616f78c52e95a4dade335bf59c77ffcc534325:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTY2MDcwODEzMDIxNzU5NWQ1YTJmNDQyZDZhYTdjZGMwZmY4ODRkNGIyNGIyZjJlNzA0YTdhM2EwYzU2Mjk2NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjBjYWFlM2M1OTY2MGM4MjFjNGNiZTQzYTdkYzUxOWU5NmRiMTU4ZjYwM2U4MTY5M2E0NDk3MDJjODhjMGRjNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2UxMWQ4YzkwNjYwZjVjMjU3ZmQ2YWI2MjlmZTY0ZjM3NGM5OWE3NzUzYzRlYzdhZmJhNTgxMTk3N2E1OGY0ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDEyNjQzZjFmYzJjNGMwZGUyNTM4ZDlhMzZjNGYyZWE1MThmNzIwYzExMGM4Y2ZlOWJmNTgzZTBmNDk4ZTA2NSJ9"
+        },
+        {
+          "resource": "repo://src/index.ts#L386-L403",
+          "version": "repo-lines-v1:sha256:f1fd9f3d6d2e0ea184a3b0e8dfc4653688b45e63cdb7aaaba67e734f82b7c28c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkYTQ0NWIwOTA5NTQ2ZWUwOGZkOTZiYzk1ODFlNmIyMTBhOTQzNTY3OThiZjQyMDNhMzJmZDE4YWI2MzE5MjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTdkMTY4NThiMGM1OTgxODJlNmQ2Njc0MmFmNjZlZmI0N2ExNWYxODAyNjkwMmZiMDViODE2NGFiZmZjNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNjNGY3MDFlNWZkM2M5MDI1ZTkwMDI0MDhmMTFlNjA0ZWEwODc5MDFjMWYyODJiNzlmMDJmY2M1NTIzOTNhNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4NjJkMGI5MTg5MzY3Yjg0OTE5NDRmOTMyMzU5ZGM1OGVjM2UyOGZhMTMxZDYyNzk2NDYwMDFmYjM0YWU4MGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e3514576c3174c40b1397e8bd464ccc5",
+      "statement": "The agent-facing description built in src/index.ts grades the write surface by named category (ADMIN TOOLS, DESTRUCTIVE WRITE TOOLS, USER-IMPACTING TOOLS, CONTENT TOOLS) and is re-exposed verbatim as the operating-principles prompt, so a new write tool that fits no listed category leaves the model's rules incomplete — revert, a MEDIUM RISK tool, is already in that gap.",
+      "evidence": [
+        {
+          "resource": "repo://src/index.ts#L278-L344",
+          "version": "repo-lines-v1:sha256:dbcf7f67842751ca4130a8a4c91a8ae6bc4e45c6ea471488c95648da9fdce958:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwNzFkMDEwZjYxZTc2MDAxMzFlYzQ3MGMzMWEyZjBjODUzNjBiOTI0MjRiMzdjMWU0ZTdiNTI0MDA4MDJmM2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhNzFkOWZiODgwZWVjZGNiYTUzMjc1MmRhMjM3YTZlOGI2MzJlMWNlY2ZlNTM2ZDhmZTkyYjhmZDA5NzJiYzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlMGQ5MzA2YTMwY2M1YzJlOTVmYzdmNTgyNDlkNTU4MzlmZDYzYTU5NzBlZGY4ZGMzOTliOTMxNGYyNDYwMTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk0ZmI2YmE2NjE4ZDVmNWFlYjkzY2YyMDM3NDk3YzNlMjZkMGJmMzhmZmY3NDdkZWNiOGE3ZDlkOGQxMGJjZDMifQ"
+        },
+        {
+          "resource": "repo://src/index.ts#L353-L364",
+          "version": "repo-lines-v1:sha256:b258801b849d42cd043e752997438a76c7996779bcbadfabf081e6d9c76d1dd8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhYzY5MzU4OTQyMGE0Yjk4ZGQ5NzU3MzY0YjA2NjRhNTA3OTEwNjg3ODJkZjQwN2RjODA3M2QwYTIwMzBjYzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhNzFkOWZiODgwZWVjZGNiYTUzMjc1MmRhMjM3YTZlOGI2MzJlMWNlY2ZlNTM2ZDhmZTkyYjhmZDA5NzJiYzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjZTU1MzZhZTgwOGVlODEzOWMyMjU2ZDQ2ZWE5YzNiMzIzZTM4MTU0NGQ2YzVlODIyMDI4OWYyNjQ4NWVmZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA4ZTEzYzVjZmY5ZWNiN2YyMjg2NmUzMTQ0YzQ4YWUxZWRkYmEwYTIxOTEzNGM3MTk2YmE0MWUyYzQ1NDc1MDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d86b9a028f744a3e88a6971bd972a441",
+      "statement": "The input schema is written for the model rather than the compiler: every field carries .describe(), defaults live on the zod schema (block's expiry defaults to 'indefinite', several booleans to true), mutually exclusive identifiers are declared optional and rejected in the handler's first statements with errorResult in eleven existing tools, and collections use a single union field such as purge's titles.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/editing/block.ts#L42-L55",
+          "version": "repo-lines-v1:sha256:f68e04e49c3eda420e9145edd411b79f444a99e3ec49535152f050928358891a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1MjQ3Mjc2NzY2ZTFkYjE0ZDJlOTdkNmVlMWNhNmNhZWUwM2IyODBiNzQyMWQ4OGRjYjUzODg0NTllM2NkODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1MzdlMGU1MjEwOGZhZmEzZGFmYzFjMDVmNGI4YzY0MzE1ZjY4NzA3Mzg2ZGYxNTk1MjY5ODA1NzUwMzQ1ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYzZDg0NDk4YzI0MjI5YzAzMjE1MzY5NzIwM2FmYTFhMTVkZWI4M2QxNzZmMzUyMjMzMzk4ZmZiMjU4MDAyZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4MzcxY2VkYjQ5Zjc2ZGQyZmRiM2FiNTFhNmQ0NzkxNmE2MDMyOTg3MzcwZDkyMTRhOTQ2N2FkZDc4NmJiODkifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/block.ts#L82-L88",
+          "version": "repo-lines-v1:sha256:8c06ffce7363e12527fa88bf41a06fbcd6e8ea44c6dea20bd480e18d4b252d9b:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTYyYjQxNGQ3MmIyMjc1ODc0NmViNDUwMzY1NDg4YjMxMWE4YTI0NjljYTg1YzQ4OGQ5YjE3NWU0NzA4MzQwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTY5ZjU1NGNmYTEzODJjYzc1YjE1M2YzM2I1NDI5ZTFkY2QyYWMyNjgxNDE2ODU3YjI3ZjNmYjg4OTdmNDJiYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDhlYTJiZDI1MGNjODI3OGZhMGMxNGM2NGM2Nzc3NWY3MDcxZDNiNDI4NjgzZTc5ZGYxZDNjMTIyZjZjNzIxZCJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/edit.ts#L48-L61",
+          "version": "repo-lines-v1:sha256:739be2f49bdb1245b4ef35be4eb3b6f053bccce673b2ad501261cdd5800859b4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1MjQ3Mjc2NzY2ZTFkYjE0ZDJlOTdkNmVlMWNhNmNhZWUwM2IyODBiNzQyMWQ4OGRjYjUzODg0NTllM2NkODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1MzdlMGU1MjEwOGZhZmEzZGFmYzFjMDVmNGI4YzY0MzE1ZjY4NzA3Mzg2ZGYxNTk1MjY5ODA1NzUwMzQ1ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYzZDRkMzIwYTBkMDQwN2E2ODA0NjNiZjBmNjQ2ZGE3ODBkNTk5MzMwN2RkYjExZDcxYjFjZTM3NWU0NWNmNDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZhMDBkNjk3ZGM0ZjU4NTljYzRjZWNjMzM4YTJiYmFiZWJjZTVkOTQ0MDliM2MxNDVjZjhmOWU1OGMyZTY5NzQifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/purge.ts#L40-L42",
+          "version": "repo-lines-v1:sha256:94511278040a170e66f46f66f40c7e8ea8ec182e2d4ad710dfa7e262993966d6:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzUyNDcyNzY3NjZlMWRiMTRkMmU5N2Q2ZWUxY2E2Y2FlZTAzYjI4MGI3NDIxZDg4ZGNiNTM4ODQ1OWUzY2Q4MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDUzN2UwZTUyMTA4ZmFmYTNkYWZjMWMwNWY0YjhjNjQzMTVmNjg3MDczODZkZjE1OTUyNjk4MDU3NTAzNDU4OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTUxNzFhZTEzMWQ0NDk1YzYxMWY4ZmMzYTM1MTExYThmNzJkNTMzZjk1ZDA3MGQ5MDgwMjAxYTY1NmNkMTY1OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWZhOTEyNWJlMmY2NjA2OTc5MzBmNTdjZmVkY2YyYzBlOTk2NjM0M2YwNzQzN2JlOWU2NDMxYmM4ZTNjODYxNCJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/whoare.ts#L65-L65",
+          "version": "repo-lines-v1:sha256:d87b098e0e634215b8ca1f8b805287c6f83723b4000f48d1ac15260ff195604f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg3YjA5OGUwZTYzNDIxNWI4Y2ExZjhiODA1Mjg3YzZmODM3MjNiNDAwMGY0OGQxYWMxNTI2MGZmMTk1NjA0ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg3YjA5OGUwZTYzNDIxNWI4Y2ExZjhiODA1Mjg3YzZmODM3MjNiNDAwMGY0OGQxYWMxNTI2MGZmMTk1NjA0ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmI4OTYzMTM1NWRkYzM1YmJjN2QwM2VmNjM3N2MwZDAxYzdlNjUzOWMxNjE0YjVhYjkwYjZlMjBkZGUzYmU0YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTEzMDVlZWRhZjgxYTEzOWFhNDdmNmU1MzNkZDQzYmM5M2ZkODQ1MmE2MWUyZmFlNzg1NzNmM2RlMDJiZWU3NyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_483a4339868448de909f1bb3173a4ebe",
+      "statement": "Tools reach the wiki through getBot() plus promisifyBotMethod, which adapts nodemw's callback methods; that function exists as two identical implementations, in src/common/nodemwBot.ts and src/common/utils.ts, and existing tools uniformly import it from common/nodemwBot.js.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/nodemwBot.ts#L308-L325",
+          "version": "repo-lines-v1:sha256:a6fe3f3155c0ea84fe70285f7cc13245b7c77be3b6fd1d314d36e72d2a053c6d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhZWQ3ZDE2NmYwYTBmOWExNTdlMzBjNThiYmE3ZDUxNjBjMDJkYzlhZTgzMDFlZGRmOWFhOTg1OGYxMTBjYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmOTg0MjMzY2E3YjYwMjAzOTJkY2UwMDExNDc0M2JjMDE2ZjE4YjMyZGFhMGY3MTgxMDQxM2Y1NTc0MWQ3NjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/common/utils.ts#L60-L77",
+          "version": "repo-lines-v1:sha256:0fc3ede65195a717d7623f76af6411d22ce135ebbc5e3c7ef780a1eb04907976:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhZWQ3ZDE2NmYwYTBmOWExNTdlMzBjNThiYmE3ZDUxNjBjMDJkYzlhZTgzMDFlZGRmOWFhOTg1OGYxMTBjYmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM3YWNhZGRiNjIzMTcwMjkwZDRjMTcyNGQzZDI2YTQyZGZjMTk0OTdjNjBiMDc4MWRjZjdjMDUzNjlmOWE4NWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxMWM5NmMyYWU3ZDcwNGU5NmU0NGQyM2IzZWZlZDNlMTNmYzY4MzVmNmUwMjllNjcwMDBlMjJjMWQ5MzAyOGMifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-backlinks.ts#L32-L33",
+          "version": "repo-lines-v1:sha256:283c92a3e086c0b5d369e4fa87dd598008613e78e8ab9cbf4f0e61f09b28ef02:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2UxZmUyNWM5YzYxMGIyZjE4MDllMmQ5MzM0ZDFhNmUxNzM5MTAzN2ZhNTIwZTc3ZGIyM2ZlNDQ5MDY0MzIyNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmQxOWJjZjRlYjRmNTY1OTdiZjI5MDBkZWE2MzViNjA5MmU4MjNlMzgwOTQ0ZTk3MjczNTVmYmJjY2RlOTYyNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTFiODg1ODhlZTA2NGZhYjM2MGZjN2JjYzFhODQ1YTc5NWQ3MzIwNTRiNWFiZmM0NjVlMjA3N2M1NzE0OTVkMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2M0ODgyNzk5MWYwYTlkMDllNmYyOTRlY2YxYTVhNTA5ZjI0NjE1MjUwN2JiNDdlOGUzZTk2MjhlMzY5YzkxNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_df42f35bf8494f9c969dda0cea3df1f6",
+      "statement": "Forty-eight of the fifty-four tool modules declare an outputSchema and return a data object through jsonResult, while six do not: get-article, get-article-by-revision, parse and expand-templates return a single text content block, and get-module-source and get-articles already return jsonResult without ever declaring a schema; declaring a schema is therefore a commitment that every success path returns jsonResult, but jsonResult does not require a schema.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L64-L94",
+          "version": "repo-lines-v1:sha256:541701cdff04961dc7703b02d46b7ea3e27ae4d04d534852f50ee5dacfe0bf8e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5ZmY3OTcxMjYzZjBlZjZmMmUwNTliNzM1ZTY3NDI1NjM2OTRmOWQ3ZDc2YzllNzNjMjRjMTYyYjlkNDNlNmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2M2UxNjljNzc0YzQ5MjMxNDgyZjU1MjhhY2ExODBlMGJiZmYxYzBiMDMyN2IwYTI5MGM1MmYzZWYxMWYzNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwMGRhMjFmYTAxYzRjZjYwYjkyY2FiNWRiNTYwZDUxZTlkMzA1ZjI2YTUyZjU2YmE2ZTEwYzA2MGY2NzRiZWUifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-articles.ts#L53-L78",
+          "version": "repo-lines-v1:sha256:c576ac1886e021fd05c6b33c36708f3d99b77d2464fcf9eab49d149c085aee88:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzNzY0M2FmZDAyNGM0ZDQzYWY0NjRhMTQ2ZmJiYzM0MWE0YTMzNTdmMzVjMDNhMDJjNTQxZWMyN2IxYTllZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4NzBiNzQ3ZTM1ZmM0NmZjYzc3NjYxZjY5Mzc0ZWIwYTk2NzY5YTkyYzYxM2I4MjZiMzlkNjFiMWM3NzQ0NmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2NTVhY2MwZmYyMGQxYTUwNmQyYWI5N2EwNTU5MWE5ODViZThiZmY1MjNlNTgwYmVjYTYwZWUwZTU0ZjZmNTIifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-module-source.ts#L52-L74",
+          "version": "repo-lines-v1:sha256:d2994e3af7e4ae812e9783188770d8529f449193831b1ee6a2befa92055944a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3MWYxMzg0NTM5ZDMzNWIxZmIzOWYxMzZiN2YzN2U0NTVhNWQ3NDkzNDBkNDRkNWUwNGUxYzc1NzBjNGQ2NGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjZTc1NTUwNjE3MTRlMzgyMWU0YzZhYTNjODdlZDBjOTkyZjFlNDgzODM0MjRiODIwZGE2ODA1Y2YxMDUzZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFiMzMwM2FiNWM4NjdhNTNlMjkwYTI0NTEzMDA2YWE5MTEzNTNmNzlkMWFmYzg1NTM5YmRjMjdmYjgwNGEwZmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_908efd6b72eb4d17a94451d2d433a6f4",
+      "statement": "Handlers end inside a try/catch by returning errorResult('what failed', error) instead of throwing; errorResult fills only content (a formatted { error, details } JSON) and isError: true with no structuredContent, so error paths escape outputSchema validation, and it rewrites details with recovery hints when the error looks like an expired login or an edit conflict; get-article is the one exception, inlining its own error results because it declares no schema.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/utils.ts#L95-L148",
+          "version": "repo-lines-v1:sha256:4c31a23c2bd132eebc0d68ca938216bceb73deca8884f17cf073fb894d990485:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3N2Q5ZDY2NjM1ZmExMzU3MDhjNzc1YmM2YmI1NWZjY2QzMjdmZDEyZjBlZDAwNjM3ZDZlMGM2NzYxNDY4YTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1ZjdmNTA3MjIwZGQ4ZDFlNWU4ZGRiNDg5YmI2YjAxYTUxNGIwOTA5MjYxYmUyMDE3MjJkN2QxY2JmYWQxZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/block.ts#L124-L142",
+          "version": "repo-lines-v1:sha256:ec5d71c23c5a159a5ada4835f292c50cae9af990d2abaa392cdce40a068c348f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzZDkyNzA4MDg0NWIyOWMzMzQ2NDQ0MzgwZjc1YWIzYTc5NDMyYWM1YmZmMjMzYzE2NjVjZWQ2M2RiMDI4YzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlMWFkM2Y5OTgxN2Q4ZmU4OWEwNWUxMDc1MDBhYzViMTRkYWM4MmZhYjY1NjEwYTY5Y2FjN2E1ZWRmMWFmZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L121-L133",
+          "version": "repo-lines-v1:sha256:47cf4751061eaef65f2d64e53437f641d3323a38ce2a17852b59ee085a56e3e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjM2YyNzg4NGZmNjMwZjgxOTFkNGY2NGIzYWRlMDVkOGY0OGFkYWRhNGU1MjYzZjQ5NWIxZWQ2YWJkZjNmMTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlmMzJlM2JmOTk4NWY0MTE0Y2I2M2VhYmE5MTM5ZDIxYTBjOTQzNmY2OTM1YTAwY2I5MDZhOWUzYWMyNWUzMmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjY2JlZDVjNjMwMDk4YmE1MjAzNjQyMDFiODM0MGQ5ODE0YjQ3MzYxNTVkN2E3MjNkYzk4YzBmMDQ3YzExNWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5ac6ed83093a4e3b811305aa1b8b5ec3",
+      "statement": "The three codemods (add-output-schema.mjs, add-annotations.mjs, convert-tools.mjs) are not part of the build or verification path: no package.json script references them, tsconfig.json includes only src/**, and all three rewrite source files in place; both schema codemods recurse through src/tools skipping only index.ts, so they also walk the src/tools/__tests__ helpers and print FAIL for each, and their diffs must be reviewed file by file.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L18-L26",
+          "version": "repo-lines-v1:sha256:1a22f453318341ab35a467c086ac5d180fbd7f9a46191afa797c39bda953c99a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTg0MDY5ODRiZGVmY2EzNGRkNmJjOTAwMjdmMWQxMWFiY2IxNzAzNGM1MjVjOWE1Y2VmYTFkODRmY2NkODFkMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBjOTQ5ODU1MjZjMWM1N2VmMDBjMDBkM2Y0ZGM5MDYxNTY3N2EwYTM2YThiNzk1ZGZmOWFmZmQ1MGZlOWY1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDAyNGMxOWVmMDgzYjZhYmEzMDYzOTQzNmVjMTE3NDhiOTY0OTRhYmI1ZjhjNDIwOGM1Mzc3YTIxNWNlMzU3NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzcxNjI0NzdkOGQ0MGM1MjQ4MTJiNmVkMzJiMmFjYjgyYTQ5NTdkZDFiZmQzZjI5ZWYzZGUxMWU3ZTllYjgwMSJ9"
+        },
+        {
+          "resource": "repo://scripts/add-annotations.mjs#L16-L45",
+          "version": "repo-lines-v1:sha256:0c8e712cacf00d41ee9ff776610f633c18c68e6d261b27ecafb78e6e0f9fa3a5:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhNjgwYmRlNjJhYjNmMjI2YjZiYTgyODhjMTdlZjU1YjMxZGIwYjUyODhkZDM1YjFiZjNmNWI3MThiZWUxMWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU3MDkzZTE3ZDEzYTc1MzVmMjZlOWEyZDhjMDQ2NmM5ZDhmYzhkYzkyZmVkODZiZWFjMGJmNzIyZTc5NGQ3NGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0OWIzZGUwZjIwYWM4MTkzNzUyNjdhOWQwOGZhNWRlNjgzOTE2N2RmMjNlN2E0YmRhOWIxODMwM2E5NmE0ODIifQ"
+        },
+        {
+          "resource": "repo://scripts/add-output-schema.mjs#L51-L59",
+          "version": "repo-lines-v1:sha256:f8d8cd458e1da3a3965c23a74129ab987349e5ce3e090aad0d9111d9ff219d1f:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjUzNWE3YjAwMjJmNTMzNDk4MzdlOGEyN2QxYTE1MTQzNDc0NWZhYTRmNDlmMjA0MjhhZWZmYjRkZDFmMzdhZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTM2MTFhNzhhOTIzOTJmMzA2ZDEyMzRhM2Y4MDQ5OGZlNmM1ZjQ1ODNkNTVjN2NkYzQ2YmIyYjM4MDhlNmZhZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGE5NTZlOWMyZGJhYjMzNWE0ODg3ZGZjNmFhYjU2ODMxOTM3YjI0YzZmODZiNDM2ZjQ3ZGZmZmVhNjlmMDg1MSJ9"
+        },
+        {
+          "resource": "repo://scripts/convert-tools.mjs#L144-L156",
+          "version": "repo-lines-v1:sha256:666f4a10364c2a6a325df5eb88e637c3af431989fc45b2649964baeac881f7a9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1MzVhN2IwMDIyZjUzMzQ5ODM3ZThhMjdkMWExNTE0MzQ3NDVmYWE0ZjQ5ZjIwNDI4YWVmZmI0ZGQxZjM3YWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwZGRkOTYwMTM1YWEzNjBmM2U0YWJkZTc2ZDI1OWEwNTgyMzQ4Y2RiNTY2ZGUyOTQwNGI1ZjZjMTBiNWMxZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAyNWRkNjc4NDdmMmJhY2MyMzJjODNlMDg5Mjg5NDJhYmRiOWQ5MGQyMmRiZDFiMzExODVkMzIwZDYyMjc3YjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://tsconfig.json#L19-L20",
+          "version": "repo-lines-v1:sha256:d921dc78fd6509e1954cb30f3b5143ff22897318065973e79f7d1116bf14be21:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzdmZWRjOTU1NGU3N2UwOWRjZDhhMmE4NTk4NDIzMTY0ZmY5OWFhNjM2Njk0NzlhNDRkMTAyZTk5Yzk2NzA0MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDFkNWNiZTA0OWNlNTUxMzc1OTc1ZDRiZGJmNGQwMGVhMWIxZDAwMmEzYmQ4ZmQxNTdmMzc1YWU5OWZlNDY5ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWZmN2JmMTNiZGJjZWJhMjc0NGE1MDkwZjA3YjEwNGU2NDhiYmNjY2I0NDc5ZTYxMDY1OWVmZGY3NTI2MmVhZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0911c2c5e97b4190b59004498e8e54f6",
+      "statement": "Adding or removing a tool breaks npm test in three hardcoded places: annotations.test.ts asserts readToolRegistrars.length === 37 and writeToolRegistrars.length === 17 plus tools/list parity, and compares every tool's four hints against expectations derived from IDEMPOTENT_WRITES = {purge, protect, unblock, write} and NON_DESTRUCTIVE_WRITES = {purge, undelete} while requiring a description longer than 10 characters; smoke.test.ts requires one minimal-argument entry per tool in TOOL_ARGUMENTS and calls each tool once, asserting a text part and a falsy isError.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L36-L45",
+          "version": "repo-lines-v1:sha256:beda0bbf0246dc53373dd78bd73e503917044159c1d07b9820103384c293b46a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzYmQ3NDI5MDFlNDk2NDVhYTVlMjA2MzdlNjAwOTM5OWQxNjViYzM1NmQzMzM1ODljNDI5YjdkZmE0YTgxMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2OTRmOTA0NGM0MDJlZTRkMjBjMTVmNDkyNTNjYWJmOGVjNDUwZGZlMmNmYmE3YzE5YjhiZTc2ZjM0NWU2YmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIzMzQxMTU3ZWI0ZTcwZDE3NWU0ZDhiZjQ1YjA5OGY5NTU1Njk1NDRhMzRjYzlhMmY4M2RlMmU4MzBhZDljZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViMWJjNWJjNGEyMzdmNTc4ZTZhZjRhNDE1ZDA2NDdmOTkxMGIwM2IzNjRlMWUyN2MxZjFkYmFhNzQzZDAzYmEifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/annotations.test.ts#L106-L140",
+          "version": "repo-lines-v1:sha256:cbd85e1fa857fa1aedeeff6a74b4c0197cd460bcc8ae38fefe14bb8d3b9bcb45:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwNjg0YjllNTcyZGYyM2EzZjE3OTdiYjBkY2NhNmUwZWY2YjhmNGRjMDIxMjY2Y2ZmOGMwOWM5ODgxNzRhYjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMDU5YzhjZmI1YTA3MmM2ZjY0ZGQzZDFiZmRiYzM1NmZiZWM5M2FlZWM4ODc5MWRhN2VkYmE4OWMwODg1ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjExZmFmODYwOGRhODA3OTM1OWU2ZjUwNzAyOTQ1Njc2NmYyYWU2MzUyYTZjNzIxMjhjMDZiN2RkOThhNmYzMzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGRlZjcyNDc4NmI0YWY0NWFiN2NhZDgxZDM3N2FlNTQzYmI3ODQxMjk2NTY4ZmI1MjI2OTk4YWVjMjE2MzQifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/annotations.test.ts#L57-L73",
+          "version": "repo-lines-v1:sha256:8549e5958ba4dd3dad710ca6d1eb424c0655de4e65bba2bfd1596c21ecd46b0e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwOWEwOGYxOWJhYzQ5NjhiY2Y3MjIxZWJjZDM3NzMzM2NhZmNlNmQ4ZjNhZDEyZjNhZTlkZWIzOTJlOGY1ZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1ZjdmNTA3MjIwZGQ4ZDFlNWU4ZGRiNDg5YmI2YjAxYTUxNGIwOTA5MjYxYmUyMDE3MjJkN2QxY2JmYWQxZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5ZjM0NzRjN2I5ZTU3NmU5NWEwOThkMjQ2YmE3ODU5ZmM3MGQwNjk4N2JjNjQ2OGJkM2JhNDRiN2I1ZWU2MWUifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L53-L115",
+          "version": "repo-lines-v1:sha256:9495d12553d22830e23dfba9c4de63b00b3bbd507bd64b02b03ac4872389ac86:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiYmJjNTIzZjBlYjkzNzczMDUwYzI1YTdjNjRmMzJmYjg5MDUyYTZkMjZkNGRkNDgxYzAzNGExOGM2MDRjNjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmZTExYTcxMmI4YzczYzA5N2U4YTFmMGFjYmE5YzQyMjYxNWMzYjllZTc3ZjdhNzBiMTZhZGYxMTk3MTNlMGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4YTM4NzdhZGE2Y2VlODhlZGJjNWIzZGFhMDJlMTVkZmEwY2U5NmZiZmQ0ZjE2YjA5OTdmNzkwMmQwNDU3MDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUzZGM1ZTk4MWU5MWNiNzljY2U4NDhiMTE3NzY2YmQ5MDZjOTgwMTI1YTJjMTc3ODY0ZGJiODNjMmRkY2YzMDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5bfbf612c09943989a0f49e4f0e67935",
+      "statement": "smoke.test.ts replaces the whole runtime with vi.mock('../../common/nodemwBot.js') backed by fakeNodemwBot and connects a real McpServer to a real Client over InMemoryTransport, so every tool is exercised through production registration and dispatch that bypasses only the network; because the SDK zod-validates each successful structuredContent, the isError-is-false assertion is the only automated net that catches an outputSchema that disagrees with the jsonResult payload.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L140-L161",
+          "version": "repo-lines-v1:sha256:ddfd927a8e2130034ffcebcc431c23febfaaa57615809109e92a9523584a4c27:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2ZjJlOWQwYmJjYzdlOGZiOTlmNjFlN2QwYjZiY2ZkZDZkMDI2MDQ5MGZiMWRmMmY4ZjgxZTQwZTAwNzAyMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0MTlhNmRjYzA0ZTIxM2EzYzdhNzdhNDU2YjAxZTc2ZDFlZjc4Y2QwMGJiZWMxZDhmODE0NThmZTkzZWRjNTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5OTMyODQzNjYwNjZhZjRlZmQ2NTE4ZDQ3ZWI2ZjdiMDQyZjIwNjFhMDA0Y2NiYWI0ZjlkZDAwMGFhZTI3NjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3NWUwMWZkMDllODQ2N2U3ZGFlMjdmYmI3NjEwNGU2YmU1NzNkYmRkYmQ5YjgzMDA5YjU3ODc0MmU1MzZkMmMifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/smoke.test.ts#L37-L40",
+          "version": "repo-lines-v1:sha256:9c4198d694d2c4cf5517c41b370bea28a1b3d2111fd88dc7359c7ced5a1116cb:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzk5NmY4OTQ0NDExZjI1NThjYTEzNmZhMzI1MWU0YmQ0OTk1N2MzZjcwZDgyYjE5MzI1YTg5YWQ4NmFlYWVkYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTNkZGVmNzI0Nzg2YjRhZjQ1YWI3Y2FkODFkMzc3YWU1NDNiYjc4NDEyOTY1NjhmYjUyMjY5OThhZWMyMTYzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWIwMGE3Mzk3ZDZkNGYzOWZlNTBiZDA0NDRmNTYxMmZhZjFkMTk3NzVjZWUwYTMzYTNiYTBlYjk0MjExNmJlNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzVhNTQ2YTdmOWQwMmE1YTAwNTQyMDkzNGQxOGI4MmE2NzMzN2FhMjkyZjk1MzVlYmUxMzIzMmY3OWU1ZjY2YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6236d050e0de4183b662bfa2957b7bc3",
+      "statement": "fakeNodemwBot answers modelled nodemw methods with realistic shapes and falls back to hybridResult() — a one-element array carrying object fields — through a Proxy for anything unmodelled, and answers bot.api.call by switching on params.action; therefore a new tool that calls an unmodelled method or action still passes the smoke test while asserting nothing about the real response shape unless METHOD_RETURNS or fakeApiCall is extended.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/__tests__/fakeNodemwBot.ts#L165-L210",
+          "version": "repo-lines-v1:sha256:a2a2f074a0efcf81ea1a95a396a5d7aba1c0f87d60edeb7ff971caeb4c987c99:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0Y2M1N2E5MTMwNWMwYzViNDdhNDVjNDU0Mzk2ZjUwODVlNDJiZmRjNTdiNDYyYjIzZTg2NDU1Y2Y1OGIxMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMzJlMjNiZTYwMzlhMzlkOTdmM2YzMDMxOWRhMTA4ZWFkOWYwY2ExZjlmOTRlMmJmOWExZTgyN2Q4OWVkZWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3ZjM3MzJhYmM3MTdlNzI3NWRiMzJmZjEzZmM1ODU0ZDBhZTQyOTdiOTA3ZjczYTE0NGFkMDk2NTIwNGI0NWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUzMWZmZTRlMDM0OGFlZjAzZWJlY2U1YmU5MTQ5YWMxNGZlMzljNDM0YWVkMDIwNDBjZjQ4YjUwNzI3MDAzNzEifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/fakeNodemwBot.ts#L299-L303",
+          "version": "repo-lines-v1:sha256:7acad23703a092e99cd1a73bbdc5c0b09e8b5f1f60475a497606717698c6c936:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGNhOTA2ZWI0MmMyMGQ2N2VlNTViYTc4NWU3MWRhYWJkNmZkOWJlMTVjZGE1NDA5YmM3NTY0ODMyOTljMDJkOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTQ5YWUyZjcyOGFkMWY4OTEyNmEwN2JjODA4NzkyMTAxOTAxNjE3ZmQyMjk3YjYyYjVlYjI5NTg1ZGRjMTU2YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjUwNWNjNGI4ZTY4NmExMjkwMjkwMWNlZGQzNjliNzljODI3NzIwMDhjODhlNzkxYmU4YWM4ZmUzYjY4M2I1NSJ9"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/fakeNodemwBot.ts#L305-L384",
+          "version": "repo-lines-v1:sha256:d987166f849c4a006453e1ce82409f4ff6793c63ca986dae987b9f7ed67a2384:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkZGI0NjJlMWE0YjNlMmNiNzlhZDk2YzMwYTMzMjA1YjY0NzUwY2RhN2RkYzY5OGFmNjRhYWQ5NDU5MDIxMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5OGUyOTgyN2NhZDE0M2ExYTRmM2MyMDg0NzY0YjgyM2JjYmVhZDRhMDRmMTVmYmJmNDQ0ZGMzN2NhOTk3OTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzNjJjYjQxZjI4YWE0ZTIxZDI0YmE2YWEzZmIzMzhhYzhiOTViNjY2ZjM3ODVmNTVjNzdmMjkyNjExMGVmMTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_95772ddde6284ac9a85ad5551146aa52",
+      "statement": "Read evidence is recorded only for whole-page views and only with the revision timestamp: get-article skips recording when offset > 0 or maxlen truncated the text, get-article-with-lineno skips when offset, limit or truncation is present, get-articles and get-module-source record per page with rev.timestamp, and reads of older revisions (get-article-by-revision, get-article with a revision parameter) record nothing because they would certify content the agent never saw as current.",
+      "evidence": [
+        {
+          "resource": "repo://src/tools/ro/get-article-with-lineno.ts#L189-L196",
+          "version": "repo-lines-v1:sha256:3bd4b42b75b2838dd4167037f133ebcba8398b92d5b76d10eeebe56da71d688b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTI0OGJlZTNkNzAyODI4MWE1MmY2M2Q2YjEzMTMzOGE3MGJkNmVhMTZlNzM1MDRlYThkZTcwMGQ4YTBmMzEzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzJiY2NjNDk0Mzg4ZmQ0ZTJhMzBiYzczYTFkZGU1ZDExN2U5MzJiZDc4YTdmMDAyMDE0MTk5NWQ3MWIxYzFhNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmUyOGZlYzFmMjJhNGQxMWJiMTIxYmViYmU1MGY4MzI1ZmIxYTcwMWQyOGIyZDNhZjQ0NWMwN2E0YzdkNTI3ZSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L193-L198",
+          "version": "repo-lines-v1:sha256:94aa23ca6c4988196043babf0572b35072435428d2c383e987436b798fb59886:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmE2Mjk3MjEzYWY5ODgwMTBkNWE1ODc4NjA4ZjFjODM5Mjc0MTAyNTQ1ZjY0YzYyMWFiNmM2Y2VkNDlmNGFkOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDk2MGJhNTBmZWFkMTQ2ZjhhNTA3MzIwMTNhZjUxZTliMTY5NjA4ZTgwZDdjMjEwNTNkZmIwOTlmZDgyNWZhNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2I4ZjlkNGRhMWRkMjBmMWZhMzlkYjAyMzQ5NjM1OGNhZWM1YTQ2YjQwYWUxYmNiZDNjMjM2ZWIwMzM3NjUwNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmQ4N2JkMmZmZGE2ZDc5YjExNTA2NDc1ZmU2MDQ4YzA4ZjkyOTQ4NzMzNDVjYzY3YmU2MTRkOGQxNjU0MGFhNSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-article.ts#L44-L54",
+          "version": "repo-lines-v1:sha256:41febbc74d22cb6cd48c2abfde9149591d2bab5b590b7daac5a2abc81e5b0e30:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZDVhYmFjYTIyNjgwYWU5NTMzNjcwMGRmNzY2MzYxOTdhN2NiNmMwMDRmNGNkNzlhYzFiMWZkMmYwYWM0YTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVhMzBjNDM5NzQ1NzNlOTFmNmFlZDc2ZTU0YmRmMzk2YTAwZjU4OGY1YzA3MTA2Zjg3MDJhZDMyMTMzODYwZWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2ZTJlNzBmY2U5MGVmMWIzMzQwM2Q3ZjI0M2Y4YTI1NDdkNDVmNWJhZjQ4NzIxOWQxMDk1Y2M4MmY5NmMzZjgifQ"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-articles.ts#L138-L141",
+          "version": "repo-lines-v1:sha256:cde0ea1440dcfbec1907fe96bffd43c1a7fea87a51e22a39e81ba9a1bbf0c116:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVhNzlkNGM2ZTE3NjYzMDU3NjJlMTQ3ODk4ZjkzNTE2OGUyM2I4MDAyOTlkNTk1MGZlZmNmMjZlYTAxMThkMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzlhODU3MmI4ODhiMDhmNzk3OThhMTlhY2FkMWVmZGFmZWQwMjcwNDI1YTNlMWMyMmQ4ODhkMTA2ZDY1NjgzYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWEyZmU4NjFlNGRlOTY3ZWQ0YzMyNzNmZjlhODNjMjZkNDM2MmFkNzM2ZGI5NGJiNTMzNzdiMzM2NDVjNTE5YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzhhYTAxNWY1YzZiNDU5YTVjYzk5ODRjMDJjYmY0ZmUyMTFkM2JhNzFkYjc0OTZkYmNmZDYyNzY1YTYwZDY4OSJ9"
+        },
+        {
+          "resource": "repo://src/tools/ro/get-module-source.ts#L127-L130",
+          "version": "repo-lines-v1:sha256:8ad931fc76968bf55424e5b565cc843fd77d90bf7871071e14d06796e971beb1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjczOTQ0NDFjZDg3YWM2ZmFjYzE2MzI3ZTcwMzYzOWExOGFlOThjOTVhNGIyYWJmYzE2OTMyMjg5NTUyMjU5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjdkNTE0NDk4OGYxM2U5OWFlYTA0MjU1MTExZWYzNDZmOGVkODYzYWY3ZDY2NzZkNzZmZTdhYjA4N2VjYTE1NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTI5MDA1NDNlMTFiMTE2OWM1Y2E4YzdmOWRiYTAzZjlhZjhiMGMwODczODdkZWNmMWE5ZjE5NmMyMTNiYjk1MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5c91e4aa251e4b00a700eb4f66985c1b",
+      "statement": "Write conflict protection has two layers: edit, append, prepend, write and revert merge conflictGuardParams(pageid) into their doEdit parameters so saves carry basetimestamp and starttimestamp, and the full-page overwrites write and revert additionally run findStaleWrite's revid CAS pre-check; after a successful save markAsWritten re-seeds read state with the new revision, except in revert, which deliberately does not so it cannot launder read evidence, while delete and move call invalidateTitle on the old title.",
+      "evidence": [
+        {
+          "resource": "repo://src/common/pageState.ts#L130-L191",
+          "version": "repo-lines-v1:sha256:9d935c0ae63553e9791efce593363b89f9e319f65b8a1a37dba1b2fdcd6c6f4b:eyJzZWxlY3RlZExpbmVDb3VudCI6NjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwOTM3ZWI5NDc0Y2Y5YzM2ODE3OWRiNDFkNDA3OTg3MTdmNDg5Njc4MGY4YTc4YjcyM2MwODM2NDVlMTExOTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyMmZhYTUzNWJkMmVhM2Q1MmU3NDFlZDQ1NDQzNWI3ZmU0OWU4MzU4NmU5NDNkOThkODJiYmZiMjRkMWY1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMjhiZjdkY2Y0NDhlOTY1NjVlMWZkODcyNzViZTU5MzA4NmU4MTFjYTI2Zjc4MTZlODU0ZWJhMjZiYjc0YzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyYjY3MjBhOTIzODkxZWZjMDNhZDQxMDkyMTE1ZmZkM2QwNTMzYTBlMjAzMDJmMjMxMzU0NTBiNTI0MWJmMTEifQ"
+        },
+        {
+          "resource": "repo://src/tools/__tests__/readGuard.test.ts#L183-L196",
+          "version": "repo-lines-v1:sha256:fef4781cb0b3a6ee0f0385ed01b3414b2bab11a30e1d03fc080bb13e6db7febc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlNTFmZTVjZjA3YzNmYWY0MWI5YWQyNzAzMTNlYTQzOTZjZjlmNDM1MTQ4ZTU2NWEzYTgyYjJmNTg4OWE4NjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NDM5ODI3NWYxZDhjYzQxNDFiY2QwNzlkZWYzM2Q0YzU1MjA1ZmMwZGJlYTliNzM4NTQyZmVhYzFkYTZiOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0MmNkMTAxN2ZiZGY5ZTlmZjkwNjY4NzM1Y2QxZGM4MTJhNmFiN2E5YjMyNGMxN2IzYTJjYTRhY2Q2YWMwNWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk1ZTAxOWVkMjEwM2E1MTI3NGVhNTYxZDY2YmU0MzE3ZDk1MjM3MDg1YmYwNzJjZTU1MGNiYWI2NjM5YzkxMmIifQ"
+        },
+        {
+          "resource": "repo://src/tools/editing/revert.ts#L82-L89",
+          "version": "repo-lines-v1:sha256:dbf04db817057c2ac0a5b6a11ef40392c3d1df31868f7850eac20f54460a9954:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjM5YzZkM2VlYTQwNTM1NjgzODlkMjQ3NzM3MTVlODg0MTE4MGJhNjUxMDkxMGY0YTE1MDk3NWQ3ZjFjYTkwYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODI1MWJmYWJjZmI2ZDg5ZmQ5ZjRlM2I3YmM0YTE3NGZkOTBjOTk4MTg2ZTRmZGUyYzhmYTM0ZTZkNWMyOTNhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzM1ZGI4NTdiZGVhNTJlNGUyOGY1NDEwYWJlNmZhMGNlMTAwZjUxNDVjNmQ1YTk2YTE4NTk1NWFiZDdkMzNhNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGQ1MTBmZjhlNzkyN2IzODAxNjM1ZGRlMDZjMWFjMDI3OWI2NTFiZDVhNmVhM2U1YTEwYTc0NTk2YjgwZGZmOCJ9"
+        },
+        {
+          "resource": "repo://src/tools/editing/write.ts#L133-L168",
+          "version": "repo-lines-v1:sha256:825561a374828640bdd49996540161ae5f1808a2750545173425931abeb1a8a5:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkNzhmZjg2MWEwYThhNGZkY2JkZGQwOWY5MTkxMTJkOWYyMTY2NThiYmMwNGI5ODBmYjgzODVhODQ3YjAzZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNTFiZmFiY2ZiNmQ4OWZkOWY0ZTNiN2JjNGExNzRmZDkwYzk5ODE4NmU0ZmRlMmM4ZmEzNGU2ZDVjMjkzYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAzZDczYzY2ZWY1YmE4YWZmN2Y3NGYwYTBiMGQ4M2Q4NGZiNzdiMDU2YmFlMjJkODZmNGQyMjgzNzY1OTE4MTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU5YmQ0NGZmYTRmNWUxYzczMTNjOTRiMmQ1MTQ5NzZjZDJlOWVjYjQzM2JhMTJjMTM3OTg3MjVkOTk4M2YyY2MifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_40f0ad90a1584595bb8b5a589f6f05a5",
+      "statement": "The verification gates have distinct reach: npm test runs three offline tool suites over the real MCP path, npx tsc --noEmit is the only type gate and covers test files because tsconfig includes src/**/*, npm run build bundles with esbuild while stripping types, and node test-server.js only proves dist/index.js exists and can be spawned; npm run lint runs the unquoted glob eslint src/**/*.ts, which the shell expands to src/*/*.ts, so src/index.ts, src/server.ts, src/tools/ro/*, src/tools/editing/* and every test file are never linted.",
+      "evidence": [
+        {
+          "resource": "repo://eslint.config.js#L12-L29",
+          "version": "repo-lines-v1:sha256:fadde2cb9b04ccd96161d7a5c56da34127f64b2fbd88146e5dae10a30f219adb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExMTU4OTg5OThkMGM2MDM4NzJiMWMzMjM1ZmQ0MDBlOTNmZTAxMTA3MmM4NTk3ZDhlNjQyOWY5OTA0Y2RlM2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4NzRmMDU1MmU4NmYzNzJjZjI3MzRlOTgxYTM0ZWUzZGQ1ZTgyNTc3ZTc3NmQ3NWJkN2Q0M2E5MzRlNjQ3Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0YjAwNzE4YmJjOGUwYTZlZjQwNWUxYzhlYWIxMTlhMTgzZmZjZGJhZjNhNjZlMzZmZjhhZTQyMjgyNGUyYWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ4YzNiMzRjMDkxMzRmOTc3MGU5OGMzNTBmZjJiNjE2YmRjNjQ0MTgzOWQ2OGJiZjRhYmQyMjkzMTZlN2Y4NzkifQ"
+        },
+        {
+          "resource": "repo://package.json#L18-L26",
+          "version": "repo-lines-v1:sha256:1a22f453318341ab35a467c086ac5d180fbd7f9a46191afa797c39bda953c99a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTg0MDY5ODRiZGVmY2EzNGRkNmJjOTAwMjdmMWQxMWFiY2IxNzAzNGM1MjVjOWE1Y2VmYTFkODRmY2NkODFkMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjBjOTQ5ODU1MjZjMWM1N2VmMDBjMDBkM2Y0ZGM5MDYxNTY3N2EwYTM2YThiNzk1ZGZmOWFmZmQ1MGZlOWY1OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDAyNGMxOWVmMDgzYjZhYmEzMDYzOTQzNmVjMTE3NDhiOTY0OTRhYmI1ZjhjNDIwOGM1Mzc3YTIxNWNlMzU3NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzcxNjI0NzdkOGQ0MGM1MjQ4MTJiNmVkMzJiMmFjYjgyYTQ5NTdkZDFiZmQzZjI5ZWYzZGUxMWU3ZTllYjgwMSJ9"
+        },
+        {
+          "resource": "repo://scripts/build.js#L11-L20",
+          "version": "repo-lines-v1:sha256:721d418528908d2d8682674efacbca27c4e2465ab0b554fc0fe32801b1d6a0ca:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyZWQ2Zjc0MDBlNzFhZWJlOTNjNTk5YmEwNTBjZmMyOWQ4MDk5MmJhZWQ0OTliOGVlZDRkYTBmOWE2MWMwMDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhOGJkMjhkMGM1OGY1M2Y2YTlkZjEyNTMxYjEwZWFiZTI1ODQ5N2NmNGY5NWI0ZTEzMDM5ZTkyYjg1ZTA0MDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhM2M1MTc0NGU0Nzk2MWQ5ZDk5MTNiNjE3YmI1ZjU2ODc5OTQ0ODVmZTM2M2UyODJiMDQ5MjFmMWVjOGZjYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVjYmI5YTUwMmM5MDM4ODlkNzk5MWVjYjY2NDdhMzBhYWQxNmYzYTc1NzU1NzJiMDI0NTU1ZTNmM2I1YzZiYzIifQ"
+        },
+        {
+          "resource": "repo://test-server.js#L11-L56",
+          "version": "repo-lines-v1:sha256:469dbc79d6bb28e24b8c4b672f1ea6089d153c15989d2eeecd6c6153a9a86faa:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiNzgxYjNiZGRlNWIyMTJjMDFjODQ1NzYyMmY3Nzg0MDEwZjE4N2FhMThjODY3YmM1NzZiYzA1ZDg5MGFlNGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMzZTVhZjYzNTBiYzcxODJkM2Y4N2YzZWQ3OTE2YTNkNjJlYmU1MWU2NjQ4ZWRlYzZiMmRhOWMyNDdlOTM3ZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUyNjlmN2Y5YjlkMDM1ZWQxMmVmYjg3NjFlMzVhNWM3MDQ5MzZkOTJiZDdkMGI3ZmE0MWYwZDU1MjY5MDU4M2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjMTExMjg3Y2MyZjIwYjhhNjY1YWZhYTc3MzNjMTZkMDdiNTlmNWU4Y2Q0N2U0ZTQ1YzRkMGJmMTA2NDU1NGMifQ"
+        },
+        {
+          "resource": "repo://tsconfig.json#L19-L20",
+          "version": "repo-lines-v1:sha256:d921dc78fd6509e1954cb30f3b5143ff22897318065973e79f7d1116bf14be21:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzdmZWRjOTU1NGU3N2UwOWRjZDhhMmE4NTk4NDIzMTY0ZmY5OWFhNjM2Njk0NzlhNDRkMTAyZTk5Yzk2NzA0MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDFkNWNiZTA0OWNlNTUxMzc1OTc1ZDRiZGJmNGQwMGVhMWIxZDAwMmEzYmQ4ZmQxNTdmMzc1YWU5OWZlNDY5ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWZmN2JmMTNiZGJjZWJhMjc0NGE1MDkwZjA3YjEwNGU2NDhiYmNjY2I0NDc5ZTYxMDY1OWVmZGY3NTI2MmVhZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTIyZmFhNTM1YmQyZWEzZDUyZTc0MWVkNDU0NDM1YjdmZTQ5ZTgzNTg2ZTk0M2Q5OGQ4MmJiZmIyNGQxZjVjNSJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-30T18:16:46.462Z"
+  }
+}
